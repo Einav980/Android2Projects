@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
+        android:layout_margin="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+            <ImageView
+                android:id="@+id/character_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="center"
+                android:layout_marginBottom="10dp"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_launcher"/>
+            <TextView
+                android:id="@+id/character_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Character Name"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:layout_below="@id/character_image"/>
+            <TextView
+                android:id="@+id/character_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Character Description"
+                android:textSize="18dp"
+                android:layout_below="@id/character_name"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="2"/>
+            <TextView
+                android:id="@+id/character_dubber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Character Dubber"
+                android:textSize="16dp"
+                android:layout_below="@id/character_description"
+                android:layout_marginTop="5dp"/>
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>
