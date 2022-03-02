@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CharacterDetails"
+    android:padding="10dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/character_details_character_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Character Name"
+                android:textColor="@color/black"
+                android:textSize="22dp"
+                android:layout_marginBottom="15dp"/>
+
+        <RelativeLayout
+            android:id="@+id/images_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/character_details_character_name"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/character_details_image1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_margin="5dp"/>
+
+            <ImageView
+                android:id="@+id/character_details_image2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_toRightOf="@id/character_details_image1"
+                android:src="@mipmap/ic_launcher"
+                android:layout_margin="5dp" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/character_details_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/images_relative_layout"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/character_details_character_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Character Description"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/character_details_voice_actor"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Voice Actor: "
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:layout_marginRight="10dp"
+                android:layout_below="@id/character_details_character_description"/>
+
+            <TextView
+                android:id="@+id/character_details_character_dubber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Character Dubber"
+                android:layout_centerHorizontal="true"
+                android:textSize="18dp"
+                android:layout_alignTop="@id/character_details_voice_actor"
+                android:layout_toRightOf="@id/character_details_voice_actor"/>
+        </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
