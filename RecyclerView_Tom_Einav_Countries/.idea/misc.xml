@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_character_details.xml" value="0.5541666666666667" />
+        <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_main.xml" value="0.5541666666666667" />
+        <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/single_row_item.xml" value="0.3307291666666667" />
         <entry key="..\:/Users/einav.malcka/AndroidStudioProjects/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_character_details.xml" value="0.338768115942029" />
         <entry key="..\:/Users/einav.malcka/AndroidStudioProjects/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_main.xml" value="0.338768115942029" />
         <entry key="..\:/Users/einav.malcka/AndroidStudioProjects/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/single_character_item.xml" value="0.338768115942029" />
@@ -13,7 +16,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
