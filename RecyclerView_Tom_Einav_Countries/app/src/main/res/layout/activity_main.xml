@@ -16,18 +16,19 @@
         android:textAlignment="center"
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
 
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="match_parent"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/countries_recycler_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/main_title"
-        android:text="test"/>
+        tools:listitem="@layout/single_country_item" />
 
-    <ImageView
-        android:id="@+id/country_image"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@id/test"/>
+    <ProgressBar
+        android:id="@+id/main_activity_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 
 <!--    <TableLayout-->
 <!--        android:id="@+id/main_table"-->

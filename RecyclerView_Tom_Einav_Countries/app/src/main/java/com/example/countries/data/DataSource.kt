@@ -18,7 +18,7 @@ class DataSource {
             val countDownLatch = CountDownLatch(1)
 
             val client = OkHttpClient()
-            val url = "https://restcountries.com/v2/all"
+            val url = "https://restcountries.com/v2/all?fields=name,nativeName,borders,flags"
 
             val request: Request = Request.Builder().url(url).build()
 

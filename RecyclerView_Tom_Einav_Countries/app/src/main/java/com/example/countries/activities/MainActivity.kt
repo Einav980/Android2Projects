@@ -1,8 +1,13 @@
 package com.example.countries.activities
 
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.countries.R
+import com.example.countries.adapters.CountryAdapter
 import com.example.countries.data.DataSource
 import com.example.countries.models.Country
 import com.google.gson.Gson
@@ -22,13 +27,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        var layoutManager: RecyclerView.LayoutManager? = null;
+        var mAdapter: RecyclerView.Adapter<CountryAdapter.CountryViewHolder>? = null
+
         val mydata  = arrayOf(arrayOf("row1", "row1", "row1")
                                 ,arrayOf("row2", "row2", "row2")
                                 ,arrayOf("row3", "row3", "row3"))
 
         var countries: ArrayList<Country> = DataSource.fetchCountries()
+        main_activity_progress_bar.visibility = View.GONE
 
-
+        mAdapter = CountryAdapter(countries)
+        LinearLayoutManager(this).also { layoutManager = it }
+        countries_recycler_view.layoutManager = layoutManager
+        countries_recycler_view.adapter = mAdapter
 //        val countDownLatch: CountDownLatch = CountDownLatch(1)
 //
 //        val client: OkHttpClient = OkHttpClient()
@@ -54,9 +66,6 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
 //        })
-
-        Picasso.get().load(countries[10].flag.toString()).into(country_image)
-
     }
 }
 
