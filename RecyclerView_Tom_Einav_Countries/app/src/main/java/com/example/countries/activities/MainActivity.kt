@@ -10,16 +10,8 @@ import com.example.countries.R
 import com.example.countries.adapters.CountryAdapter
 import com.example.countries.data.DataSource
 import com.example.countries.models.Country
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.*
-import java.io.IOException
-import java.lang.reflect.Type
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CountDownLatch
+
 
 class MainActivity : AppCompatActivity() {
 
