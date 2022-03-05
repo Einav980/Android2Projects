@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/drawable/cell_shape.xml" value="0.33958333333333335" />
         <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_character_details.xml" value="0.5541666666666667" />
+        <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_country_details.xml" value="0.3307291666666667" />
         <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/single.xml" value="0.32708333333333334" />
+        <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/single_border_item.xml" value="0.3307291666666667" />
         <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/single_country_item.xml" value="0.33" />
         <entry key="..\:/Limudim/Android 2/Git/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/single_row_item.xml" value="0.3307291666666667" />
         <entry key="..\:/Users/einav.malcka/AndroidStudioProjects/Android2Projects/RecyclerView_Tom_Einav_Countries/app/src/main/res/layout/activity_character_details.xml" value="0.338768115942029" />

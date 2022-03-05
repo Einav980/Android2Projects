@@ -71,7 +71,7 @@
                 android:layout_column="1"
                 android:background="@drawable/cell_shape"
                 android:gravity="left"
-                android:padding="3dip"
+                android:padding="10dp"
                 android:text="Country Name"
                 android:textSize="20dp" />
 
@@ -82,8 +82,8 @@
                 android:layout_column="1"
                 android:layout_below="@id/country_card_country_name"
                 android:background="@drawable/cell_shape"
-                android:gravity="right"
-                android:padding="3dip"
+                android:gravity="left"
+                android:padding="10dp"
                 android:text="Country Native Name"
                 android:textSize="16dp" />
 

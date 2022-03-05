@@ -6,23 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".activities.CountryDetails">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <TextView
                 android:id="@+id/country_details_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
                 android:text="Country Name"
                 android:textColor="@color/black"
-                android:textSize="22dp"
-                android:layout_marginBottom="15dp"/>
+                android:textSize="22dp" />
 
             <RelativeLayout
                 android:id="@+id/images_relative_layout"
@@ -34,63 +30,82 @@
                 <ImageView
                     android:id="@+id/country_details_image"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_margin="5dp"/>
+                    android:layout_height="100dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:scaleType="fitXY"
+                    android:background="@color/black"
+                    android:padding="1dp"
+                    android:src="@mipmap/ic_launcher" />
 
 
             </RelativeLayout>
+
             <RelativeLayout
-                android:id="@+id/character_details_body"
+                android:id="@+id/country_details_body_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@id/images_relative_layout"
-                android:padding="10dp">
+                android:layout_marginTop="0dp">
 
-                <TextView
-                    android:id="@+id/country_details_native_name"
-                    android:layout_marginTop="20dp"
+                <ProgressBar
+                    android:id="@+id/country_details_progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Native name: "
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:layout_marginRight="10dp"/>
+                    android:layout_centerInParent="true"
+                    android:indeterminateTint="@color/design_default_color_primary" />
 
-                <TextView
-                    android:id="@+id/country_details_native_name_data"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/country_details_body"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Native name data"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="18dp"
-                    android:layout_alignTop="@id/country_details_native_name"
-                    android:layout_toRightOf="@id/country_details_native_name"/>
+                    android:visibility="invisible"
+                    android:layout_margin="10dp">
 
-                <TextView
-                    android:id="@+id/country_details_borders"
-                    android:layout_marginTop="20dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Borders: "
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_below="@id/country_details_native_name"/>
+                    <TextView
+                        android:id="@+id/country_details_native_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:text="Native name: "
+                        android:textColor="@color/black"
+                        android:textSize="18dp" />
 
-                <TextView
-                    android:id="@+id/country_details_border_list"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Country border list"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="18dp"
-                    android:layout_alignTop="@id/country_details_borders"
-                    android:layout_toRightOf="@id/country_details_borders"/>
+                    <TextView
+                        android:id="@+id/country_details_native_name_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/country_details_native_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/country_details_native_name"
+                        android:text="Native name data"
+                        android:textSize="18dp" />
 
+                    <TextView
+                        android:id="@+id/country_details_borders"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/country_details_native_name"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="10dp"
+                        android:text="Borders: "
+                        android:textColor="@color/black"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/country_details_border_list"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/country_details_borders"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/country_details_borders"
+                        android:text="Country border list"
+                        android:textSize="18dp" />
+                </RelativeLayout>
 
             </RelativeLayout>
         </RelativeLayout>
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

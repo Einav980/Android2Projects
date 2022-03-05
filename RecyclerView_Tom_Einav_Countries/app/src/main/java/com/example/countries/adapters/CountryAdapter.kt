@@ -37,13 +37,10 @@ class CountryAdapter(private var countries: ArrayList<Country>):
         var countryName: TextView? = itemView.findViewById(R.id.country_card_country_name)
         var countryNativeName: TextView? = itemView.findViewById(R.id.country_card_country_native_name)
         var countryRow: TableLayout? = itemView.findViewById(R.id.table_layout)
-//        var countryFlag: ImageView? = itemView.findViewById(R.id.country_card_country_flag_image)
-//        var cardView: MaterialCardView = itemView.findViewById(R.id.country_card_view)
 
         init {
             countryRow?.setOnClickListener() {
                 val position: Int = adapterPosition
-//                Toast.makeText(it.context, "Borders: ${countries[position].borders}", Toast.LENGTH_SHORT).show()
                 val intent = Intent(it.context,CountryDetails::class.java).apply {
                     putExtra("country_name", countries[position].name)
                     putExtra("country_native_name", countries[position].nativeName)

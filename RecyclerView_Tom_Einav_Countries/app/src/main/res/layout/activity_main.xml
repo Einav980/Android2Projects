@@ -14,7 +14,8 @@
         android:text="Countries"
         android:textSize="24dp"
         android:textAlignment="center"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        android:layout_marginBottom="20dp"/>
 
     <TableLayout
         android:layout_below="@id/main_title"
@@ -34,10 +35,10 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_column="1"
-                android:gravity="left"
-                android:padding="3dip"
+                android:gravity="center"
                 android:text="Country Name"
                 android:textSize="20dp"
+                android:padding="10dp"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:background="@drawable/cell_shape"/>
 
@@ -47,8 +48,8 @@
                 android:layout_height="match_parent"
                 android:layout_column="1"
                 android:layout_below="@id/country_card_country_name"
-                android:gravity="right"
-                android:padding="3dip"
+                android:gravity="center"
+                android:padding="10dp"
                 android:text="Country Native Name"
                 android:textSize="16dp"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
@@ -56,29 +57,11 @@
         </TableRow>
     </TableLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/countries_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/main_row"
         tools:listitem="@layout/single_country_item" />
-
-    <ProgressBar
-        android:id="@+id/main_activity_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-
-<!--    <TableLayout-->
-<!--        android:id="@+id/main_table"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@id/main_title"-->
-<!--        android:layout_marginStart="5dp"-->
-<!--        android:layout_marginTop="5dp"-->
-<!--        android:layout_marginEnd="5dp"-->
-<!--        android:layout_marginBottom="5dp" />-->
-
 
 </RelativeLayout>
