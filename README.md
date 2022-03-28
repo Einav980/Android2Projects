@@ -2,4 +2,4 @@
 
 ## Calculator
 
-![alt Calculator](https://prnt.sc/d2xFZKSLJQmz)
+![alt Calculator](images/calculator.png)
