@@ -2,4 +2,4 @@
 
 ## Calculator
 
-<img src="images/calculatorsd.png" alt="calculator" width="200"/>
+<img src="images/calculator.png" alt="calculator" width="200"/>
