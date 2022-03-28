@@ -2,4 +2,4 @@
 
 ## Calculator
 
-![alt Calculator](images/calculator.png)
+<img src="images/calculatorsd.png" alt="calculator" width="200"/>
