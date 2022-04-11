@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
                     .padding(10.dp)) {
                     items(images) { image ->
                         CoilCard(image = image)
-                        Spacer(modifier = Modifier.height(15.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
             }
@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
 fun CoilCard(image: CustomImage) {
     val painter = rememberImagePainter(data = image.url,
         builder = {
-            error(R.drawable.image_defoalt_error)
+            error(R.drawable.error)
             crossfade(500)
         })
     Card(
@@ -102,7 +102,7 @@ fun CoilCard(image: CustomImage) {
         Column(Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.weight(4f).fillMaxWidth() , contentAlignment = Alignment.Center){
-                Image(painter = painter, contentDescription = "image",contentScale = ContentScale.Crop , modifier = Modifier.fillMaxSize())
+                Image(painter = painter, contentDescription = "image",contentScale = ContentScale.Fit , modifier = Modifier.fillMaxSize())
                 if(painterState is AsyncImagePainter.State.Loading){
                     CircularProgressIndicator(strokeWidth = 3.dp)
                 }
