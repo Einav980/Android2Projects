@@ -1,6 +1,5 @@
 package com.example.rently.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,7 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,12 +36,16 @@ import com.example.rently.util.PhoneMaskTransformation
 
 @Composable
 fun PhonePrefixDropDown() {
-    var expanded by remember { mutableStateOf(false)}
+    var expanded by remember { mutableStateOf(false) }
     val prefixes = listOf("050", "051", "052", "053", "054", "055", "056", "057", "058", "059")
-    var selectedItem by remember { mutableStateOf("")}
-    var textFieldSize by remember { mutableStateOf(Size.Zero)}
+    var selectedItem by remember { mutableStateOf("") }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    val icon = if (expanded) { Icons.Filled.KeyboardArrowUp} else {Icons.Filled.KeyboardArrowDown}
+    val icon = if (expanded) {
+        Icons.Filled.KeyboardArrowUp
+    } else {
+        Icons.Filled.KeyboardArrowDown
+    }
 
     Column(Modifier.padding(20.dp)) {
         OutlinedTextField(
@@ -54,9 +57,9 @@ fun PhonePrefixDropDown() {
                     //This value is used to assign to the DropDown the same width
                     textFieldSize = coordinates.size.toSize()
                 },
-            label = {Text("Label")},
+            label = { Text("Label") },
             trailingIcon = {
-                Icon(icon,"contentDescription",
+                Icon(icon, "contentDescription",
                     Modifier.clickable { expanded = !expanded })
             }
         )
@@ -64,7 +67,7 @@ fun PhonePrefixDropDown() {
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .width(with(LocalDensity.current){textFieldSize.width.toDp()})
+                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
         ) {
             prefixes.forEach { label ->
                 DropdownMenuItem(onClick = {
@@ -89,7 +92,16 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
     var phone by remember {
         mutableStateOf("")
     }
-    MaterialTheme (colors = RentlyColors, typography = RentlyTypography){
+    val invalidEmail by remember {
+        mutableStateOf(false)
+    }
+    var isEmailError by remember {
+        mutableStateOf(false)
+    }
+    var isPasswordError by remember {
+        mutableStateOf(false)
+    }
+    MaterialTheme(colors = RentlyColors, typography = RentlyTypography) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -102,7 +114,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                 modifier = Modifier
                     .weight(3f)
                     .fillMaxWidth()
-            ){
+            ) {
                 TextButton(
                     onClick = { navController.popBackStack() },
                 ) {
@@ -128,25 +140,58 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
             Column(
                 modifier = Modifier
                     .weight(7f),
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
                     value = email,
-                    onValueChange = {email = it},
+                    onValueChange = {
+                        email = it
+                        viewModel.isValidEmail.value = true
+                        isEmailError = false
+                    },
                     label = { Text(text = "Email") },
+                    isError = isEmailError,
+                    trailingIcon = {
+                        if(isEmailError){
+                            Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+                        }
+                    }
                 )
+                if(! viewModel.isValidEmail.value){
+                    isEmailError = true
+                    Text(
+                        text = "Email is invalid",
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(15.dp))
                 OutlinedTextField(
                     value = password,
-                    onValueChange = {password = it},
+                    onValueChange = { password = it },
                     label = { Text(text = "Password") },
                     visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    isError = isPasswordError,
+                    trailingIcon = {
+                        if(isPasswordError){
+                            Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+                        }
+                    }
                 )
+                if(! viewModel.isValidPassword.value){
+                    isPasswordError = true
+                    Text(
+                        text = "Password must be at least 8 characters",
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(15.dp))
                 OutlinedTextField(
                     value = phone,
-                    label = {Text(text = "Phone")},
+                    label = { Text(text = "Phone") },
                     onValueChange = { phone = it },
                     visualTransformation = PhoneMaskTransformation()
                 )
@@ -155,14 +200,13 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                     onClick = {
                         val user = User(email = email, password = password, phone = phone)
                         registerUser(user, viewModel = viewModel)
-                              },
+                    },
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                 ) {
-                    if(viewModel.isLoading.value){
+                    if (viewModel.isLoading.value) {
                         CircularProgressIndicator(color = Color.White)
-                    }
-                    else{
+                    } else {
                         Text(
                             text = "Create Account",
                             style = MaterialTheme.typography.h6,
@@ -171,8 +215,8 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
                                 .padding(5.dp)
                         )
                     }
-                    if(viewModel.registeredSuccessfully.value){
-                        LaunchedEffect(key1 = Unit){
+                    if (viewModel.registeredSuccessfully.value) {
+                        LaunchedEffect(key1 = Unit) {
                             navController.navigate(Screen.Home.route)
                         }
                     }
@@ -182,7 +226,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hilt
     }
 }
 
-fun registerUser(user: User, viewModel: SignUpViewModel){
+fun registerUser(user: User, viewModel: SignUpViewModel) {
     viewModel.registerUser(user)
 }
 

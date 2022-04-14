@@ -7,12 +7,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -20,9 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.rently.model.User
-import com.example.rently.navigation.Screen
 import com.example.rently.ui.theme.RentlyColors
 import com.example.rently.ui.theme.RentlyTypography
 import com.example.rently.util.Constants
@@ -80,22 +79,59 @@ fun LoginScreen(
                     onValueChange = { email = it },
                     label = { Text(text = "Email") },
                     singleLine = true,
+                    isError = ! viewModel.isValidEmail.value,
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Filled.Email,
                             contentDescription = "Email Icon"
                         )
                     },
-                    isError = viewModel.isEmailValid.value,
+                    trailingIcon = {
+                        if(!viewModel.isValidEmail.value){
+                            Icon(imageVector = Icons.Filled.Warning, contentDescription = "error", tint = MaterialTheme.colors.error)
+                        }
+                    }
                 )
+                if(! viewModel.isValidEmail.value){
+                    Text(
+                        text = "Invalid email address",
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.size(10.dp))
                 TextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        viewModel.isValidPassword.value = true
+                    },
                     label = { Text(text = "Password") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    leadingIcon = {
+                        Icon(Icons.Filled.Lock, "Lock Icon")
+                    },
+                    isError = !viewModel.isValidPassword.value,
+                    trailingIcon = {
+                        if (!viewModel.isValidPassword.value) {
+                            Icon(
+                                imageVector = Icons.Filled.Warning,
+                                contentDescription = "error",
+                                tint = MaterialTheme.colors.error
+                            )
+                        }
+                    }
                 )
+                if (!viewModel.isValidPassword.value) {
+                    Text(
+                        text = "Password cannot be empty",
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
@@ -105,7 +141,7 @@ fun LoginScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp)),
                     contentPadding = PaddingValues(15.dp),
-                    shape = MaterialTheme.shapes.large
+                    shape = MaterialTheme.shapes.large,
                 ) {
                     if (viewModel.isLoading.value) {
                         CircularProgressIndicator(color = Color.White)
@@ -123,9 +159,6 @@ fun LoginScreen(
                         text = "Invalid credentials",
                         color = MaterialTheme.colors.primaryVariant
                     )
-                }
-                if (viewModel.showInvalidCredentialsDialog.value) {
-                    MissingValuesDialog(viewModel = viewModel)
                 }
 
                 Column(
@@ -149,44 +182,9 @@ fun LoginScreen(
 //@Preview(showBackground = true)
 //@Composable
 //fun LoginScreenPreview() {
-//    LoginScreen(rememberNavController(), )
+//    LoginScreen(rememberNavController())
 //}
 
-@Composable
-fun MissingValuesDialog(viewModel: LoginViewModel) {
-    Dialog(
-        onDismissRequest = { viewModel.showInvalidCredentialsDialog.value = false },
-        DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .width(200.dp)
-                .height(100.dp)
-                .padding(10.dp)
-                .background(Color.White, shape = RoundedCornerShape(8.dp))
-        ) {
-            Text(
-                text = "Email and password must not be empty!",
-                color = MaterialTheme.colors.primary
-            )
-        }
-    }
-}
-
 fun loginUser(viewModel: LoginViewModel, user: User) {
-//    if(! validateEmail(viewModel, user.email)){
-//    }
     viewModel.loginUser(user = user)
-}
-
-fun validateEmail(viewModel: LoginViewModel, email: String): Boolean{
-    if(email.matches(Regex(".*@.*..com"))){
-        viewModel.isEmailValid.value = true
-        return true
-    }
-    else{
-        viewModel.isEmailValid.value = false
-        return false
-    }
 }

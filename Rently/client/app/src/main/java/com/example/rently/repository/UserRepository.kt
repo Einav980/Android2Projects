@@ -26,7 +26,7 @@ class UserRepository @Inject constructor(
         val response = try{
             api.registerUser(user = user)
         } catch (e: Exception){
-            return Resource.Error("Failed signing up")
+            return Resource.Error("Failed signing up", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)
     }

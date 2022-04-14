@@ -19,24 +19,24 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val repository: UserRepository): ViewModel() {
 
+
     val isLoggedIn = mutableStateOf(false)
     val isLoading = mutableStateOf(false)
     val invalidCredentials = mutableStateOf(false)
     val showInvalidCredentialsDialog = mutableStateOf(false)
-    val isEmailValid = mutableStateOf(true)
+    val isValidEmail = mutableStateOf(true)
+    val isValidPassword = mutableStateOf(true)
+    private val EmailRegex =  Regex("^\\S+@\\S+\\.\\S+\$")
 
     fun loginUser(user: User){
         viewModelScope.launch {
-            invalidCredentials.value = false
-            if(user.email.isEmpty() || user.password.isEmpty())
-            {
-                showInvalidCredentialsDialog.value = true
-            }
-            else{
+            validateData(user = user)
+            if(isValidEmail.value && isValidPassword.value){
                 isLoading.value = true
-                when(repository.loginUser(user)){
+                val response = repository.loginUser(user)
+                when(response){
                     is Resource.Success -> {
-                        isLoggedIn.value = true
+
                     }
 
                     is Resource.Error -> {
@@ -47,5 +47,18 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
                 isLoading.value = false
             }
         }
+    }
+
+    fun validateEmail(email: String){
+        isValidEmail.value = email.matches(EmailRegex)
+    }
+
+    fun validatePassword(password: String){
+        isValidPassword.value = password.isNotEmpty()
+    }
+
+    fun validateData(user: User){
+        validateEmail(user.email)
+        validatePassword(user.password)
     }
 }
