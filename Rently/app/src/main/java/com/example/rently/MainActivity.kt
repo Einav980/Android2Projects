@@ -1,11 +1,19 @@
 package com.example.rently
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
+import androidx.datastore.dataStoreFile
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.rently.navigation.SetupNavGraph
@@ -16,29 +24,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var viewModel: MainViewModel
     lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             RentlyTheme {
-                // A surface container using the 'background' color from the theme
                 navController = rememberNavController()
                 SetupNavGraph(navController = navController)
             }
         }
-
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository = repository)
-//        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-//        viewModel.listApartments()
-//        viewModel.myResponse.observe(this, Observer { response ->
-//            Log.d("Response", response.toString())
-//            for(apartment in response){
-//                Log.d("Response", apartment.toString())
-//            }
-//        })
-
     }
 }
 

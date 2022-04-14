@@ -4,9 +4,11 @@ import com.example.rently.Resource
 import com.example.rently.api.UserApi
 import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
+import dagger.hilt.android.scopes.ActivityScoped
 import retrofit2.Response
 import javax.inject.Inject
 
+@ActivityScoped
 class UserRepository @Inject constructor(
     private val api: UserApi
 ) {
