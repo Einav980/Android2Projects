@@ -25,23 +25,19 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
     if (!user) {
-      res
-        .status(404)
-        .json({
-          returnCode: 404,
-          message: 'Username was not found!',
-          type: 'Error',
-        });
+      res.status(404).json({
+        returnCode: 404,
+        message: 'Username was not found!',
+        type: 'Error',
+      });
     }
     const doesPasswordMatch = bcrypt.compareSync(password, user.hashedPassword);
     if (!doesPasswordMatch) {
-      res
-        .status(401)
-        .json({
-          returnCode: 401,
-          message: 'Invalid credentials',
-          type: 'Error',
-        });
+      res.status(401).json({
+        returnCode: 401,
+        message: 'Invalid credentials',
+        type: 'Error',
+      });
     } else {
       res.json({
         returnCode: 200,
@@ -50,13 +46,11 @@ const loginUser = async (req, res) => {
       });
     }
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        returnCode: 400,
-        message: 'Error while trying to login',
-        type: 'Error',
-      });
+    res.status(400).json({
+      returnCode: 400,
+      message: 'Error while trying to login',
+      type: 'Error',
+    });
   }
 };
 
@@ -79,7 +73,7 @@ const signUpUser = async (req, res) => {
         type: 'Success',
       });
     } else {
-      res.status(405).json({
+      res.json({
         returnCode: 405,
         message: 'Email is already in use',
         type: 'Error',

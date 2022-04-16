@@ -1,5 +1,6 @@
 package com.example.rently.repository
 
+import android.util.Log
 import com.example.rently.Resource
 import com.example.rently.api.UserApi
 import com.example.rently.model.AuthResponse
@@ -26,6 +27,7 @@ class UserRepository @Inject constructor(
         val response = try{
             api.registerUser(user = user)
         } catch (e: Exception){
+            Log.d("Response", e.message.toString())
             return Resource.Error("Failed signing up", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)

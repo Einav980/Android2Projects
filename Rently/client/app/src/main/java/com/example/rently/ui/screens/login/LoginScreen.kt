@@ -1,6 +1,5 @@
 package com.example.rently.ui.screens.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,11 +17,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.model.User
-import com.example.rently.ui.theme.RentlyColors
+import com.example.rently.ui.theme.RentlyLightColors
 import com.example.rently.ui.theme.RentlyTypography
 import com.example.rently.util.Constants
 
@@ -46,7 +43,7 @@ fun LoginScreen(
     var password by remember {
         mutableStateOf("")
     }
-    MaterialTheme(colors = RentlyColors, typography = RentlyTypography) {
+    MaterialTheme(colors = RentlyLightColors, typography = RentlyTypography) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),

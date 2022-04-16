@@ -12,7 +12,7 @@ val RentlyPrimaryVariantColor = Color(0xFFB41648)
 val RentlySecondaryColor = Color(0xFF9ED0E6)
 val RentlySecondaryVariantColor = Color(0xFF267192)
 
-val RentlyColors = lightColors(
+val RentlyLightColors = lightColors(
     primary = RentlyPrimaryColor,
     primaryVariant = RentlyPrimaryVariantColor,
     secondary = RentlySecondaryColor,

@@ -43,21 +43,22 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
                         isLoggedIn.value = false
                         invalidCredentials.value = true
                     }
+
                 }
                 isLoading.value = false
             }
         }
     }
 
-    fun validateEmail(email: String){
+    private fun validateEmail(email: String){
         isValidEmail.value = email.matches(EmailRegex)
     }
 
-    fun validatePassword(password: String){
+    private fun validatePassword(password: String){
         isValidPassword.value = password.isNotEmpty()
     }
 
-    fun validateData(user: User){
+    private fun validateData(user: User){
         validateEmail(user.email)
         validatePassword(user.password)
     }

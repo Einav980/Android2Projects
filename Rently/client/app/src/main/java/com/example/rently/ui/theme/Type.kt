@@ -38,6 +38,11 @@ val RentlyTypography = Typography(
         fontSize = 36.sp,
         fontWeight = FontWeight.Normal
     ),
+    h5 = TextStyle(
+        fontFamily = Lobster,
+        fontSize = 26.sp,
+        fontWeight = FontWeight.Normal
+    ),
     h6 = TextStyle(
         fontFamily = Lobster,
         fontSize = 22.sp,

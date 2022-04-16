@@ -1,25 +1,28 @@
 package com.example.rently.navigation
 
 import android.util.Log
+import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.example.rently.ui.screens.DetailsScreen
 import com.example.rently.ui.screens.HomeScreen
 import com.example.rently.ui.screens.login.LoginScreen
 import com.example.rently.ui.screens.SignUpScreen
+import com.example.rently.ui.screens.thankyou.ThankYou
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 
+@ExperimentalAnimationApi
 @Composable
 fun SetupNavGraph(
     navController: NavHostController
 ) {
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Login.route
+        startDestination = Screen.Login.route,
     ) {
         composable(
-            route = Screen.Home.route
+            route = Screen.Home.route,
         ) {
             HomeScreen(navController = navController)
         }
@@ -42,12 +45,31 @@ fun SetupNavGraph(
                 },
                 onSignUpClicked = {
                     navController.navigate(Screen.Signup.route)
-                })
+                },
+            )
         }
         composable(
-            route = Screen.Signup.route
+            route = Screen.Signup.route,
         ) {
-            SignUpScreen(navController = navController)
+            SignUpScreen(
+                onSignUpSuccessful = {
+                navController.navigate(Screen.ThankYou.route)
+            },
+                closeScreen = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(
+            route = Screen.ThankYou.route,
+        ){
+            ThankYou(onLanded = {
+                navController.navigate(Screen.Login.route){
+                    popUpTo(Screen.ThankYou.route){
+                        inclusive = true
+                    }
+                }
+            })
         }
     }
 }

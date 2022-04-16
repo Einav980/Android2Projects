@@ -35,7 +35,7 @@ fun RentlyTheme(
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
-        LightColorPalette
+        RentlyLightColors
     }
 
     MaterialTheme(
