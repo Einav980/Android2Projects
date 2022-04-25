@@ -1,5 +1,6 @@
 package com.example.rently.ui.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -47,5 +48,15 @@ val RentlyTypography = Typography(
         fontFamily = Lobster,
         fontSize = 22.sp,
         fontWeight = FontWeight.Normal
+    ),
+    subtitle1 = TextStyle(
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Normal,
+        color = RentlySubtitleTextColor,
+    ),
+    subtitle2 = TextStyle(
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Normal,
     )
+
 )

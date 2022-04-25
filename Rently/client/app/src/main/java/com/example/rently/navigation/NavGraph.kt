@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.example.rently.ui.screens.DetailsScreen
-import com.example.rently.ui.screens.HomeScreen
+import com.example.rently.ui.screens.*
 import com.example.rently.ui.screens.login.LoginScreen
-import com.example.rently.ui.screens.SignUpScreen
 import com.example.rently.ui.screens.thankyou.ThankYou
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -19,13 +17,8 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Login.route,
+        startDestination = Screen.Main.route,
     ) {
-        composable(
-            route = Screen.Home.route,
-        ) {
-            HomeScreen(navController = navController)
-        }
         composable(
             route = Screen.Details.route
         ) {
@@ -36,12 +29,11 @@ fun SetupNavGraph(
         ) {
             LoginScreen(
                 onLoginSuccessful = {
-                    navController.navigate(Screen.Details.route){
+                    navController.navigate(Screen.Main.route){
                         popUpTo(Screen.Login.route){
                             inclusive = true
                         }
                     }
-                    Log.d("Login", "Navigate to Details")
                 },
                 onSignUpClicked = {
                     navController.navigate(Screen.Signup.route)
@@ -65,11 +57,16 @@ fun SetupNavGraph(
         ){
             ThankYou(onLanded = {
                 navController.navigate(Screen.Login.route){
-                    popUpTo(Screen.ThankYou.route){
+                    popUpTo(0){
                         inclusive = true
                     }
                 }
             })
+        }
+        composable(
+            route = Screen.Main.route
+        ){
+            MainScreen()
         }
     }
 }

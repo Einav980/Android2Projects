@@ -109,6 +109,7 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                         },
                         label = { Text(text = "Email") },
                         isError = isEmailError,
+                        enabled = ! viewModel.errorOccurred.value,
                         singleLine = true,
                         trailingIcon = {
                             if(isEmailError){
@@ -149,6 +150,7 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         isError = isPasswordError,
+                        enabled = ! viewModel.errorOccurred.value,
                         trailingIcon = {
                             if(isPasswordError){
                                 Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
@@ -176,6 +178,8 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                         visualTransformation = PhoneMaskTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
+                        isError = isPhoneError,
+                        enabled = ! viewModel.errorOccurred.value,
                         trailingIcon = {
                             if(isPhoneError){
                                 Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
@@ -196,7 +200,6 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(15.dp)
                     ,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
@@ -206,7 +209,8 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                             registerUser(user, viewModel = viewModel)
                         },
                         modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(10.dp)),
+                        enabled = ! viewModel.errorOccurred.value
                     ) {
                         if (viewModel.isLoading.value) {
                             CircularProgressIndicator(color = Color.White)
@@ -215,7 +219,6 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                                 text = "Create Account",
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier
-                                    .background(MaterialTheme.colors.primary)
                                     .padding(5.dp)
                             )
                         }

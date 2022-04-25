@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
                 val response = repository.loginUser(user)
                 when(response){
                     is Resource.Success -> {
-
+                        isLoggedIn.value = true
                     }
 
                     is Resource.Error -> {
