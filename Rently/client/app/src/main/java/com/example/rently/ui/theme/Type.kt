@@ -6,6 +6,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.rently.R
 
@@ -16,6 +17,10 @@ val Pacifico = FontFamily(
 
 val Lobster = FontFamily(
     Font(R.font.lobster_regular)
+)
+
+val Varela = FontFamily(
+    Font(R.font.varela_round_regular)
 )
 
 val RentlyTypography = Typography(
@@ -57,6 +62,32 @@ val RentlyTypography = Typography(
     subtitle2 = TextStyle(
         fontSize = 14.sp,
         fontWeight = FontWeight.Normal,
+    )
+)
+val RentlyApartmentCardTypography = Typography(
+    h1 = TextStyle(
+        fontSize = 82.sp,
+        fontFamily = Varela,
+    ),
+    h3 = TextStyle(
+        fontSize = 48.sp,
+        fontFamily = Varela,
+    ),
+    h5 = TextStyle(
+        fontFamily = Varela,
+        fontSize = 24.sp
+    ),
+    h6 = TextStyle(
+      fontFamily = Varela,
+      fontSize = 20.sp
+    ),
+    subtitle1 = TextStyle(
+        fontSize = 12.sp,
+        fontFamily = Varela
+    ),
+    subtitle2 = TextStyle(
+        fontSize = 16.sp,
+        fontFamily = Varela
     )
 
 )

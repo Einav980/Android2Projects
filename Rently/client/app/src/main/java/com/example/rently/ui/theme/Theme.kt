@@ -45,3 +45,22 @@ fun RentlyTheme(
         content = content
     )
 }
+
+@Composable
+fun RentlyApartmentCardTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        RentlyLightColors
+    }
+
+    MaterialTheme(
+        colors = RentlyApartmentCardLightColors,
+        typography = RentlyApartmentCardTypography,
+        shapes = Shapes,
+        content = content
+    )
+}
