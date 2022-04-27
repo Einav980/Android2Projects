@@ -17,7 +17,7 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Main.route,
+        startDestination = Screen.Login.route,
     ) {
         composable(
             route = Screen.Details.route
