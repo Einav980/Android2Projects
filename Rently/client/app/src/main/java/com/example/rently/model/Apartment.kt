@@ -12,6 +12,7 @@ data class Apartment(
     val type: String,
     val imageUrl: String,
     val price: Number,
+    val status: String
 ){
     override fun toString(): String {
         return "city: $city, price: $price"
