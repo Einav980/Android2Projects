@@ -26,3 +26,8 @@ val RentlyApartmentCardLightColors = lightColors(
     secondary = RentlySecondaryColor,
     secondaryVariant = RentlyApartmentAddressColor,
 )
+
+val ApartmentClosedStatusColor = Color(0xFF000022)
+val ApartmentRejectedStatusColor = Color(0xFFD1103A)
+val ApartmentAvailableStatusColor = Color(0xFF02DE70)
+val ApartmentPendingStatusColor = Color(0xFF778DA9)

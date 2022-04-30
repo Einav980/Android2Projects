@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface MainApi {
+interface ApartmentApi {
 
     // Apartments
     @GET("/api/apartments")
@@ -14,7 +14,6 @@ interface MainApi {
 
     @GET("/api/apartments/624ca60f5c4af535859c0729")
     suspend fun getApartment(): Apartment
-
     // Users
 
 }

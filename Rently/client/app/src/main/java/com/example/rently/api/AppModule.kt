@@ -1,5 +1,6 @@
 package com.example.rently.api
 
+import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.UserRepository
 import com.example.rently.util.Constants
 import dagger.Module
@@ -29,5 +30,21 @@ object AppModule {
             .baseUrl(Constants.BASE_URL)
             .build()
             .create(UserApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideApartmentRepository(
+        api: ApartmentApi
+    ) = ApartmentRepository(api)
+
+    @Singleton
+    @Provides
+    fun provideApartmentApi(): ApartmentApi{
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(Constants.BASE_URL)
+            .build()
+            .create(ApartmentApi::class.java)
     }
 }

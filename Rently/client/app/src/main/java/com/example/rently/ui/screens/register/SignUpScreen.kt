@@ -107,7 +107,7 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                             viewModel.clearEmailError()
                             isEmailError = false
                         },
-                        label = { Text(text = "Email") },
+                        label = { Text(text = "Email", style = MaterialTheme.typography.subtitle2) },
                         isError = isEmailError,
                         enabled = ! viewModel.errorOccurred.value,
                         singleLine = true,
@@ -146,7 +146,7 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                                 isPasswordError = false
                             }
                         },
-                        label = { Text(text = "Password") },
+                        label = { Text(text = "Password", style = MaterialTheme.typography.subtitle2) },
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         isError = isPasswordError,
@@ -169,7 +169,7 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                     Spacer(modifier = Modifier.height(15.dp))
                     OutlinedTextField(
                         value = phone,
-                        label = { Text(text = "Phone") },
+                        label = { Text(text = "Phone", style = MaterialTheme.typography.subtitle2) },
                         onValueChange = {
                             phone = it
                             viewModel.clearPhoneError()

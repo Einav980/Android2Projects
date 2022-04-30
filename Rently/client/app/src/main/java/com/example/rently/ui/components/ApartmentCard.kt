@@ -23,6 +23,7 @@ import com.example.rently.model.Apartment
 import com.example.rently.ui.theme.RentlyApartmentCardTheme
 import com.example.rently.ui.theme.RentlySecondaryVariantColor
 import com.example.rently.ui.theme.RentlySubtitleTextColor
+import com.example.rently.util.ApartmentStatus
 import java.text.NumberFormat
 import java.util.*
 
@@ -42,10 +43,11 @@ fun ApartmentCard(apartment: Apartment) {
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(6f)
+                        .weight(5f)
                         .fillMaxWidth()
                 ) {
                     ApartmentImage(url = apartment.imageUrl)
+//                    ApartmentStatusBadge(apartmentStatus = apartment.status)
                 }
 
                 Row(
@@ -114,13 +116,14 @@ fun ApartmentCard(apartment: Apartment) {
                             .weight(2f),
                     )
                     val format = NumberFormat.getCurrencyInstance()
+//                    val apartmentCardColor = if( apartment.status == ApartmentStatus.PENDING){Color.Gray} else {MaterialTheme.colors.primary}
                     format.maximumFractionDigits = 0
                     format.currency = Currency.getInstance("ILS")
                     Column(
                         modifier = Modifier
                             .weight(2f)
                             .fillMaxWidth()
-                            .background(MaterialTheme.colors.primary)
+//                            .background(apartmentCardColor)
                             .padding(10.dp)
                             .clip(MaterialTheme.shapes.medium),
                         verticalArrangement = Arrangement.Center
@@ -159,12 +162,33 @@ fun ApartmentImage(url: String) {
             contentDescription = "Image",
             modifier = Modifier
                 .clip(MaterialTheme.shapes.medium)
-                .fillMaxWidth()
+                .fillMaxSize()
         )
         if (painterState is AsyncImagePainter.State.Loading) {
             CircularProgressIndicator()
         }
     }
+}
+
+@Composable
+fun ApartmentStatusBadge(apartmentStatus: ApartmentStatus) {
+    RentlyApartmentCardTheme {
+        Surface(
+            shape = MaterialTheme.shapes.large,
+            modifier = Modifier
+                .padding(10.dp),
+            color = apartmentStatus.backgroundColor,
+            elevation = 5.dp
+        ){
+            Text(
+                text = apartmentStatus.status,
+                color = apartmentStatus.color,
+                modifier = Modifier.padding(5.dp),
+                style = MaterialTheme.typography.subtitle2
+            )
+        }
+    }
+
 }
 
 @Composable

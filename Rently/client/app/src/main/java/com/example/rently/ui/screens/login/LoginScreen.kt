@@ -74,7 +74,7 @@ fun LoginScreen(
                 TextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text(text = "Email") },
+                    label = { Text(text = "Email", style = MaterialTheme.typography.subtitle2) },
                     singleLine = true,
                     isError = ! viewModel.isValidEmail.value,
                     leadingIcon = {
@@ -104,7 +104,7 @@ fun LoginScreen(
                         password = it
                         viewModel.isValidPassword.value = true
                     },
-                    label = { Text(text = "Password") },
+                    label = { Text(text = "Password", style = MaterialTheme.typography.subtitle2) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     leadingIcon = {
