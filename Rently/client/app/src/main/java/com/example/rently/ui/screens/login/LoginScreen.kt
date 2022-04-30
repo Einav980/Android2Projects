@@ -69,65 +69,74 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(PaddingValues(20.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally
-            )
-            {
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text(text = "Email", style = MaterialTheme.typography.subtitle2) },
-                    singleLine = true,
-                    isError = ! viewModel.isValidEmail.value,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Email,
-                            contentDescription = "Email Icon"
-                        )
-                    },
-                    trailingIcon = {
-                        if(!viewModel.isValidEmail.value){
-                            Icon(imageVector = Icons.Filled.Warning, contentDescription = "error", tint = MaterialTheme.colors.error)
-                        }
-                    }
-                )
-                if(! viewModel.isValidEmail.value){
-                    Text(
-                        text = "Invalid email address",
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-                TextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        viewModel.isValidPassword.value = true
-                    },
-                    label = { Text(text = "Password", style = MaterialTheme.typography.subtitle2) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    leadingIcon = {
-                        Icon(Icons.Filled.Lock, "Lock Icon")
-                    },
-                    isError = !viewModel.isValidPassword.value,
-                    trailingIcon = {
-                        if (!viewModel.isValidPassword.value) {
+            ){
+                Column(
+                    modifier = Modifier
+                        .padding(15.dp),
+                    horizontalAlignment = Alignment.Start
+                ){
+                    TextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text(text = "Email", style = MaterialTheme.typography.subtitle2) },
+                        singleLine = true,
+                        isError = !viewModel.isValidEmail.value,
+                        leadingIcon = {
                             Icon(
-                                imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = MaterialTheme.colors.error
+                                imageVector = Icons.Filled.Email,
+                                contentDescription = "Email Icon"
                             )
+                        },
+                        trailingIcon = {
+                            if (!viewModel.isValidEmail.value) {
+                                Icon(
+                                    imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = MaterialTheme.colors.error
+                                )
+                            }
                         }
-                    }
-                )
-                if (!viewModel.isValidPassword.value) {
-                    Text(
-                        text = "Password cannot be empty",
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(start = 16.dp)
                     )
+                    if (!viewModel.isValidEmail.value) {
+                        Text(
+                            text = "Invalid email address",
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                    TextField(
+                        value = password,
+                        onValueChange = {
+                            password = it
+                            viewModel.isValidPassword.value = true
+                        },
+                        label = { Text(text = "Password", style = MaterialTheme.typography.subtitle2) },
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        leadingIcon = {
+                            Icon(Icons.Filled.Lock, "Lock Icon")
+                        },
+                        isError = !viewModel.isValidPassword.value,
+                        trailingIcon = {
+                            if (!viewModel.isValidPassword.value) {
+                                Icon(
+                                    imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = MaterialTheme.colors.error
+                                )
+                            }
+                        }
+                    )
+                    if (!viewModel.isValidPassword.value) {
+                        Text(
+                            text = "Password cannot be empty",
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
@@ -154,10 +163,19 @@ fun LoginScreen(
                 if (viewModel.invalidCredentials.value) {
                     Text(
                         text = "Invalid credentials",
-                        color = MaterialTheme.colors.primaryVariant
+                        color = MaterialTheme.colors.primaryVariant,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.h4
                     )
                 }
-
+                if (viewModel.errorOccurred.value) {
+                    Text(
+                        text = "Network Error",
+                        color = MaterialTheme.colors.primaryVariant,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.h4
+                    )
+                }
                 Column(
                     verticalArrangement = Arrangement.Bottom,
                     modifier = Modifier

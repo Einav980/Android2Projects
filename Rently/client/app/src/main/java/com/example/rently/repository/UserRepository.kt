@@ -17,7 +17,8 @@ class UserRepository @Inject constructor(
         val response = try {
             api.loginUser(user = user)
         } catch (e: Exception){
-            return Resource.Error("Failed logging in")
+            Log.d("Response", e.message.toString())
+            return Resource.Error("Failed logging in", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
 
         return Resource.Success(response)

@@ -25,7 +25,7 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
     if (!user) {
-      res.status(404).json({
+      res.json({
         returnCode: 404,
         message: 'Username was not found!',
         type: 'Error',
@@ -33,7 +33,7 @@ const loginUser = async (req, res) => {
     }
     const doesPasswordMatch = bcrypt.compareSync(password, user.hashedPassword);
     if (!doesPasswordMatch) {
-      res.status(401).json({
+      res.json({
         returnCode: 401,
         message: 'Invalid credentials',
         type: 'Error',
