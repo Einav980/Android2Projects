@@ -23,7 +23,6 @@ class ApartmentsViewModel @Inject constructor(private val repository: ApartmentR
             when(response){
                 is Resource.Success -> {
                     apartments.value = response.data!!
-                    Log.d("Response", apartments.value.toString())
                 }
             }
 

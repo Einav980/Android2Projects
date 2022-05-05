@@ -1,8 +1,10 @@
 package com.example.rently.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,27 +15,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.model.Apartment
+import com.example.rently.navigation.Screen
 import com.example.rently.ui.theme.RentlyApartmentCardTheme
 import com.example.rently.ui.theme.RentlySecondaryVariantColor
 import com.example.rently.ui.theme.RentlySubtitleTextColor
 import com.example.rently.util.ApartmentStatus
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import timber.log.Timber
 import java.text.NumberFormat
 import java.util.*
 
 @Composable
-fun ApartmentCard(apartment: Apartment) {
+fun ApartmentCard(
+    navController: NavController,
+    apartment: Apartment,
+    myApartmentsList: Boolean = false,
+) {
     RentlyApartmentCardTheme {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(350.dp),
+                .height(350.dp)
+                .clickable { /* TODO: Click on apartment function */
+//                    onApartmentClick(apartment)
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        "apartment",
+                        apartment
+                    )
+                    navController.navigate(Screen.SingleApartment.route)
+                },
             elevation = 10.dp,
             shape = MaterialTheme.shapes.large
         ) {
@@ -116,7 +136,16 @@ fun ApartmentCard(apartment: Apartment) {
                             .weight(2f),
                     )
                     val format = NumberFormat.getCurrencyInstance()
-//                    val apartmentCardColor = if( apartment.status == ApartmentStatus.PENDING){Color.Gray} else {MaterialTheme.colors.primary}
+                    val apartmentCardColor =
+                        if (myApartmentsList) {
+//                            if (apartment.status != ApartmentStatus.AVAILABLE) {
+//                                Color.Gray
+//                            } else {
+//                                MaterialTheme.colors.primary
+//                            }
+                        } else {
+                            MaterialTheme.colors.primary
+                        }
                     format.maximumFractionDigits = 0
                     format.currency = Currency.getInstance("ILS")
                     Column(
@@ -179,7 +208,7 @@ fun ApartmentStatusBadge(apartmentStatus: ApartmentStatus) {
                 .padding(10.dp),
             color = apartmentStatus.backgroundColor,
             elevation = 5.dp
-        ){
+        ) {
             Text(
                 text = apartmentStatus.status,
                 color = apartmentStatus.color,
@@ -194,6 +223,7 @@ fun ApartmentStatusBadge(apartmentStatus: ApartmentStatus) {
 @Composable
 @Preview(showBackground = true)
 fun ApartmentCardPreview() {
+    val context = LocalContext.current
     var apartment = Apartment(
         "Tel-Aviv",
         price = 7800,
@@ -202,8 +232,7 @@ fun ApartmentCardPreview() {
         numberOfBaths = 1,
         numberOfBeds = 2,
         size = 54,
-        type = "Private",
         imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"
     )
-    ApartmentCard(apartment = apartment)
+    ApartmentCard(apartment = apartment, navController = NavController(context = context))
 }

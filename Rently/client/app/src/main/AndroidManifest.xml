@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.rently">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".RentlyApplication"
@@ -11,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android2Project"
         android:networkSecurityConfig="@xml/network_security_config">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <activity
             android:name="com.example.rently.MainActivity"
             android:exported="true"
@@ -22,6 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDsBXPAwlrMtCbw3VOsfv05PYVEudpVJfU" />
     </application>
 
 </manifest>

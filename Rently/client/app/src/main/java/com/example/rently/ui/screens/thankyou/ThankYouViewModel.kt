@@ -13,7 +13,7 @@ class ThankYouViewModel @Inject constructor(): ViewModel(){
     val moveToLogin = mutableStateOf(false)
     fun landed(){
         viewModelScope.launch {
-            delay(3000)
+            delay(1500)
             moveToLogin.value = true
         }
     }

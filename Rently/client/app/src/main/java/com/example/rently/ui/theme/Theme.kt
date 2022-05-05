@@ -33,7 +33,7 @@ fun RentlyTheme(
     content: @Composable() () -> Unit
 ) {
     val colors = if (darkTheme) {
-        DarkColorPalette
+        RentlyDarkColors
     } else {
         RentlyLightColors
     }

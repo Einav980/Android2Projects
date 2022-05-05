@@ -38,8 +38,14 @@ class UserRepository @Inject constructor(
         return api.listUsers()
     }
 
-    suspend fun getUser(id: String): User{
-        return api.getUser(id)
+    suspend fun getUser(id: String): Resource<User>{
+        val response = try{
+            api.getUser(id)
+        } catch (e: Exception){
+            Log.d("Response", e.message.toString())
+            return Resource.Error("User was not found!")
+        }
+        return Resource.Success(data = response)
     }
 
 }

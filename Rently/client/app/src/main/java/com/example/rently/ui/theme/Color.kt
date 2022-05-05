@@ -20,6 +20,13 @@ val RentlyLightColors = lightColors(
     secondaryVariant = RentlySecondaryVariantColor,
 )
 
+val RentlyDarkColors = lightColors(
+    primary = Color(0xFF001F57),
+    primaryVariant = RentlyPrimaryVariantColor,
+    secondary = RentlySecondaryColor,
+    secondaryVariant = RentlySecondaryVariantColor,
+)
+
 val RentlyApartmentCardLightColors = lightColors(
     primary = RentlyPrimaryColor,
     primaryVariant = RentlyPrimaryVariantColor,

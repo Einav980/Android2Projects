@@ -1,24 +1,28 @@
 package com.example.rently.model
 
+import android.os.Parcelable
 import com.example.rently.util.ApartmentStatus
-import kotlinx.serialization.SerialInfo
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
+import com.example.rently.util.ApartmentType
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Apartment(
     val city: String,
-    val numberOfRooms: Number,
-    val numberOfBaths: Number,
-    val lat: Number = 0,
-    val lng: Number = 0,
-    val numberOfBeds: Number,
+    val numberOfRooms: Int,
+    val numberOfBaths: Int,
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val numberOfBeds: Int,
     val address: String,
-    val size: Number,
-    val type: String,
+    val size: Int,
+    val type: ApartmentType = ApartmentType.Regular,
     val imageUrl: String,
-    val price: Number,
-//    val status: ApartmentStatus = ApartmentStatus.PENDING
-){
+    val price: Int,
+    val floor: Int = 1,
+    val apartmentNumber: Int = 2,
+    val status: ApartmentStatus = ApartmentStatus.PENDING,
+    val userId: String = "6269b873767012c7ccc890a8"
+) : Parcelable {
 //    override fun toString(): String {
 //        return "city: $city, price: $price"
 //    }
