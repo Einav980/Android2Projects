@@ -10,7 +10,7 @@ const listApartments = async (req, res) => {
   }
 };
 
-const getApartment = async (req, res) => {
+const getApartmentById = async (req, res) => {
   try {
     const { id } = req.params;
     const apartment = await Apartment.findById(id);
@@ -20,4 +20,18 @@ const getApartment = async (req, res) => {
   }
 };
 
-module.exports = { listApartments, getApartment };
+const getApartmentbyUserId = async (req, res) => {
+  try {
+    const { userid } = req.params;
+    const apartments = await Apartment.find({ userId: userid });
+    res.send(apartments);
+  } catch (error) {
+    res.status(400).json({ error: 'No apartments found' });
+  }
+};
+
+module.exports = {
+  listApartments,
+  getApartmentById,
+  getApartmentbyUserId,
+};
