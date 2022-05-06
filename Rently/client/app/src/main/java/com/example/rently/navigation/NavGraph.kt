@@ -31,12 +31,17 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.ManageApartmentType.route,
+        startDestination = Screen.Splash.route,
     ) {
         composable(
             route = Screen.Details.route
         ) {
             DetailsScreen(navController = navController)
+        }
+        composable(
+            route = Screen.MainPage.route
+        ) {
+            MainScreen()
         }
         composable(
             route = Screen.Login.route

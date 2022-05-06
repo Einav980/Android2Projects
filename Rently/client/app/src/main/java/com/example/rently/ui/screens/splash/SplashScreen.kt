@@ -38,7 +38,7 @@ fun SplashScreen(
         startAnimation = true
         viewModel.checkIfUserLoggedIn()
         delay(3000)
-        onSplashEnds(if (viewModel.isLoggedIn.value) Screen.Apartments.route else Screen.Login.route)
+        onSplashEnds(if (viewModel.isLoggedIn.value) Screen.MainPage.route else Screen.Login.route)
     }
     Splash(alpha = alphaAnim.value)
 }
