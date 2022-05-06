@@ -14,6 +14,7 @@ db.on('connected', () => {
   console.log('Error connecting to the database');
 });
 
+app.use('/api', jsonParser, routers.apartmentTypeRouter);
 app.use('/api', routers.apartmentRouter);
 app.use('/api', jsonParser, routers.userRouter);
 

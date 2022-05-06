@@ -15,4 +15,4 @@ const apartmentModel = mongoose.Schema({
   userId: { type: String, require: true },
 });
 
-module.exports = mongoose.model('apartments', apartmentModel, 'apartments');
+module.exports = mongoose.model('apartment', apartmentModel, 'apartments');
