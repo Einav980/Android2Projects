@@ -15,6 +15,7 @@ import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.login.LoginScreen
 import com.example.rently.ui.screens.map.MapScreen
 import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
+import com.example.rently.ui.screens.splash.SplashScreen
 import com.example.rently.ui.screens.thankyou.ThankYou
 import com.example.rently.util.Constants
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -30,7 +31,7 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Apartments.route,
+        startDestination = Screen.ManageApartmentType.route,
     ) {
         composable(
             route = Screen.Details.route
@@ -82,12 +83,15 @@ fun SetupNavGraph(
             }
         }
         composable(route = Screen.SingleApartment.route) {
-            LaunchedEffect(key1 = it) {
-                val apartment =
-                    navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")
-                Log.d("Rently", "Apartment: $apartment")
-            }
+//            LaunchedEffect(key1 = it) {
+//                val apartment =
+//                    navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")
+//                Log.d("Rently", "Apartment: $apartment")
+//            }
+            val apartment =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")!!
             SingleApartmentScreen(
+                apartment = apartment,
                 navController = navController
             )
         }
@@ -117,7 +121,15 @@ fun SetupNavGraph(
         composable(
             route = Screen.ManageApartmentType.route
         ) {
-            ManageApartmentTypeScreen()
+            ManageApartmentTypeScreen(onAddClicked = {})
+        }
+        composable(
+            route = Screen.Splash.route
+        ) {
+            SplashScreen(onSplashEnds = {
+                navController.popBackStack()
+                navController.navigate(it)
+            })
         }
     }
 }

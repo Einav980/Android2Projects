@@ -1,5 +1,6 @@
 package com.example.rently.ui.screens.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -34,9 +36,7 @@ fun LoginScreen(
             onLoginSuccessful()
         }
     }
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+
     var email by remember {
         mutableStateOf("")
     }
@@ -49,6 +49,7 @@ fun LoginScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -69,16 +70,25 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(PaddingValues(20.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 Column(
                     modifier = Modifier
                         .padding(15.dp),
                     horizontalAlignment = Alignment.Start
-                ){
+                ) {
                     TextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text(text = "Email", style = MaterialTheme.typography.subtitle2) },
+                        label = {
+                            Text(
+                                text = "Email",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text
+                        ),
                         singleLine = true,
                         isError = !viewModel.isValidEmail.value,
                         leadingIcon = {
@@ -112,9 +122,14 @@ fun LoginScreen(
                             password = it
                             viewModel.isValidPassword.value = true
                         },
-                        label = { Text(text = "Password", style = MaterialTheme.typography.subtitle2) },
+                        label = {
+                            Text(
+                                text = "Password",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        },
                         visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
                         leadingIcon = {
                             Icon(Icons.Filled.Lock, "Lock Icon")
                         },
@@ -149,7 +164,7 @@ fun LoginScreen(
                     contentPadding = PaddingValues(15.dp),
                     shape = MaterialTheme.shapes.large,
                 ) {
-                    if (viewModel.isLoading.value) {
+                    if (viewModel.isLoggingIn.value) {
                         CircularProgressIndicator(color = Color.White)
                     } else {
                         Text(
@@ -192,6 +207,7 @@ fun LoginScreen(
             }
         }
     }
+
 }
 
 //@Preview(showBackground = true)

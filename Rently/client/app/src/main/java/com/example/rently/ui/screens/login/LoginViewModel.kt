@@ -6,25 +6,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.User
-import com.example.rently.repository.DatastorePreferenceRepository
-import com.example.rently.repository.DatastorePreferenceRepository.Companion.LOGGED_IN
 import com.example.rently.repository.UserRepository
-import com.example.rently.repository.datastore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val repository: UserRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val repository: UserRepository,
+    @ApplicationContext context: Context
+) : ViewModel() {
 
-    private val INVALID_CREDENTIALS = 401
-    private val INVALID_USER = 404
-    private val REGISTER_SUCCESSFULL = 200
+    private val _invalidCredentialsErrorCode = 401
+    private val _invalidUserErrorCode = 404
+    private val _registeredSuccessful = 200
     val isLoggedIn = mutableStateOf(false)
-    val isLoading = mutableStateOf(false)
+    val isLoading = mutableStateOf(true)
+    val isLoggingIn = mutableStateOf(false)
     val invalidCredentials = mutableStateOf(false)
     val errorOccurred = mutableStateOf(false)
     val isValidEmail = mutableStateOf(true)
@@ -35,15 +35,15 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
         viewModelScope.launch {
             validateData(user = user)
             if (isValidEmail.value && isValidPassword.value) {
-                isLoading.value = true
+                isLoggingIn.value = true
                 val result = repository.loginUser(user)
                 when (result) {
                     is Resource.Success -> {
                         val returnCode = result.data?.returnCode
-                        if (returnCode == REGISTER_SUCCESSFULL) {
+                        if (returnCode == _registeredSuccessful) {
                             invalidCredentials.value = false
                             isLoggedIn.value = true
-                        } else if (returnCode == INVALID_CREDENTIALS || returnCode == INVALID_USER) {
+                        } else if (returnCode == _invalidCredentialsErrorCode || returnCode == _invalidUserErrorCode) {
                             invalidCredentials.value = true
                         }
                     }
@@ -52,7 +52,7 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
                         Timber.d("Error while registering")
                     }
                 }
-                isLoading.value = false
+                isLoggingIn.value = false
             }
         }
     }

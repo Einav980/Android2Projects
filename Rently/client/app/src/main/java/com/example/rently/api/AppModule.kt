@@ -1,16 +1,26 @@
 package com.example.rently.api
 
+import android.content.Context
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.UserRepository
 import com.example.rently.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.OkHttpClient
+
+
+
+
+
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -19,8 +29,9 @@ object AppModule {
     @Singleton
     @Provides
     fun provideAuthRepository(
-        api: UserApi
-    ) = UserRepository(api)
+        api: UserApi,
+        @ApplicationContext context: Context
+    ) = UserRepository(api, context)
 
     @Singleton
     @Provides
@@ -41,7 +52,14 @@ object AppModule {
     @Singleton
     @Provides
     fun provideApartmentApi(): ApartmentApi{
+        val clientBuilder = OkHttpClient.Builder()
+
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        clientBuilder.addInterceptor(loggingInterceptor)
+
         return Retrofit.Builder()
+            .client(clientBuilder.build())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(Constants.BASE_URL)
             .build()

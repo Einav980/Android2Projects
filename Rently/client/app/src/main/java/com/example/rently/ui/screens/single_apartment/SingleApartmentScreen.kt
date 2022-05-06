@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rently.model.Apartment
 import com.example.rently.model.User
@@ -32,16 +33,19 @@ import com.example.rently.util.Constants
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.coroutineScope
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
-fun SingleApartmentScreen(navController: NavController) {
+fun SingleApartmentScreen(
+    apartment: Apartment,
+    navController: NavController,
+    viewModel: SingleApartmentViewModel = hiltViewModel()
+) {
     val scrollState = rememberScrollState()
 
-    val apartment = navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")
-
     RentlyApartmentCardTheme {
-//        viewModel.getUserInfo(apartment.userId)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,7 +60,9 @@ fun SingleApartmentScreen(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     TextButton(
-                        onClick = { /*closeScreen()*/ },
+                        onClick = { navController.navigate(Screen.Apartments.route){
+                            popUpTo(Screen.Apartments.route)
+                        } },
                     ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
@@ -77,16 +83,14 @@ fun SingleApartmentScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                apartment?.address?.let {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(30.dp),
-                        text = it,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.h3
-                    )
-                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(30.dp),
+                    text = apartment.address,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h3
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -94,7 +98,7 @@ fun SingleApartmentScreen(navController: NavController) {
                         .clip(MaterialTheme.shapes.small),
                     contentAlignment = Alignment.Center
                 ) {
-                    apartment?.let { ApartmentImage(url = it?.imageUrl) }
+                    ApartmentImage(url = apartment.imageUrl)
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 Column(
@@ -103,12 +107,12 @@ fun SingleApartmentScreen(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "Floor: ${apartment?.floor}",
+                        text = "Floor: ${apartment.floor}",
                         style = MaterialTheme.typography.h6
                     )
 
                     Text(
-                        text = "Apartment Number: ${apartment?.apartmentNumber}",
+                        text = "Apartment Number: ${apartment.apartmentNumber}",
                         style = MaterialTheme.typography.h6
                     )
                 }
@@ -119,13 +123,24 @@ fun SingleApartmentScreen(navController: NavController) {
                         .height(200.dp)
                         .clip(MaterialTheme.shapes.small)
                 ) {
-                    apartment?.lat?.let { LatLng(it, apartment?.lng) }
+                    LatLng(
+                        apartment.lat,
+                        apartment.lng
+                    )
                         ?.let { Map(static = true, latLng = it) }
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 Button(
-                    onClick = { navController.navigate(Screen.Map.passLatLng(apartment!!.lat, apartment!!.lng))},
-                    modifier = Modifier.fillMaxWidth()
+                    onClick = {
+                        navController.navigate(
+                            Screen.Map.passLatLng(
+                                apartment.lat,
+                                apartment.lng
+                            )
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .clip(MaterialTheme.shapes.small)
                 ) {
                     Icon(
@@ -139,13 +154,15 @@ fun SingleApartmentScreen(navController: NavController) {
                         text = "See On Map",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.h5,
-                        modifier = Modifier.weight(9f)
+                        modifier = Modifier
+                            .weight(9f)
                             .padding(5.dp)
                     )
                 }
             }
         }
     }
+
 }
 
 //@Preview(showBackground = true)

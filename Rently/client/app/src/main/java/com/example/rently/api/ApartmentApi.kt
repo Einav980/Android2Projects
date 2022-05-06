@@ -1,19 +1,30 @@
 package com.example.rently.api
 
 import com.example.rently.model.Apartment
+import com.example.rently.model.ApartmentType
 import com.example.rently.model.User
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ApartmentApi {
 
-    // Apartments
-    @GET("/api/apartments")
+    // List all apartments
+    @GET("apartments")
     suspend fun listApartments(): ArrayList<Apartment>
 
-    @GET("/api/apartments/624ca60f5c4af535859c0729")
+    // Get specific apartment info
+    @GET("apartments/624ca60f5c4af535859c0729")
     suspend fun getApartment(): Apartment
-    // Users
 
+    // List all user apartments
+    @GET("apartments/user/{userid}")
+    suspend fun listUserApartments(@Path("userid") id: String): ArrayList<Apartment>
+
+    @GET("apartments/types")
+    suspend fun listApartmentTypes(): ArrayList<ApartmentType>
+
+    @POST("apartments/types")
+    suspend fun addApartmentType(@Body type: String): ApartmentType
+
+    @DELETE("apartments/types/{typeId}")
+    suspend fun deleteApartmentType(@Path("typeId") apartmentTypeId: String): ApartmentType
 }
