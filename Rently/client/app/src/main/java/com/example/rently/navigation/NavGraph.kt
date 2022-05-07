@@ -48,7 +48,7 @@ fun SetupNavGraph(
         ) {
             LoginScreen(
                 onLoginSuccessful = {
-                    navController.navigate(Screen.Apartments.route) {
+                    navController.navigate(Screen.MainPage.route) {
                         popUpTo(Screen.Login.route) {
                             inclusive = true
                         }
