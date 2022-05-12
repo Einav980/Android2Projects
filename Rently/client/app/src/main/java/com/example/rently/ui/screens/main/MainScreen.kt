@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,21 +30,19 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(onFloatingButtonClicked: () -> Unit) {
 
     val scaffoldState =
         rememberScaffoldState(rememberDrawerState(initialValue = DrawerValue.Closed))
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
-
     RentlyTheme {
         Scaffold(
             scaffoldState = scaffoldState,
             topBar = { TopBar(scope = scope, scaffoldState = scaffoldState) },
-            drawerContent = {
-                Drawer(scope = scope, scaffoldState = scaffoldState, navController = navController)
-            }
+            drawerContent = { Drawer(scope = scope, scaffoldState = scaffoldState, navController = navController) },
+            floatingActionButton = { FloatingButton(onFloatingButtonClicked) }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 TopNavGraph(navController = navController)
@@ -51,6 +50,16 @@ fun MainScreen() {
         }
     }
 }
+
+@Composable
+fun FloatingButton(onFloatingButtonClicked: () -> Unit) {
+    FloatingActionButton(
+        onClick = {onFloatingButtonClicked()}
+    ) {
+        Icon(Icons.Filled.Add,"")
+    }
+}
+
 
 @Composable
 fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
@@ -65,7 +74,7 @@ fun TopBar(scope: CoroutineScope, scaffoldState: ScaffoldState) {
             }) {
                 Icon(Icons.Filled.Menu, "")
             }
-        },
+        }
     )
 }
 
@@ -126,7 +135,11 @@ fun Drawer(scope: CoroutineScope, scaffoldState: ScaffoldState, navController: N
 }
 
 @Composable
-fun DrawerItem(item: TopBarScreen, selected: Boolean, onItemClick: (TopBarScreen) -> Unit) { // todo make the selected page with different color
+fun DrawerItem(
+    item: TopBarScreen,
+    selected: Boolean,
+    onItemClick: (TopBarScreen) -> Unit
+) { // todo make the selected page with different color
 
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier

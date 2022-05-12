@@ -41,7 +41,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.MainPage.route
         ) {
-            MainScreen()
+            MainScreen(onFloatingButtonClicked = { navController.navigate(Screen.Splash.route) })
         }
         composable(
             route = Screen.Login.route
@@ -87,7 +87,9 @@ fun SetupNavGraph(
                 // Do nothing
             }
         }
-        composable(route = Screen.SingleApartment.route) {
+        composable(
+            route = Screen.SingleApartment.route
+        ) {
 //            LaunchedEffect(key1 = it) {
 //                val apartment =
 //                    navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")
