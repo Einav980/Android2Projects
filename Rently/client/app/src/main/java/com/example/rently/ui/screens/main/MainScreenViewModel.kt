@@ -28,7 +28,7 @@ class MainScreenViewModel @Inject constructor(private val repository: UserReposi
             when (result) {
                 is Resource.Success -> {
                     if(result.data == true){
-                        Screen.Login.route
+                        Timber.i("logout success")
                     }
                 }
                 else -> {
