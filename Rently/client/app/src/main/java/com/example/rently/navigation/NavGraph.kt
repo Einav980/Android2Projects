@@ -41,7 +41,16 @@ fun SetupNavGraph(
         composable(
             route = Screen.MainPage.route
         ) {
-            MainScreen(onFloatingButtonClicked = { navController.navigate(Screen.Splash.route) })
+            MainScreen(onFloatingButtonClicked = {
+                navController.navigate(Screen.Splash.route)
+            },
+                onLogout = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.MainPage.route) {
+                            inclusive = true
+                        }
+                    }
+                })
         }
         composable(
             route = Screen.Login.route

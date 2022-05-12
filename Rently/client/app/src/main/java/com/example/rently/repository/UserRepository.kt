@@ -15,6 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.first
 import retrofit2.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -34,8 +35,20 @@ class UserRepository @Inject constructor(
             }
             return Resource.Success(response)
         } catch (e: Exception){
-            Log.d("Response", e.message.toString())
+            Timber.d("Response", e.message.toString())
             return Resource.Error("Failed logging in", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
+        }
+    }
+
+    suspend fun logoutUser(): Resource<Boolean> {
+        try {
+            val datastoreKey = booleanPreferencesKey("isLoggedIn")
+            context.datastore.edit { settings ->
+                settings[datastoreKey] = false
+            }
+            return Resource.Success(true)
+        } catch (e: java.lang.Exception){
+            return Resource.Error("Failed to change the login state of the user", false)
         }
     }
 
@@ -43,7 +56,7 @@ class UserRepository @Inject constructor(
         val response = try{
             api.registerUser(user = user)
         } catch (e: Exception){
-            Log.d("Response", e.message.toString())
+            Timber.d("Response", e.message.toString())
             return Resource.Error("Failed signing up", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)
@@ -68,7 +81,7 @@ class UserRepository @Inject constructor(
         val response = try{
             api.getUser(id)
         } catch (e: Exception){
-            Log.d("Response", e.message.toString())
+            Timber.d("Response", e.message.toString())
             return Resource.Error("User was not found!")
         }
         return Resource.Success(data = response)

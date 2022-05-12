@@ -17,12 +17,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.rently.R
 import com.example.rently.navigation.TopBarScreen
 import com.example.rently.navigation.TopNavGraph
+import com.example.rently.ui.screens.main.MainScreenViewModel
 import com.example.rently.ui.theme.RentlyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -30,7 +32,9 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen(onFloatingButtonClicked: () -> Unit) {
+fun MainScreen(onFloatingButtonClicked: () -> Unit,
+               onLogout: () -> Unit,
+               viewModel: MainScreenViewModel = hiltViewModel()) {
 
     val scaffoldState =
         rememberScaffoldState(rememberDrawerState(initialValue = DrawerValue.Closed))
@@ -45,7 +49,7 @@ fun MainScreen(onFloatingButtonClicked: () -> Unit) {
             floatingActionButton = { FloatingButton(onFloatingButtonClicked) }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                TopNavGraph(navController = navController)
+                TopNavGraph(navController = navController, viewModel = viewModel, onLogout = onLogout)
             }
         }
     }
