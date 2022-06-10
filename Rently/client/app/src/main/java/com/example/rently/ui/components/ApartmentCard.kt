@@ -40,6 +40,7 @@ fun ApartmentCard(
     navController: NavController,
     apartment: Apartment,
     myApartmentsList: Boolean = false,
+    onApartmentClick: (apartment: Apartment) -> Unit
 ) {
     RentlyApartmentCardTheme {
         Card(
@@ -47,12 +48,7 @@ fun ApartmentCard(
                 .fillMaxWidth()
                 .height(350.dp)
                 .clickable { /* TODO: Click on apartment function */
-//                    onApartmentClick(apartment)
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        "apartment",
-                        apartment
-                    )
-                    navController.navigate(Screen.SingleApartment.route)
+                    onApartmentClick(apartment)
                 },
             elevation = 10.dp,
             shape = MaterialTheme.shapes.large
@@ -138,11 +134,11 @@ fun ApartmentCard(
                     val format = NumberFormat.getCurrencyInstance()
                     val apartmentCardColor =
                         if (myApartmentsList) {
-//                            if (apartment.status != ApartmentStatus.AVAILABLE) {
-//                                Color.Gray
-//                            } else {
-//                                MaterialTheme.colors.primary
-//                            }
+                            if (apartment.status != ApartmentStatus.AVAILABLE) {
+                                Color.Gray
+                            } else {
+                                MaterialTheme.colors.primary
+                            }
                         } else {
                             MaterialTheme.colors.primary
                         }
@@ -152,7 +148,7 @@ fun ApartmentCard(
                         modifier = Modifier
                             .weight(2f)
                             .fillMaxWidth()
-//                            .background(apartmentCardColor)
+                            .background(apartmentCardColor)
                             .padding(10.dp)
                             .clip(MaterialTheme.shapes.medium),
                         verticalArrangement = Arrangement.Center
@@ -234,5 +230,5 @@ fun ApartmentCardPreview() {
         size = 54,
         imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"
     )
-    ApartmentCard(apartment = apartment, navController = NavController(context = context))
+    ApartmentCard(apartment = apartment, navController = NavController(context = context), onApartmentClick = {})
 }

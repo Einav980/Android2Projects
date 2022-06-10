@@ -60,7 +60,7 @@ val RentlyTypography = Typography(
         color = RentlySubtitleTextColor,
     ),
     subtitle2 = TextStyle(
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         fontWeight = FontWeight.Normal,
     )
 )

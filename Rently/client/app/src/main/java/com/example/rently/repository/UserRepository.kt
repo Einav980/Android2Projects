@@ -27,28 +27,28 @@ class UserRepository @Inject constructor(
 ) {
 
     suspend fun loginUser(user: User): Resource<AuthResponse>{
-        try {
+        return try {
             val response = api.loginUser(user = user)
             val datastoreKey = booleanPreferencesKey("isLoggedIn")
             context.datastore.edit { settings ->
                 settings[datastoreKey] = true
             }
-            return Resource.Success(response)
+            Resource.Success(response)
         } catch (e: Exception){
             Timber.d("Response", e.message.toString())
-            return Resource.Error("Failed logging in", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
+            Resource.Error("Failed logging in", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
     }
 
     suspend fun logoutUser(): Resource<Boolean> {
-        try {
+        return try {
             val datastoreKey = booleanPreferencesKey("isLoggedIn")
             context.datastore.edit { settings ->
                 settings[datastoreKey] = false
             }
-            return Resource.Success(true)
+            Resource.Success(true)
         } catch (e: java.lang.Exception){
-            return Resource.Error("Failed to change the login state of the user", false)
+            Resource.Error("Failed to change the login state of the user", false)
         }
     }
 

@@ -12,7 +12,7 @@ const listApartmentTypes = async (req, res) => {
 };
 
 const addApartmentType = async (req, res) => {
-  var { type } = req.body;
+  var { type } = req.params;
   type = toTitleCase(type);
   try {
     const apartmentType = await ApartmentType.findOne({ type: type });

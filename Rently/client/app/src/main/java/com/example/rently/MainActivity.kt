@@ -40,17 +40,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    private suspend fun save(key: String, value: Boolean) {
-        val datastoreKey = booleanPreferencesKey("isLoggedIn")
-        datastore.edit { settings ->
-            settings[datastoreKey] = value
-        }
-    }
-
-    private suspend fun read(key: String): Boolean? {
-        val datastoreKey = booleanPreferencesKey(key)
-        val preferences = datastore.data.first()
-        return preferences[datastoreKey]
-    }
 }

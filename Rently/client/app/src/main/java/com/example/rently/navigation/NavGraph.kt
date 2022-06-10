@@ -5,15 +5,18 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.ui.screens.*
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.login.LoginScreen
 import com.example.rently.ui.screens.map.MapScreen
+import com.example.rently.ui.screens.single_apartment.NewSingleApartmentScreen
 import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.example.rently.ui.screens.splash.SplashScreen
 import com.example.rently.ui.screens.thankyou.ThankYou
@@ -31,7 +34,7 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.NewSingleApartment.route,
     ) {
         composable(
             route = Screen.Details.route
@@ -96,44 +99,11 @@ fun SetupNavGraph(
                 // Do nothing
             }
         }
-        composable(
-            route = Screen.SingleApartment.route
-        ) {
-//            LaunchedEffect(key1 = it) {
-//                val apartment =
-//                    navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")
-//                Log.d("Rently", "Apartment: $apartment")
-//            }
-            val apartment =
-                navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")!!
-            SingleApartmentScreen(
-                apartment = apartment,
-                navController = navController
-            )
-        }
 
-        composable(
-            route = Screen.Apartments.route
-        ) {
-            ApartmentsScreen(navController = navController)
+        composable(route = Screen.NewSingleApartment.route){
+            val apartment = Constants.apartment
+            NewSingleApartmentScreen(apartment = apartment)
         }
-
-        composable(
-            route = Screen.Map.route,
-            arguments = listOf(
-                navArgument("lat") {
-                    type = NavType.FloatType
-                },
-                navArgument("lng") {
-                    type = NavType.FloatType
-                },
-            )
-        ) {
-            val lat = it.arguments?.getFloat("lat")!!.toDouble()
-            val lng = it.arguments?.getFloat("lng")!!.toDouble()
-            MapScreen(LatLng(lat, lng))
-        }
-
         composable(
             route = Screen.ManageApartmentType.route
         ) {

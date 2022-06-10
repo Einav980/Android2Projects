@@ -10,8 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.model.User
 import com.example.rently.navigation.Screen
@@ -38,128 +38,142 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
 fun SingleApartmentScreen(
-    apartment: Apartment,
     navController: NavController,
-    viewModel: SingleApartmentViewModel = hiltViewModel()
+    viewModel: SingleApartmentViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel
 ) {
+    var apartment by remember { mutableStateOf<Apartment?>(null)}
     val scrollState = rememberScrollState()
+    val sharedApartment = sharedViewModel.apartment
+    LaunchedEffect(key1 = sharedApartment){
+        if(sharedApartment != null){
+            apartment = sharedApartment
+        }
+        else{
+            apartment = Constants.apartment
+        }
+    }
 
     RentlyApartmentCardTheme {
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-        ) {
+        if(apartment != null)
+        {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .padding(end = 20.dp, start = 20.dp, bottom = 20.dp)
             ) {
-                Row(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    TextButton(
-                        onClick = { navController.navigate(Screen.Apartments.route){
-                            popUpTo(Screen.Apartments.route)
-                        } },
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        TextButton(
+                            onClick = { navController.navigate(Screen.Apartments.route){
+                                popUpTo(Screen.Apartments.route)
+                            } },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text(
+                                text = "Back",
+                                color = MaterialTheme.colors.primary,
+                            )
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(30.dp),
+                        text = apartment!!.address,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.h3
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .clip(MaterialTheme.shapes.small),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ApartmentImage(url = apartment!!.imageUrl)
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Column(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Floor: ${apartment!!.floor}",
+                            style = MaterialTheme.typography.h6
+                        )
+
+                        Text(
+                            text = "Apartment Number: ${apartment!!.apartmentNumber}",
+                            style = MaterialTheme.typography.h6
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(MaterialTheme.shapes.small)
+                    ) {
+                        LatLng(
+                            apartment!!.lat,
+                            apartment!!.lng
+                        )
+                            ?.let { Map(static = true, latLng = it) }
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Button(
+                        onClick = {
+                            navController.navigate(
+                                Screen.Map.passLatLng(
+                                    apartment!!.lat,
+                                    apartment!!.lng
+                                )
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(MaterialTheme.shapes.small)
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            modifier = Modifier.padding(end = 8.dp)
+                            imageVector = Icons.Filled.LocationOn,
+                            contentDescription = "Location",
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .weight(1f)
                         )
                         Text(
-                            text = "Back",
-                            color = MaterialTheme.colors.primary,
+                            text = "See On Map",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier
+                                .weight(9f)
+                                .padding(5.dp)
                         )
                     }
                 }
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(30.dp),
-                    text = apartment.address,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.h3
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .clip(MaterialTheme.shapes.small),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ApartmentImage(url = apartment.imageUrl)
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-                Column(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Floor: ${apartment.floor}",
-                        style = MaterialTheme.typography.h6
-                    )
-
-                    Text(
-                        text = "Apartment Number: ${apartment.apartmentNumber}",
-                        style = MaterialTheme.typography.h6
-                    )
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(MaterialTheme.shapes.small)
-                ) {
-                    LatLng(
-                        apartment.lat,
-                        apartment.lng
-                    )
-                        ?.let { Map(static = true, latLng = it) }
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Button(
-                    onClick = {
-                        navController.navigate(
-                            Screen.Map.passLatLng(
-                                apartment.lat,
-                                apartment.lng
-                            )
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.LocationOn,
-                        contentDescription = "Location",
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .weight(1f)
-                    )
-                    Text(
-                        text = "See On Map",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier
-                            .weight(9f)
-                            .padding(5.dp)
-                    )
-                }
-            }
+        }
+        else{
+            CircularProgressIndicator()
         }
     }
 

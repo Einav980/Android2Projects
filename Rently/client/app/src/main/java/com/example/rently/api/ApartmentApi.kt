@@ -22,8 +22,8 @@ interface ApartmentApi {
     @GET("apartments/types")
     suspend fun listApartmentTypes(): ArrayList<ApartmentType>
 
-    @POST("apartments/types")
-    suspend fun addApartmentType(@Body type: String): ApartmentType
+    @POST("apartments/types/{typeName}")
+    suspend fun addApartmentType(@Path("typeName") type: String): ApartmentType
 
     @DELETE("apartments/types/{typeId}")
     suspend fun deleteApartmentType(@Path("typeId") apartmentTypeId: String): ApartmentType

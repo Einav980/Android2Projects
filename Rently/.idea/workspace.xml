@@ -15,83 +15,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="211f9efb-71c5-46fa-a19d-3878ef80fa14" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/proguard-rules.pro" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/androidTest/java/com/example/rently/ExampleInstrumentedTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/MainActivity.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/MainViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/MainViewModelFactory.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/RentlyApplication.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/Resource.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/api/ApartmentApiModule.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/api/AppModule.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/api/MainApi.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/api/UserApi.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/model/Apartment.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/model/AuthResponse.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/model/User.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/navigation/NavGraph.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/navigation/Screen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/repository/DatastorePreferenceRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/repository/Repository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/repository/UserRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/components/ApartmentCard.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/DetailsScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/home/HomeScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/home/HomeViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/login/LoginScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/login/LoginViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/register/SignUpScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/screens/register/SignUpViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/theme/Color.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/theme/Shape.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/theme/Theme.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/ui/theme/Type.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/util/Constants.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/rently/util/PhoneMaskTransformation.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/font/lobster_regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/font/pacifico_regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-night/themes.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/themes.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/example/rently/ExampleUnitTest.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/SharedViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/api/ApartmentApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/api/ApartmentApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/navigation/NavGraph.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/navigation/NavGraph.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/navigation/TopBarScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/navigation/TopBarScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/navigation/TopNavGraph.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/navigation/TopNavGraph.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/components/ApartmentCard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/components/ApartmentCard.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/admin_screens/manage_types/ManageApartmentTypeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/admin_screens/manage_types/ManageApartmentTypeScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/admin_screens/manage_types/ManageApartmentTypeViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/admin_screens/manage_types/ManageApartmentTypeViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/apartments/ApartmentsScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/apartments/ApartmentsScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/main/MainScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/main/MainScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/single_apartment/SingleApartmentScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/single_apartment/SingleApartmentScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/splash/SplashScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/screens/splash/SplashScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/theme/Color.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/theme/Type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/client/app/src/main/java/com/example/rently/ui/theme/Type.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/controllers/apartmentType.controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/controllers/apartmentType.controller.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/router/apartmentType.router.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/router/apartmentType.router.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\tomse\.android\avd\Pixel_5_API_30_1.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\tomse\.android\avd\Pixel_5_API_31.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -132,6 +82,8 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="cidr.known.project.marker" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/client" />
     <property name="settings.editor.selected.configurable" value="editing.templates" />
   </component>
@@ -170,8 +122,7 @@
       <option name="MODE" value="default_activity" />
       <option name="CLEAR_LOGCAT" value="false" />
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
+      <option name="INSPECTION_WITHOUT_ACTIVITY_RESTART" value="false" />
       <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
       <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
       <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
@@ -210,9 +161,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
       <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
+      <method v="2" />
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

@@ -33,4 +33,10 @@ sealed class TopBarScreen(
         title = "Logout",
         icon = Icons.Default.ExitToApp
     )
+
+    object ManageApartmentTypes: TopBarScreen(
+        route = "manage_apartment_type_screen",
+        title = "Manage Apartment Type",
+        icon = Icons.Default.Settings
+    )
 }

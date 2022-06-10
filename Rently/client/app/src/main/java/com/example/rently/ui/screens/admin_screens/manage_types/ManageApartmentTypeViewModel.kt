@@ -8,6 +8,7 @@ import com.example.rently.Resource
 import com.example.rently.model.ApartmentType
 import com.example.rently.repository.ApartmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,9 +20,10 @@ class ManageApartmentTypeViewModel @Inject constructor(
     val apartmentTypes = mutableStateOf(ArrayList<ApartmentType>())
     val errorHasOccured = mutableStateOf(false)
     val isLoading = mutableStateOf(true)
+
     fun listApartmentTypes(){
+        isLoading.value = true
         viewModelScope.launch {
-            isLoading.value = true
             val response = repository.listApartmentTypes()
             when(response) {
                 is Resource.Success -> {
@@ -45,6 +47,20 @@ class ManageApartmentTypeViewModel @Inject constructor(
                 }
                 else -> {
                     Log.d("Rently", "Error while deleting")
+                }
+            }
+        }
+    }
+
+    fun addApartmentType(apartmentType: String){
+        viewModelScope.launch {
+            val response = repository.addApartmentType(apartmentType)
+            when(response){
+                is Resource.Success -> {
+                    listApartmentTypes()
+                }
+                else -> {
+                    Log.d("Rently", "Error while adding")
                 }
             }
         }

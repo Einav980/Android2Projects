@@ -37,10 +37,11 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) {
         startAnimation = true
         viewModel.checkIfUserLoggedIn()
-        delay(3000)
+        delay(1000)
         onSplashEnds(if (viewModel.isLoggedIn.value) Screen.MainPage.route else Screen.Login.route)
     }
     Splash(alpha = alphaAnim.value)
+
 }
 
 @Composable

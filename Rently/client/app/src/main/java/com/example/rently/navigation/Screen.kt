@@ -21,4 +21,5 @@ sealed class Screen(val route: String){
             return "map_screen/$lat/$lng"
         }
     }
+    object NewSingleApartment: Screen(route = "new_single_apartment")
 }
