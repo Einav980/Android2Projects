@@ -20,7 +20,7 @@ import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.google.android.gms.maps.model.LatLng
 
 @Composable
-fun TopNavGraph(
+fun BottomNavGraph(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
@@ -29,37 +29,30 @@ fun TopNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = TopBarScreen.Apartments.route
+        startDestination = BottomBarScreen.Apartments.route
     ) {
         composable(
-            route = TopBarScreen.Apartments.route,
+            route = BottomBarScreen.Apartments.route,
         ) {
             ApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel)
         }
         composable(
-            route = TopBarScreen.Profile.route,
+            route = BottomBarScreen.Profile.route,
         ) {
             ProfileScreen()
         }
         composable(
-            route = TopBarScreen.Settings.route,
+            route = BottomBarScreen.Favorites.route,
         ) {
 //            SettingsScreen()
         }
         composable(
-            route = TopBarScreen.Logout.route,
+            route = BottomBarScreen.ManageApartments.route,
         ) {
 //            viewModel.logoutUser()
 //            onLogout()
         }
         composable(route = Screen.SingleApartment.route) {
-//            LaunchedEffect(key1 = it) {
-//                val apartment =
-//                    navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")
-//                Log.d("Rently", "Apartment: $apartment")
-//            }
-//            val apartment =
-//                navController.previousBackStackEntry?.savedStateHandle?.get<Apartment>("apartment")!!
             SingleApartmentScreen(
                 navController = navController,
                 sharedViewModel = sharedViewModel
@@ -80,12 +73,6 @@ fun TopNavGraph(
             val lat = it.arguments?.getFloat("lat")!!.toDouble()
             val lng = it.arguments?.getFloat("lng")!!.toDouble()
             MapScreen(LatLng(lat, lng))
-        }
-
-        composable(
-            route = TopBarScreen.ManageApartmentTypes.route,
-        ) {
-            ManageApartmentTypeScreen(onAddClicked = {})
         }
     }
 }

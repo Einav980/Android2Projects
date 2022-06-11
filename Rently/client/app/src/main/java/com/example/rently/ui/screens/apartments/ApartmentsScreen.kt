@@ -1,12 +1,20 @@
 package com.example.rently.ui.screens.apartments
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -16,11 +24,14 @@ import androidx.navigation.NavHostController
 import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.model.User
+import com.example.rently.navigation.BottomNavGraph
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
+import com.example.rently.ui.theme.RentlyDrawerItemBackground
 import com.example.rently.util.ApartmentStatus
 import com.squareup.moshi.Moshi
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ApartmentsScreen(
     viewModel: ApartmentsViewModel = hiltViewModel(),
@@ -35,18 +46,38 @@ fun ApartmentsScreen(
 //    )
 
     viewModel.listApartments()
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+    Column(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            floatingActionButton = {
+                FloatingButton()
+            },
+            content = {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(items = viewModel.apartments.value) { apartment ->
+                        ApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
+                            sharedViewModel.setApartment(it)
+                            navController.navigate(Screen.SingleApartment.route)
+                        })
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun FloatingButton() {
+    FloatingActionButton(
+        modifier = Modifier.wrapContentSize(),
+        backgroundColor = RentlyDrawerItemBackground,
+        onClick = { }
     ) {
-        items(items = viewModel.apartments.value) { apartment ->
-            ApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
-                sharedViewModel.setApartment(it)
-                navController.navigate(Screen.SingleApartment.route)
-            })
-        }
+        Icon(Icons.Filled.Place, "", modifier = Modifier.size(30.dp))
     }
 }
 
