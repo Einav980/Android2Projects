@@ -18,11 +18,11 @@ val RentlyBackgroundColor = Color(0xFFFFD8E4)
 val RentlyStarColor = Color(0xFFFFC107)
 val RentlyGrayColor = Color.Gray
 val RentlyLightColors = lightColors(
+//    background = RentlyBackgroundColor,
     primary = RentlyPrimaryColor,
     primaryVariant = RentlyPrimaryVariantColor,
     secondary = RentlySecondaryColor,
     secondaryVariant = RentlySecondaryVariantColor,
-    background = RentlyBackgroundColor
 )
 
 val RentlyDarkColors = lightColors(
@@ -33,6 +33,7 @@ val RentlyDarkColors = lightColors(
 )
 
 val RentlyApartmentCardLightColors = lightColors(
+    background = RentlyDrawerItemBackground,
     primary = RentlyPrimaryColor,
     primaryVariant = RentlyPrimaryVariantColor,
     secondary = RentlySecondaryColor,

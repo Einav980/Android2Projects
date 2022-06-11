@@ -12,8 +12,8 @@ const listUsers = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
+    const { email } = req.params;
+    const user = await User.findOne({ email: email });
     res.send(user);
   } catch (error) {
     res.status(400).json({ error: 'User not found' });
@@ -56,14 +56,17 @@ const loginUser = async (req, res) => {
 
 const signUpUser = async (req, res) => {
   try {
-    const { email, password, phone } = req.body;
+    const { email, password, phone, firstname, lastname } = req.body;
     const user = await User.findOne({ email: email });
     if (!user) {
       const hashedPassword = bcrypt.hashSync(password, await bcrypt.genSalt());
       const newUser = await User.create({
         email: email,
+        firstname: firstname,
+        lastname: lastname,
         hashedPassword: hashedPassword,
         phone: phone,
+        type: "Normal"
       });
 
       newUser.save();
