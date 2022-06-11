@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rently.ui.theme.RentlyTheme
+import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.ui.theme.Varela
 
 @Composable
@@ -63,7 +64,7 @@ fun SquareChip(
 ) {
     var textSize by remember { mutableStateOf(14.sp)}
 
-    Box(modifier = Modifier.clip(RoundedCornerShape(8.dp))) {
+    Box(modifier = Modifier.clip(RoundedSquareShape.large)) {
         Column(
             modifier = Modifier
                 .size(size)
