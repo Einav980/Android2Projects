@@ -21,7 +21,7 @@ interface UserApi{
     @GET("/api/users")
     suspend fun listUsers(): ArrayList<User>
 
-    @GET("/api/users/{id}")
-    suspend fun getUser(@Path("id") id: String): User
+    @GET("/api/users/{email}")
+    suspend fun getUser(@Path("email") email: String): User
 
 }

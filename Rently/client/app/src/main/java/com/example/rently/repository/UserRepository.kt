@@ -3,9 +3,7 @@ package com.example.rently.repository
 import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.rently.Resource
 import com.example.rently.api.UserApi
@@ -13,7 +11,9 @@ import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,13 +25,15 @@ class UserRepository @Inject constructor(
     private val api: UserApi,
     private val context: Context
 ) {
+    private val USER_EMAIL= stringPreferencesKey("user_email")
+    private val DATASTORE_KEY = booleanPreferencesKey("isLoggedIn")
 
     suspend fun loginUser(user: User): Resource<AuthResponse>{
         return try {
             val response = api.loginUser(user = user)
-            val datastoreKey = booleanPreferencesKey("isLoggedIn")
             context.datastore.edit { settings ->
-                settings[datastoreKey] = true
+                settings[DATASTORE_KEY] = true
+                settings[USER_EMAIL] = user.email
             }
             Resource.Success(response)
         } catch (e: Exception){
@@ -42,9 +44,9 @@ class UserRepository @Inject constructor(
 
     suspend fun logoutUser(): Resource<Boolean> {
         return try {
-            val datastoreKey = booleanPreferencesKey("isLoggedIn")
             context.datastore.edit { settings ->
-                settings[datastoreKey] = false
+                settings[DATASTORE_KEY] = false
+                settings[USER_EMAIL] = ""
             }
             Resource.Success(true)
         } catch (e: java.lang.Exception){
@@ -68,18 +70,17 @@ class UserRepository @Inject constructor(
 
     suspend fun checkIfUserIsLoggedIn(): Resource<Boolean?>{
         try{
-            val datastoreKey = booleanPreferencesKey("isLoggedIn")
             val preferences = context.datastore.data.first()
-            return Resource.Success(preferences[datastoreKey])
+            return Resource.Success(preferences[DATASTORE_KEY])
         }
         catch (e: java.lang.Exception){
             return Resource.Error("Failed retrieving user state", false)
         }
     }
 
-    suspend fun getUser(id: String): Resource<User>{
+    suspend fun getUser(email: String): Resource<User>{
         val response = try{
-            api.getUser(id)
+            api.getUser(email)
         } catch (e: Exception){
             Timber.d("Response", e.message.toString())
             return Resource.Error("User was not found!")
@@ -87,5 +88,9 @@ class UserRepository @Inject constructor(
         return Resource.Success(data = response)
     }
 
+
+    fun getUserEmail(): Flow<String> = context.datastore.data
+        .map { preferences -> preferences[USER_EMAIL] ?: ""
+        }
 }
 
