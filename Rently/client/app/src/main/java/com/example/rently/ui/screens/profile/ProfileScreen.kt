@@ -13,7 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +36,7 @@ import okhttp3.internal.wait
 @Composable
 fun ProfileScreen() {
     val scrollState = rememberScrollState()
+    val editableText = false
 
     RentlyTheme() {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -83,110 +84,41 @@ fun ProfileScreen() {
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Scaffold(
-                    floatingActionButton = { FloatingButton() },
-                    content = {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .verticalScroll(scrollState),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth()
-                                    .height(130.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(40.dp),
-                                ) {
-                                    Text(
-                                        text = "UserName: ",
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.body2,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
-                                    Text(
-                                        text = "Einav980",
-                                        style = MaterialTheme.typography.body2,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(40.dp),
-                                ) {
-                                    Text(
-                                        text = "Email: ",
-                                        style = MaterialTheme.typography.body2,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
-                                    Text(
-                                        text = "Einav980@gmail.com",
-                                        style = MaterialTheme.typography.body2,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(40.dp),
-                                ) {
-                                    Text(
-                                        text = "Phone: ",
-                                        style = MaterialTheme.typography.body2,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
-                                    Text(
-                                        text = "0542611235",
-                                        style = MaterialTheme.typography.body2,
-                                        modifier = Modifier.padding(8.dp)
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(15.dp))
-                            Button(
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier
-                                    .height(65.dp)
-                                    .padding(8.dp)
-                            ) {
-                                Text(
-                                    "Logout",
-                                    style = MaterialTheme.typography.body2,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                                Icon(
-                                    imageVector = Icons.Filled.ExitToApp,
-                                    contentDescription = "Logout",
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
-                        }
-                    }
-                )
+                Column(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .weight(5f)
+                ) {
+                    TextInfoRow("UserName", "Einav980", editableText)
+                    TextInfoRow("Email", "Einav980@gmail.com", editableText)
+                    TextInfoRow("Phone", "0542611235", editableText)
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    shape = RoundedSquareShape.large
+                ) {
+                    Text(
+                        "Logout",
+                        style = MaterialTheme.typography.body2,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.ExitToApp,
+                        contentDescription = "Logout",
+                        tint = Color.White,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
             }
         }
-
-    }
-}
-
-@Composable
-fun FloatingButton() {
-    FloatingActionButton(
-        modifier = Modifier.wrapContentSize(),
-        backgroundColor = RentlyDrawerItemBackground,
-        onClick = { }
-    ) {
-        Icon(Icons.Filled.Build, "")
     }
 }
 
@@ -234,3 +166,24 @@ fun ChipGroup(
         }
     }
 }
+
+@Composable
+fun TextInfoRow(lable: String, text: String, editable: Boolean) {
+    var text by remember { mutableStateOf(text) }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(65.dp)
+            .padding(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TextField(
+            enabled = editable,
+            value = text,
+            onValueChange = { text = it },
+            label = { Text(lable) }
+        )
+    }
+}
+

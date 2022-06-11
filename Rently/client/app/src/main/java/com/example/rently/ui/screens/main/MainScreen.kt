@@ -3,6 +3,7 @@ package com.example.rently.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -83,6 +84,7 @@ fun BottomBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+            .border(0.5.dp, Color.Black, shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
     ) {
         screens.forEach { screen ->
             AddItem(
