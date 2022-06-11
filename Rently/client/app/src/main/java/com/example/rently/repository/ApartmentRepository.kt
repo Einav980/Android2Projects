@@ -1,6 +1,5 @@
 package com.example.rently.repository
 
-import android.util.Log
 import com.example.rently.Resource
 import com.example.rently.api.ApartmentApi
 import com.example.rently.model.Apartment

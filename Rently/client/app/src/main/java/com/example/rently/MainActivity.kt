@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
 
     lateinit var navController: NavHostController
 
-
     @SuppressLint("CoroutineCreationDuringComposition")
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {

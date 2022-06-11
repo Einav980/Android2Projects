@@ -211,6 +211,7 @@ fun NewSingleApartmentScreen(apartment: Apartment) {
                 }
             }
         }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
