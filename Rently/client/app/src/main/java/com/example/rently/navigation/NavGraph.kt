@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.ui.screens.*
+import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.login.LoginScreen
@@ -34,7 +35,7 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.NewSingleApartment.route,
     ) {
         composable(
             route = Screen.Details.route
@@ -116,6 +117,11 @@ fun SetupNavGraph(
                 navController.popBackStack()
                 navController.navigate(it)
             })
+        }
+        composable(
+            route = Screen.AddApartment.route
+        ){
+            AddApartmentScreen()
         }
     }
 }

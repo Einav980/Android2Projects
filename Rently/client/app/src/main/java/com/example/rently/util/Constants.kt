@@ -20,4 +20,5 @@ object Constants {
         imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"
     )
     val DefaultLocation = LatLng(31.4117257,35.0818155)
+    const val GOOGLE_API_KEY = "AIzaSyD1yMYulFclTaaoWxf4rOifU-iPWqbDoS4"
 }

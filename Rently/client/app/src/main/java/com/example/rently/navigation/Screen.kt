@@ -22,4 +22,6 @@ sealed class Screen(val route: String){
         }
     }
     object NewSingleApartment: Screen(route = "new_single_apartment")
+    object AddApartment: Screen(route = "add_apartment_screen")
+
 }
