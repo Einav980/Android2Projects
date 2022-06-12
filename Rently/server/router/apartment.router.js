@@ -8,5 +8,6 @@ router.get(
   apartmentController.getApartmentbyUserId
 );
 router.get('/apartments/:id', apartmentController.getApartmentById);
+router.post('/apartments/add', apartmentController.addApartment);
 
 module.exports = router;

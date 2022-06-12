@@ -2,6 +2,7 @@ package com.example.rently.api
 
 import com.example.rently.model.Apartment
 import com.example.rently.model.ApartmentType
+import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
 import retrofit2.http.*
 
@@ -27,4 +28,9 @@ interface ApartmentApi {
 
     @DELETE("apartments/types/{typeId}")
     suspend fun deleteApartmentType(@Path("typeId") apartmentTypeId: String): ApartmentType
+
+    @POST("apartments/add")
+    suspend fun addApartment(
+        @Body apartment: Apartment
+    ): AuthResponse
 }

@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.Apartment
+import com.example.rently.model.User
 import com.example.rently.repository.ApartmentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +29,18 @@ class ApartmentsViewModel @Inject constructor(private val repository: ApartmentR
             }
 
             isLoading.value = false
+        }
+    }
+
+
+    fun addApartment(apartment: Apartment) {
+        viewModelScope.launch {
+            val response = repository.addApartment(apartment = apartment)
+            when(response){
+                is Resource.Success -> {
+                    Timber.d("created successfully")
+                }
+            }
         }
     }
 

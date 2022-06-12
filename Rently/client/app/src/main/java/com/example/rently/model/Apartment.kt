@@ -21,7 +21,7 @@ data class Apartment(
     val floor: Int = 1,
     val apartmentNumber: Int = 2,
     val status: ApartmentStatus = ApartmentStatus.PENDING,
-    val userId: String = "6269b873767012c7ccc890a8"
+    val userId: String = "einav980@gmail.com"
 ) : Parcelable {
 //    override fun toString(): String {
 //        return "city: $city, price: $price"
