@@ -62,6 +62,15 @@ class ApartmentRepository @Inject constructor(
         return Resource.Success(response)
     }
 
+    suspend fun deleteApartment(id: String): Resource<Apartment> {
+        val response = try {
+            api.deleteApartment(apartmentId = id)
+        } catch (e: Exception) {
+            return Resource.Error("Failed deleting apartment ")
+        }
+        return Resource.Success(response)
+    }
+
     suspend fun addApartment(apartment: Apartment): Resource<AuthResponse>{
         val response = try{
             api.addApartment(apartment = apartment)

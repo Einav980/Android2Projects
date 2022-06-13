@@ -1,6 +1,7 @@
 package com.example.rently.ui.screens
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -127,6 +128,25 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                         modifier = Modifier.padding(8.dp)
                     )
                 }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            FloatingActionButton(
+                onClick = { }, // TODO
+                shape = RoundedSquareShape.large,
+                backgroundColor = MaterialTheme.colors.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Edit Profile",
+                    tint = Color.White,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
         }
     }

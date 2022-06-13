@@ -9,5 +9,9 @@ router.get(
 );
 router.get('/apartments/:id', apartmentController.getApartmentById);
 router.post('/apartments/add', apartmentController.addApartment);
+router.delete(
+  '/apartments/:id',
+  apartmentController.deleteApartment
+);
 
 module.exports = router;

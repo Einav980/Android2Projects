@@ -84,7 +84,7 @@ fun BottomBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
-            .border(0.5.dp, Color.Black, shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+            .border(1.dp, Color.Black, shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
     ) {
         screens.forEach { screen ->
             AddItem(

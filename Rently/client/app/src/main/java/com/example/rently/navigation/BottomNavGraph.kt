@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
+import com.example.rently.ui.screens.manageApartments.ManageApartmentsScreen
 import com.example.rently.ui.screens.ProfileScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
@@ -49,8 +50,7 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.ManageApartments.route,
         ) {
-//            viewModel.logoutUser()
-//            onLogout()
+            ManageApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel)
         }
         composable(route = Screen.SingleApartment.route) {
             SingleApartmentScreen(
