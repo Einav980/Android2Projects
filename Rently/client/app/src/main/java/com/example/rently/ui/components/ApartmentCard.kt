@@ -1,15 +1,14 @@
 package com.example.rently.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,24 +23,23 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.model.Apartment
-import com.example.rently.navigation.Screen
-import com.example.rently.ui.theme.RentlyApartmentCardTheme
-import com.example.rently.ui.theme.RentlySecondaryVariantColor
-import com.example.rently.ui.theme.RentlySubtitleTextColor
+import com.example.rently.ui.theme.*
+import com.example.rently.util.ApartmentPageType
 import com.example.rently.util.ApartmentStatus
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import timber.log.Timber
 import java.text.NumberFormat
 import java.util.*
 
 @Composable
 fun ApartmentCard(
     navController: NavController,
+    pageType: ApartmentPageType = ApartmentPageType.Explore,
     apartment: Apartment,
-    myApartmentsList: Boolean = false,
-    onApartmentClick: (apartment: Apartment) -> Unit
+    onApartmentClick: (apartment: Apartment) -> Unit,
+    onDeleteApartment: (apartment: Apartment) -> Unit = {},
+    onChangeApartmentStatus: (apartment: Apartment) -> Unit ={}
 ) {
+    val checkedState = remember { mutableStateOf(false) }
+
     RentlyApartmentCardTheme {
         Card(
             modifier = Modifier
@@ -63,9 +61,13 @@ fun ApartmentCard(
                         .fillMaxWidth()
                 ) {
                     ApartmentImage(url = apartment.imageUrl)
-//                    ApartmentStatusBadge(apartmentStatus = apartment.status)
+                    if (pageType != ApartmentPageType.Explore) {
+                        if (apartment.status != null) {
+                            ApartmentStatusBadge(apartmentStatus = apartment.status)
+                        }
+                        DeleteApartmentBadge(apartment, onDeleteApartment)
+                    }
                 }
-
                 Row(
                     modifier = Modifier
                         .weight(1f)
@@ -133,7 +135,7 @@ fun ApartmentCard(
                     )
                     val format = NumberFormat.getCurrencyInstance()
                     val apartmentCardColor =
-                        if (myApartmentsList) {
+                        if (pageType != ApartmentPageType.Explore) {
                             if (apartment.status != ApartmentStatus.AVAILABLE) {
                                 Color.Gray
                             } else {
@@ -161,11 +163,14 @@ fun ApartmentCard(
                         )
                     }
                 }
-
+            }
+            if (pageType == ApartmentPageType.UserManage && apartment.status != null) {
+                switchApartmentStatus(apartment , onChangeApartmentStatus)
             }
         }
     }
 }
+
 
 @Composable
 fun ApartmentImage(url: String) {
@@ -201,9 +206,10 @@ fun ApartmentStatusBadge(apartmentStatus: ApartmentStatus) {
         Surface(
             shape = MaterialTheme.shapes.large,
             modifier = Modifier
-                .padding(10.dp),
+                .padding(10.dp)
+                .wrapContentSize(),
             color = apartmentStatus.backgroundColor,
-            elevation = 5.dp
+            elevation = 5.dp,
         ) {
             Text(
                 text = apartmentStatus.status,
@@ -213,15 +219,79 @@ fun ApartmentStatusBadge(apartmentStatus: ApartmentStatus) {
             )
         }
     }
-
 }
+
+@Composable
+fun DeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apartment: Apartment) -> Unit) {
+    RentlyApartmentCardTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .height(30.dp)
+                .width(30.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            FloatingActionButton(
+                modifier = Modifier.wrapContentSize(),
+                onClick = {onDeleteApartment(apartment)}, // TODO delete apartment logic
+                shape = RoundedSquareShape.large,
+                backgroundColor = Color.Red
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Delete Apartment",
+                    tint = Color.White,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartment: Apartment) -> Unit) {
+    val checkedState = rememberSaveable { mutableStateOf(true) }
+
+    var isEnabled = false
+    if (apartment.status == ApartmentStatus.AVAILABLE || apartment.status == ApartmentStatus.CLOSED) {
+        isEnabled = true
+    }
+    if (apartment.status == ApartmentStatus.AVAILABLE) {
+        checkedState.value =true
+    }
+
+    RentlyApartmentCardTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            Switch(
+                enabled = isEnabled,
+                checked = checkedState.value,
+                onCheckedChange = {
+                    checkedState.value = it //Todo add logic to change the status in DB
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = ApartmentAvailableStatusColor,
+                    uncheckedThumbColor = ApartmentClosedStatusColor,
+                    checkedTrackColor = Color.DarkGray,
+                    uncheckedTrackColor = Color.DarkGray,
+                )
+            )
+        }
+    }
+}
+
 
 @Composable
 @Preview(showBackground = true)
 fun ApartmentCardPreview() {
     val context = LocalContext.current
     var apartment = Apartment(
-        "Tel-Aviv",
+        _id = "test",
+        city = "Tel-Aviv",
         price = 7800,
         numberOfRooms = 3,
         address = "Dov Hauzner 2",
@@ -230,5 +300,8 @@ fun ApartmentCardPreview() {
         size = 54,
         imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"
     )
-    ApartmentCard(apartment = apartment, navController = NavController(context = context), onApartmentClick = {})
+    ApartmentCard(
+        apartment = apartment,
+        navController = NavController(context = context),
+        onApartmentClick = {})
 }

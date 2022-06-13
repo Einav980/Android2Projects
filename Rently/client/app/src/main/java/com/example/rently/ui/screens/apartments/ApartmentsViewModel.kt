@@ -33,15 +33,15 @@ class ApartmentsViewModel @Inject constructor(private val repository: ApartmentR
     }
 
 
-    fun addApartment(apartment: Apartment) {
-        viewModelScope.launch {
-            val response = repository.addApartment(apartment = apartment)
-            when(response){
-                is Resource.Success -> {
-                    Timber.d("created successfully")
-                }
-            }
-        }
-    }
+//    fun addApartment(apartment: Apartment) {
+//        viewModelScope.launch {
+//            val response = repository.addApartment(apartment = apartment)
+//            when(response){
+//                is Resource.Success -> {
+//                    Timber.d("created successfully")
+//                }
+//            }
+//        }
+//    }
 
 }

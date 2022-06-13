@@ -66,9 +66,24 @@ const addApartment = async (req, res) => {
   }
 };
 
+const deleteApartment = async (req, res) => {
+  var { id } = req.params;
+  try {
+    const result = await Apartment.findByIdAndDelete(id);
+    res.send(result);
+  } catch (error) {
+    res.status(400).json({
+      returnCode: 400,
+      message: 'Error while deleting apartment',
+      type: 'Error',
+    });
+  }
+};
+
 module.exports = {
   listApartments,
   getApartmentById,
   getApartmentbyUserId,
   addApartment,
+  deleteApartment
 };

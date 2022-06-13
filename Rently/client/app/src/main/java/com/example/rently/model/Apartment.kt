@@ -4,9 +4,11 @@ import android.os.Parcelable
 import com.example.rently.util.ApartmentStatus
 import com.example.rently.util.ApartmentType
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
 
 @Parcelize
 data class Apartment(
+    val _id: String = "",
     val city: String,
     val numberOfRooms: Int,
     val numberOfBaths: Int,

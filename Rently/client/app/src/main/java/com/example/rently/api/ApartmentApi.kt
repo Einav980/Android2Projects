@@ -29,6 +29,9 @@ interface ApartmentApi {
     @DELETE("apartments/types/{typeId}")
     suspend fun deleteApartmentType(@Path("typeId") apartmentTypeId: String): ApartmentType
 
+    @DELETE("apartments/{id}")
+    suspend fun deleteApartment(@Path("id") apartmentId: String): Apartment
+
     @POST("apartments/add")
     suspend fun addApartment(
         @Body apartment: Apartment

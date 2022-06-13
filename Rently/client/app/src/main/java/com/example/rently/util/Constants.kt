@@ -8,7 +8,8 @@ object Constants {
     const val BASE_URL = "http://35.234.66.166:3000/api/"
     const val DATASTORE_NAME = "settings"
     val apartment = Apartment(
-        "Tel-Aviv",
+        _id = "test",
+        city= "Tel-Aviv",
         price = 7800,
         numberOfRooms = 3,
         address = "Dov Hauzner 2",
