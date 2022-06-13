@@ -21,4 +21,5 @@ object Constants {
     )
     val DefaultLocation = LatLng(31.4117257,35.0818155)
     const val GOOGLE_API_KEY = "AIzaSyD1yMYulFclTaaoWxf4rOifU-iPWqbDoS4"
+    const val IMGBB_API_KEY = "4e95c06311ac433bea3c99848e2b48fe"
 }
