@@ -3,6 +3,7 @@ package com.example.rently.api
 import android.content.Context
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.GooglePlacesRepository
+import com.example.rently.repository.ImagesRepository
 import com.example.rently.repository.UserRepository
 import com.example.rently.util.Constants
 import dagger.Module
@@ -81,5 +82,28 @@ object AppModule {
             .baseUrl(GooglePlacesApi.BASE_URL)
             .build()
             .create(GooglePlacesApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideImagesRepository(
+        api: ImagesApi
+    ) = ImagesRepository(api)
+
+    @Singleton
+    @Provides
+    fun provideImagesApi(): ImagesApi{
+        val clientBuilder = OkHttpClient.Builder()
+
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        clientBuilder.addInterceptor(loggingInterceptor)
+
+        return Retrofit.Builder()
+            .client(clientBuilder.build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(ImagesApi.BASE_URL)
+            .build()
+            .create(ImagesApi::class.java)
     }
 }
