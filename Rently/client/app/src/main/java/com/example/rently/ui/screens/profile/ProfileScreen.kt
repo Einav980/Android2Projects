@@ -45,8 +45,9 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
         mutableStateOf(false)
     }
 
-    //retrieve logged in user
+    //retrieve logged in user information
     viewModel.getLoggedInUser()
+    viewModel.getLoggedInUserApartments()
 
     RentlyTheme() {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -94,7 +95,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 ) {
                     ChipGroup(
                         items = listOf(
-                            "My Apartments: 2",
+                            "My Apartments: ${viewModel.myApartments.value}",
                             "Watch list: 50"
                         )
                     )

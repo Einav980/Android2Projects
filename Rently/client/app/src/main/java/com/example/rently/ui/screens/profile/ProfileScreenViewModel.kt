@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.User
+import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileScreenViewModel @Inject constructor(private val repository: UserRepository) :
+class ProfileScreenViewModel @Inject constructor(private val userRepository: UserRepository, private val apartmentRepository: ApartmentRepository) :
     ViewModel() {
 
     private val phoneRegex =  Regex("^05\\d[0-9]{7}")
@@ -22,6 +23,7 @@ class ProfileScreenViewModel @Inject constructor(private val repository: UserRep
     val editableText= mutableStateOf(false)
     val email = mutableStateOf("")
     val lastname = mutableStateOf("")
+    val myApartments = mutableStateOf(0)
     val firstname = mutableStateOf("")
     val headLastname = mutableStateOf("")
     val headFirstname = mutableStateOf("")
@@ -43,9 +45,9 @@ class ProfileScreenViewModel @Inject constructor(private val repository: UserRep
 
     fun getLoggedInUser() {
         viewModelScope.launch {
-            val userEmailResult = repository.getUserEmail().first()
+            val userEmailResult = userRepository.getUserEmail().first()
             if (userEmailResult.isNotEmpty()){
-                val response = repository.getUser(userEmailResult)
+                val response = userRepository.getUser(userEmailResult)
                 when(response){
                     is Resource.Success -> {
                         val data =  response.data!!
@@ -63,13 +65,30 @@ class ProfileScreenViewModel @Inject constructor(private val repository: UserRep
         }
     }
 
+    fun getLoggedInUserApartments() {
+        viewModelScope.launch {
+            val userEmailResult = userRepository.getUserEmail().first()
+            if (userEmailResult.isNotEmpty()){
+                val response = apartmentRepository.listUserApartments(userEmailResult)
+                when(response){
+                    is Resource.Success -> {
+                        val data =  response.data!!
+                        myApartments.value = data.size
+                    }
+                    else -> {
+                        Log.d("Rently", "could not find user")}
+                }
+            }
+        }
+    }
+
     fun editTextFields() {
         if(editableText.value){
             viewModelScope.launch {
-                val userEmailResult = repository.getUserEmail().first()
+                val userEmailResult = userRepository.getUserEmail().first()
                 validateData()
                 if (userEmailResult.isNotEmpty() && isUserInfoValid()){
-                    val response = repository.editUser(userEmailResult, User(firstname = firstname.value, lastname = lastname.value, phone = phone.value))
+                    val response = userRepository.editUser(userEmailResult, User(firstname = firstname.value, lastname = lastname.value, phone = phone.value))
                     when(response){
                         is Resource.Success -> {
                             editableText.value = false
