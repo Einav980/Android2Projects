@@ -92,4 +92,34 @@ const signUpUser = async (req, res) => {
   }
 };
 
-module.exports = { listUsers, getUser, loginUser, signUpUser };
+const editUser = async (req, res) => {
+  try {
+    const { email, phone, firstname, lastname } = req.body;
+    var { emailId } = req.params;
+    const updatedResult = await User.findByIdAndUpdate(emailId,
+      {
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        phone: phone,
+      });
+
+    console.log(updatedResult);
+
+    res.status(201).send({
+      returnCode: 201,
+      message: 'Successfully edited User details',
+      type: 'Success',
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      returnCode: 400,
+      message: 'Error while editing User details',
+      type: 'Error',
+    });
+  }
+};
+
+module.exports = { listUsers, getUser, loginUser, signUpUser, editUser };

@@ -1,11 +1,9 @@
 package com.example.rently.api
 
+import com.example.rently.model.Apartment
 import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserApi{
     @POST("/api/users/signup")
@@ -23,5 +21,8 @@ interface UserApi{
 
     @GET("/api/users/{email}")
     suspend fun getUser(@Path("email") email: String): User
+
+    @PUT("/api/users/{email}")
+    suspend fun editUser(@Path("email") email: String, @Body user: User): AuthResponse
 
 }

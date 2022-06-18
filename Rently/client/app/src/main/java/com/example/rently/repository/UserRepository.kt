@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.rently.Resource
 import com.example.rently.api.UserApi
+import com.example.rently.model.Apartment
 import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -86,6 +87,16 @@ class UserRepository @Inject constructor(
             return Resource.Error("User was not found!")
         }
         return Resource.Success(data = response)
+    }
+
+    suspend fun editApartment(email: String, user: User): Resource<AuthResponse>{
+        val response = try{
+            api.editUser(email = email, user = user)
+        } catch (e: Exception){
+            Timber.d("Response", e.message.toString())
+            return Resource.Error("Failed editing User", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
+        }
+        return Resource.Success(response)
     }
 
 

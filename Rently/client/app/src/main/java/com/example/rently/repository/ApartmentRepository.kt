@@ -6,6 +6,7 @@ import com.example.rently.model.Apartment
 import com.example.rently.model.ApartmentType
 import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
+import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.scopes.ActivityScoped
 import timber.log.Timber
 import javax.inject.Inject
@@ -77,6 +78,26 @@ class ApartmentRepository @Inject constructor(
         } catch (e: Exception){
             Timber.d("Response", e.message.toString())
             return Resource.Error("Failed adding Apartment", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun editApartmentStatus(id: String, apartmentStatus: String): Resource<AuthResponse>{
+        val response = try{
+            api.editApartmentStatus(apartmentId = id, status = apartmentStatus)
+        } catch (e: Exception){
+            Timber.d("Response", e.message.toString())
+            return Resource.Error("Failed editing Apartment status", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun editApartment(id: String, apartment: Apartment): Resource<AuthResponse>{
+        val response = try{
+            api.editApartment(apartmentId = id, apartment = apartment)
+        } catch (e: Exception){
+            Timber.d("Response", e.message.toString())
+            return Resource.Error("Failed editing Apartment", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)
     }

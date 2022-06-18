@@ -6,5 +6,6 @@ router.get('/users', userController.listUsers);
 router.get('/users/:email', userController.getUser);
 router.post('/users/signup', userController.signUpUser);
 router.post('/users/login', userController.loginUser);
+router.put('/users/:email',userController.editUser);
 
 module.exports = router;

@@ -1,8 +1,10 @@
 package com.example.rently.ui.screens.manageApartments
 
 import android.util.Log
+import android.widget.Switch
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
@@ -11,6 +13,7 @@ import com.example.rently.model.User
 import com.example.rently.navigation.Screen
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.UserRepository
+import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -24,6 +27,7 @@ class ManageApartmentsViewModel @Inject constructor(
 ) : ViewModel() {
     val apartments = mutableStateListOf<Apartment>()
     val isLoading = mutableStateOf(false)
+    val checkedState = mutableStateOf(false)
 
     fun listUserApartments() {
         viewModelScope.launch {
@@ -56,6 +60,27 @@ class ManageApartmentsViewModel @Inject constructor(
                 }
                 else -> {
                     Log.d("Rently", "could not delete apartment")}
+            }
+            isLoading.value = false
+        }
+    }
+
+    fun changeApartmentStatus(apartment: Apartment){
+        viewModelScope.launch {
+            isLoading.value = true
+            val apartmentId = apartment._id
+            val newApartmentStatus = if(apartment.status == ApartmentStatus.Available.status) ApartmentStatus.Closed else ApartmentStatus.Available
+            apartment.status = newApartmentStatus.status
+            val response = apartmentRepository.editApartment(id= apartmentId, apartment = apartment)
+            when (response) {
+                is Resource.Success -> {
+                    val apartmentIndex= apartments.indexOf(apartment)
+                    apartments.removeAt(apartmentIndex)
+                    apartments.add(apartmentIndex , apartment)
+                    Log.d("Rently", "Apartment status changed successfully")
+                }
+                else -> {
+                    Log.d("Rently", "could not change the apartment status")}
             }
             isLoading.value = false
         }
