@@ -121,7 +121,7 @@ fun TopBarTitle() {
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth(),
-            text = "Approve Apartments",
+            text = "Manage Requests",
             style = MaterialTheme.typography.h3,
             textAlign = TextAlign.Center,
             color = Color.Black,
