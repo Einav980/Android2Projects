@@ -1,5 +1,7 @@
 package com.example.rently.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -10,16 +12,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rently.SharedViewModel
-import com.example.rently.model.Apartment
+import com.example.rently.ui.screens.DetailsScreen
 import com.example.rently.ui.screens.manageApartments.ManageApartmentsScreen
 import com.example.rently.ui.screens.ProfileScreen
-import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
+import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
-import com.example.rently.ui.screens.main.MainScreenViewModel
 import com.example.rently.ui.screens.map.MapScreen
+import com.example.rently.ui.screens.single_apartment.NewSingleApartmentScreen
 import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.google.android.gms.maps.model.LatLng
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
@@ -42,19 +45,33 @@ fun BottomNavGraph(
         ) {
             ProfileScreen()
         }
+
         composable(
             route = BottomBarScreen.Favorites.route,
         ) {
-//            SettingsScreen()
+            DetailsScreen(navController = navController)
         }
+
         composable(
             route = BottomBarScreen.ManageApartments.route,
         ) {
-            ManageApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel)
+            ManageApartmentsScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel,
+                onAddApartmentClicked = {
+                    navController.navigate(Screen.AddApartment.route)
+                })
         }
+
         composable(route = Screen.SingleApartment.route) {
             SingleApartmentScreen(
                 navController = navController,
+                sharedViewModel = sharedViewModel
+            )
+        }
+
+        composable(route = Screen.NewSingleApartment.route) {
+            NewSingleApartmentScreen(
                 sharedViewModel = sharedViewModel
             )
         }
@@ -73,6 +90,11 @@ fun BottomNavGraph(
             val lat = it.arguments?.getFloat("lat")!!.toDouble()
             val lng = it.arguments?.getFloat("lng")!!.toDouble()
             MapScreen(LatLng(lat, lng))
+        }
+        composable(
+            Screen.AddApartment.route
+        ){
+            AddApartmentScreen()
         }
     }
 }

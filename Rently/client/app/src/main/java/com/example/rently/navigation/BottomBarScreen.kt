@@ -2,6 +2,7 @@ package com.example.rently.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomBarScreen(
@@ -10,24 +11,24 @@ sealed class BottomBarScreen(
     object Apartments: BottomBarScreen(
         route = "apartments_screen",
         title = "Apartments",
-        icon = Icons.Default.Home
+        icon = Icons.Filled.Home
     )
 
     object Profile: BottomBarScreen(
         route = "profile_screen",
         title = "Profile",
-        icon = Icons.Default.AccountBox
+        icon = Icons.Filled.Person
     )
 
     object Favorites: BottomBarScreen(
-        route = "Favorites_screen",
+        route = "favorites_screen",
         title = "Favorites",
-        icon = Icons.Default.Favorite
+        icon = Icons.Filled.Favorite
     )
 
     object ManageApartments: BottomBarScreen(
         route = "manage_apartments",
-        title = "Apartments",
-        icon = Icons.Default.Edit
+        title = "Manage",
+        icon = Icons.Filled.Edit
     )
 }

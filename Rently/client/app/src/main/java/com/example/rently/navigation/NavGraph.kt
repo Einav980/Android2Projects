@@ -1,7 +1,9 @@
 package com.example.rently.navigation
 
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
+@RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
 @Composable
 fun SetupNavGraph(
@@ -35,7 +38,7 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.AddApartment.route,
     ) {
         composable(
             route = Screen.Details.route
@@ -101,10 +104,6 @@ fun SetupNavGraph(
             }
         }
 
-        composable(route = Screen.NewSingleApartment.route){
-            val apartment = Constants.apartment
-            NewSingleApartmentScreen(apartment = apartment)
-        }
         composable(
             route = Screen.ManageApartmentType.route
         ) {
