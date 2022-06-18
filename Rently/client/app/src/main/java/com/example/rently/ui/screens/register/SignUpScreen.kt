@@ -1,11 +1,11 @@
 package com.example.rently.ui.screens
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,15 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.rently.model.User
-import com.example.rently.navigation.Screen
 import com.example.rently.ui.screens.register.SignUpViewModel
-import com.example.rently.ui.theme.RentlyLightColors
 import com.example.rently.ui.theme.RentlyTheme
-import com.example.rently.ui.theme.RentlyTypography
 import com.example.rently.util.PhoneMaskTransformation
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @Composable
 fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewModel: SignUpViewModel = hiltViewModel()) {
@@ -39,6 +34,12 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
         mutableStateOf("")
     }
     var phone by remember {
+        mutableStateOf("")
+    }
+    var firstName by remember {
+        mutableStateOf("")
+    }
+    var lastName by remember {
         mutableStateOf("")
     }
     val invalidEmail by remember {
@@ -53,6 +54,13 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
     var isPhoneError by remember {
         mutableStateOf(false)
     }
+    var isFirstNameError by remember {
+        mutableStateOf(false)
+    }
+    var isLastNameError by remember {
+        mutableStateOf(false)
+    }
+
     RentlyTheme {
         Column(
             modifier = Modifier
@@ -91,12 +99,13 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
             }
             Column(
                 modifier = Modifier
-                    .weight(7f),
+                    .verticalScroll(rememberScrollState())
+                    .weight(weight =7f, fill = false),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(15.dp),
+                        .padding(10.dp),
                     horizontalAlignment = Alignment.Start
                 ){
 
@@ -168,6 +177,60 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                     }
                     Spacer(modifier = Modifier.height(15.dp))
                     OutlinedTextField(
+                        value = firstName,
+                        label = { Text(text = "First Name", style = MaterialTheme.typography.subtitle2) },
+                        onValueChange = {
+                            firstName = it
+                            viewModel.clearFirstNameError()
+                            isFirstNameError = false
+                        },
+                        singleLine = true,
+                        isError = isFirstNameError,
+                        enabled = ! viewModel.errorOccurred.value,
+                        trailingIcon = {
+                            if(isFirstNameError){
+                                Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+                            }
+                        }
+                    )
+                    if(! viewModel.isFirstNameValid.value){
+                        isFirstNameError = true
+                        Text(
+                            text = "First name could not be empty",
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = lastName,
+                        label = { Text(text = "Last Name", style = MaterialTheme.typography.subtitle2) },
+                        onValueChange = {
+                            lastName = it
+                            viewModel.clearLastNameError()
+                            isLastNameError = false
+                        },
+                        singleLine = true,
+                        isError = isLastNameError,
+                        enabled = ! viewModel.errorOccurred.value,
+                        trailingIcon = {
+                            if(isLastNameError){
+                                Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+                            }
+                        }
+                    )
+                    if(! viewModel.isLastNameValid.value){
+                        isLastNameError = true
+                        Text(
+                            text = "Last name could not be empty",
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    OutlinedTextField(
                         value = phone,
                         label = { Text(text = "Phone", style = MaterialTheme.typography.subtitle2) },
                         onValueChange = {
@@ -205,7 +268,7 @@ fun SignUpScreen(onSignUpSuccessful: () -> Unit, closeScreen: () -> Unit, viewMo
                 ){
                     Button(
                         onClick = {
-                            val user = User(email = email, password = password, phone = phone)
+                            val user = User(email = email, password = password, phone = phone, firstname = firstName, lastname = lastName)
                             registerUser(user, viewModel = viewModel)
                         },
                         modifier = Modifier

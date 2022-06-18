@@ -57,11 +57,11 @@ fun ManageApartmentsScreen(
                                     sharedViewModel.setApartment(it)
                                     navController.navigate(Screen.SingleApartment.route)
                                 },
-                                onDeleteApartment= {
-                                                   viewModel.deleteApartment(it)
+                                onDeleteApartment = {
+                                    viewModel.deleteApartment(it)
                                 },
                                 onChangeApartmentStatus= {
-
+                                    viewModel.changeApartmentStatus(it)
                                 }
                             )
                         }

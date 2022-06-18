@@ -38,7 +38,6 @@ fun ApartmentCard(
     onDeleteApartment: (apartment: Apartment) -> Unit = {},
     onChangeApartmentStatus: (apartment: Apartment) -> Unit ={}
 ) {
-    val checkedState = remember { mutableStateOf(false) }
 
     RentlyApartmentCardTheme {
         Card(
@@ -62,8 +61,8 @@ fun ApartmentCard(
                 ) {
                     ApartmentImage(url = apartment.imageUrl)
                     if (pageType != ApartmentPageType.Explore) {
-                        if (apartment.status != null) {
-                            ApartmentStatusBadge(apartmentStatus = apartment.status)
+                        if (apartment.status.isNotEmpty()) {
+                            ApartmentStatusBadge(apartmentStatus = ApartmentStatus.valueOf(apartment.status))
                         }
                         DeleteApartmentBadge(apartment, onDeleteApartment)
                     }
@@ -136,7 +135,7 @@ fun ApartmentCard(
                     val format = NumberFormat.getCurrencyInstance()
                     val apartmentCardColor =
                         if (pageType != ApartmentPageType.Explore) {
-                            if (apartment.status != ApartmentStatus.AVAILABLE) {
+                            if (apartment.status != ApartmentStatus.Available.status) {
                                 Color.Gray
                             } else {
                                 MaterialTheme.colors.primary
@@ -234,7 +233,7 @@ fun DeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apartment: Ap
         ) {
             FloatingActionButton(
                 modifier = Modifier.wrapContentSize(),
-                onClick = {onDeleteApartment(apartment)}, // TODO delete apartment logic
+                onClick = {onDeleteApartment(apartment)},
                 shape = RoundedSquareShape.large,
                 backgroundColor = Color.Red
             ) {
@@ -250,13 +249,13 @@ fun DeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apartment: Ap
 
 @Composable
 fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartment: Apartment) -> Unit) {
-    val checkedState = rememberSaveable { mutableStateOf(true) }
+    val checkedState = rememberSaveable { mutableStateOf(false) }
 
     var isEnabled = false
-    if (apartment.status == ApartmentStatus.AVAILABLE || apartment.status == ApartmentStatus.CLOSED) {
+    if (apartment.status == ApartmentStatus.Available.status || apartment.status == ApartmentStatus.Closed.status) {
         isEnabled = true
     }
-    if (apartment.status == ApartmentStatus.AVAILABLE) {
+    if (apartment.status == ApartmentStatus.Available.status) {
         checkedState.value =true
     }
 
@@ -271,7 +270,8 @@ fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartm
                 enabled = isEnabled,
                 checked = checkedState.value,
                 onCheckedChange = {
-                    checkedState.value = it //Todo add logic to change the status in DB
+                    onChangeApartmentStatus(apartment)
+                    checkedState.value = it
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = ApartmentAvailableStatusColor,

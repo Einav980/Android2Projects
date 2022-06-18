@@ -52,6 +52,11 @@ val RentlyTypography = Typography(
         fontSize = 22.sp,
         fontWeight = FontWeight.Normal
     ),
+    button = TextStyle(
+        fontFamily = Varela,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Normal
+    ),
     subtitle1 = TextStyle(
         fontSize = 12.sp,
         fontWeight = FontWeight.Normal,

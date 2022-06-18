@@ -80,10 +80,77 @@ const deleteApartment = async (req, res) => {
   }
 };
 
+const editApartmentstatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    var { id } = req.params;
+    const updatedResult = await Apartment.findByIdAndUpdate(id,
+      {
+        status: status,
+      });
+
+    console.log(updatedResult);
+
+    res.status(201).send({
+      returnCode: 201,
+      message: 'Successfully edited apartment status ',
+      type: 'Success',
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      returnCode: 400,
+      message: 'Error while editing apartment status',
+      type: 'Error',
+    });
+  }
+};
+
+const editApartment = async (req, res) => {
+  try {
+    const { city, numberOfRooms, price, numberOfBaths, address, lat, lng, size, type, imageUrl, status, userId } = req.body;
+    var { id } = req.params;
+    const updatedResult = await Apartment.findByIdAndUpdate(id,
+      {
+        city: city,
+        numberOfRooms: numberOfRooms,
+        price: price,
+        numberOfBaths: numberOfBaths,
+        address: address,
+        lat: lat,
+        lng: lng,
+        size: size,
+        type: type,
+        imageUrl: imageUrl,
+        status: status,
+        userId: userId
+      });
+
+    console.log(updatedResult);
+
+    res.status(201).send({
+      returnCode: 201,
+      message: 'Successfully edited apartment ',
+      type: 'Success',
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      returnCode: 400,
+      message: 'Error while editing apartment ',
+      type: 'Error',
+    });
+  }
+};
+
 module.exports = {
   listApartments,
   getApartmentById,
   getApartmentbyUserId,
   addApartment,
-  deleteApartment
+  deleteApartment,
+  editApartmentstatus,
+  editApartment
 };

@@ -1,6 +1,5 @@
 package com.example.rently.ui.screens.register
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,12 +26,14 @@ class SignUpViewModel @Inject constructor(private val repository: UserRepository
     val isPasswordValid = mutableStateOf(true)
     val errorOccurred = mutableStateOf(false)
     val isPhoneValid = mutableStateOf(true)
+    val isLastNameValid = mutableStateOf(true)
+    val isFirstNameValid = mutableStateOf(true)
 
     fun registerUser(user: User){
         viewModelScope.launch {
             Timber.d("Register")
             validateData(user)
-            if(isEmailValid.value && isPhoneValid.value && isPasswordValid.value)
+            if(isEmailValid.value && isPhoneValid.value && isPasswordValid.value && isFirstNameValid.value && isLastNameValid.value)
             {
                 isLoading.value = true
                 val result = repository.signUpUser(user)
@@ -68,10 +69,20 @@ class SignUpViewModel @Inject constructor(private val repository: UserRepository
         isPhoneValid.value = phone.matches(phoneRegex)
     }
 
+    private fun validateLastName(lastName: String){
+        isLastNameValid.value = lastName.isNotEmpty()
+    }
+
+    private fun validateFirstName(firstName: String){
+        isFirstNameValid.value = firstName.isNotEmpty()
+    }
+
     private fun validateData(user: User){
         validateEmail(user.email)
         validatePassword(user.password)
         validatePhone(user.phone)
+        validateLastName(user.lastname)
+        validateFirstName(user.firstname)
     }
 
     fun clearPasswordError(){
@@ -85,5 +96,13 @@ class SignUpViewModel @Inject constructor(private val repository: UserRepository
 
     fun clearPhoneError(){
         isPhoneValid.value = true
+    }
+
+    fun clearFirstNameError(){
+        isFirstNameValid.value = true
+    }
+
+    fun clearLastNameError(){
+        isLastNameValid.value = true
     }
 }
