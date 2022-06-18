@@ -94,11 +94,10 @@ const signUpUser = async (req, res) => {
 
 const editUser = async (req, res) => {
   try {
-    const { email, phone, firstname, lastname } = req.body;
-    var { emailId } = req.params;
-    const updatedResult = await User.findByIdAndUpdate(emailId,
+    const { phone, firstname, lastname } = req.body;
+    var { email } = req.params;
+    const updatedResult = await User.findOneAndUpdate({ email: email },
       {
-        email: email,
         firstname: firstname,
         lastname: lastname,
         phone: phone,

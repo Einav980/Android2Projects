@@ -89,7 +89,7 @@ class UserRepository @Inject constructor(
         return Resource.Success(data = response)
     }
 
-    suspend fun editApartment(email: String, user: User): Resource<AuthResponse>{
+    suspend fun editUser(email: String, user: User): Resource<AuthResponse>{
         val response = try{
             api.editUser(email = email, user = user)
         } catch (e: Exception){
