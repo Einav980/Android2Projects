@@ -119,6 +119,7 @@ fun navListForUserType(userType: UserType) : List<BottomBarScreen>{
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.N)
 @Preview
 @Composable
 fun MainScreenPreview() {

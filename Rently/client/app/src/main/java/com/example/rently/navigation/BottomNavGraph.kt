@@ -14,6 +14,7 @@ import com.example.rently.ui.screens.DetailsScreen
 import com.example.rently.ui.screens.manageApartments.ManageApartmentsScreen
 import com.example.rently.ui.screens.ProfileScreen
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
+import com.example.rently.ui.screens.admin_screens.adminManageApartment.AdminManageApartmentsScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.map.MapScreen
@@ -63,7 +64,7 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.AdminManageApartments.route,
         ) {
-            DetailsScreen(navController = navController)
+            AdminManageApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel)
         }
 
         composable(

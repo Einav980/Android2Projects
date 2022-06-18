@@ -4,14 +4,19 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.ArrowLeft
+import androidx.compose.material.icons.outlined.ArrowRight
+import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -64,7 +69,8 @@ fun ApartmentCard(
                         if (apartment.status.isNotEmpty()) {
                             ApartmentStatusBadge(apartmentStatus = ApartmentStatus.valueOf(apartment.status))
                         }
-                        DeleteApartmentBadge(apartment, onDeleteApartment)
+                        if(pageType == ApartmentPageType.UserManage)
+                            DeleteApartmentBadge(apartment, onDeleteApartment)
                     }
                 }
                 Row(
@@ -166,6 +172,31 @@ fun ApartmentCard(
             if (pageType == ApartmentPageType.UserManage && apartment.status != null) {
                 switchApartmentStatus(apartment , onChangeApartmentStatus)
             }
+            if (pageType == ApartmentPageType.AdminManage){
+                swipeIndications()
+            }
+        }
+    }
+}
+
+@Composable
+fun swipeIndications() {
+    RentlyApartmentCardTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(bottom = 20.dp)
+                    .size(50.dp)
+                    .shadow(elevation = 50.dp),
+                imageVector = Icons.Outlined.Swipe,
+                contentDescription = null,
+                tint = Color.White
+            )
         }
     }
 }
