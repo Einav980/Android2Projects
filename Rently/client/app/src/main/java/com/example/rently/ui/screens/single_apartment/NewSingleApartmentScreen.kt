@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
+import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.ui.components.SquareChip
 import com.example.rently.ui.components.StarsChip
@@ -39,225 +40,234 @@ import java.text.NumberFormat
 import java.util.*
 
 @Composable
-fun NewSingleApartmentScreen(apartment: Apartment) {
+fun NewSingleApartmentScreen(sharedViewModel: SharedViewModel) {
 
     val context = LocalContext.current
-
+    val apartment = sharedViewModel.apartment
     val format = NumberFormat.getCurrencyInstance()
     format.maximumFractionDigits = 0
     format.currency = Currency.getInstance("ILS")
 
-    val painter = rememberImagePainter(
-        data = apartment.imageUrl,
-        builder = {
-            crossfade(500)
-        }
-    )
+    if(apartment != null){
+        val painter = rememberImagePainter(
+            data = apartment.imageUrl,
+            builder = {
+                crossfade(500)
+            }
+        )
 
-    val painterState = painter.state
-    RentlyTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // Image and basic info section
-            Box(
-                modifier = Modifier
-                    .weight(3f)
-            ) {
+        val painterState = painter.state
+        RentlyTheme {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Image and basic info section
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.BottomStart
+                    modifier = Modifier
+                        .weight(3f)
                 ) {
-                    Image(
-                        painter = painter,
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "Image",
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.medium)
-                            .fillMaxSize()
-                            .graphicsLayer {
-                                alpha = 0.99f
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.BottomStart
+                    ) {
+                        Image(
+                            painter = painter,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "Image",
+                            modifier = Modifier
+                                .clip(MaterialTheme.shapes.medium)
+                                .fillMaxSize()
+                                .graphicsLayer {
+                                    alpha = 0.99f
+                                }
+                                .drawWithContent {
+                                    val colors = listOf(
+                                        Color.Black,
+                                        Color.Black,
+                                        Color.Transparent
+                                    )
+                                    drawContent()
+                                    drawRect(
+                                        brush = Brush.verticalGradient(colors),
+                                        blendMode = BlendMode.DstIn
+                                    )
+                                }
+                        )
+                        if (painterState is AsyncImagePainter.State.Loading) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
-                            .drawWithContent {
-                                val colors = listOf(
-                                    Color.Black,
-                                    Color.Black,
-                                    Color.Transparent
-                                )
-                                drawContent()
-                                drawRect(
-                                    brush = Brush.verticalGradient(colors),
-                                    blendMode = BlendMode.DstIn
-                                )
-                            }
-                    )
-                    if (painterState is AsyncImagePainter.State.Loading) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp)
                         ) {
-                            CircularProgressIndicator()
+                            Text(
+                                text = apartment.address,
+                                style = MaterialTheme.typography.h4,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Row() {
+                                Icon(
+                                    imageVector = Icons.Filled.LocationOn,
+                                    contentDescription = "Location",
+                                    tint = RentlyGrayColor
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Text(
+                                    text = apartment.city,
+                                    style = MaterialTheme.typography.h5,
+                                    color = RentlyGrayColor,
+                                    fontWeight = FontWeight.Bold,
+
+                                    )
+                            }
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(6f)
+                        .fillMaxWidth()
+                ) {
+                    Column() {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = format.format(apartment.price),
+                                fontSize = MaterialTheme.typography.h5.fontSize
+                            )
+                            StarsChip(4.3, shape = RoundedSquareShape.large)
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            SquareChip(
+                                icon = Icons.Outlined.Bathtub,
+                                foregroundColor = MaterialTheme.colors.primary,
+                                text = "1 Bath"
+                            )
+                            SquareChip(
+                                icon = Icons.Outlined.Kitchen,
+                                foregroundColor = MaterialTheme.colors.primary,
+                                text = "1 Kitchen"
+                            )
+                            SquareChip(
+                                icon = Icons.Outlined.Bed,
+                                foregroundColor = MaterialTheme.colors.primary,
+                                text = "2 Beds"
+                            )
+                            SquareChip(
+                                icon = Icons.Outlined.Stairs,
+                                foregroundColor = MaterialTheme.colors.primary,
+                                text = "Floor 5"
+                            )
                         }
                     }
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(15.dp)
-                    ) {
+                            .padding(5.dp)
+                            .weight(3f)
+                            .verticalScroll(rememberScrollState())
+                    )
+                    {
                         Text(
-                            text = apartment.address,
-                            style = MaterialTheme.typography.h4,
-                            fontWeight = FontWeight.Bold,
+                            text = "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.",
+                            lineHeight = 35.sp
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Row() {
+                    }
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            elevation = ButtonDefaults.elevation(defaultElevation = 5.dp),
+                            onClick = { Toast.makeText(context, "Get contact inforamtion", Toast.LENGTH_SHORT).show() },
+                            shape = RoundedSquareShape.large
+                        ) {
                             Icon(
-                                imageVector = Icons.Filled.LocationOn,
-                                contentDescription = "Location",
-                                tint = RentlyGrayColor
+                                imageVector = Icons.Filled.Phone,
+                                contentDescription = "Contact Information"
                             )
-                            Spacer(modifier = Modifier.width(5.dp))
                             Text(
-                                text = apartment.city,
-                                style = MaterialTheme.typography.h5,
-                                color = RentlyGrayColor,
-                                fontWeight = FontWeight.Bold,
-
-                                )
+                                "Contact Information",
+                                style = MaterialTheme.typography.h6,
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
                 }
             }
-            Column(
+
+            Box(
                 modifier = Modifier
-                    .weight(6f)
                     .fillMaxWidth()
+                    .padding(10.dp),
+                contentAlignment = Alignment.TopEnd
             ) {
-                Column() {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = format.format(apartment.price),
-                            fontSize = MaterialTheme.typography.h5.fontSize
-                        )
-                        StarsChip(4.3, shape = RoundedSquareShape.large)
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        SquareChip(
-                            icon = Icons.Outlined.Bathtub,
-                            foregroundColor = MaterialTheme.colors.primary,
-                            text = "1 Bath"
-                        )
-                        SquareChip(
-                            icon = Icons.Outlined.Kitchen,
-                            foregroundColor = MaterialTheme.colors.primary,
-                            text = "1 Kitchen"
-                        )
-                        SquareChip(
-                            icon = Icons.Outlined.Bed,
-                            foregroundColor = MaterialTheme.colors.primary,
-                            text = "2 Beds"
-                        )
-                        SquareChip(
-                            icon = Icons.Outlined.Stairs,
-                            foregroundColor = MaterialTheme.colors.primary,
-                            text = "Floor 5"
-                        )
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                        .weight(3f)
-                        .verticalScroll(rememberScrollState())
-                )
-                {
-                    Text(
-                        text = "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.",
-                        lineHeight = 35.sp
+                FloatingActionButton(
+                    onClick = { Toast.makeText(context, "See on map clicked", Toast.LENGTH_SHORT).show() },
+                    shape = RoundedSquareShape.large,
+                    backgroundColor = MaterialTheme.colors.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "SeeOnMap",
+                        tint = Color.White,
+                        modifier = Modifier.padding(8.dp)
                     )
                 }
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+            }
+
+            Box(
+                modifier = Modifier
+                    .padding(10.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                Button(
+                    modifier = Modifier.alpha(0.6f),
+                    onClick = { Toast.makeText(context, "Back clicked", Toast.LENGTH_SHORT).show() },
+                    shape = RoundedSquareShape.large,
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)
                 ) {
-                    Button(
-                        elevation = ButtonDefaults.elevation(defaultElevation = 5.dp),
-                        onClick = { Toast.makeText(context, "Get contact inforamtion", Toast.LENGTH_SHORT).show() },
-                        shape = RoundedSquareShape.large
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Phone,
-                            contentDescription = "Contact Information"
-                        )
-                        Text(
-                            "Contact Information",
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBackIos,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
                 }
             }
         }
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            contentAlignment = Alignment.TopEnd
-        ) {
-            FloatingActionButton(
-                onClick = { Toast.makeText(context, "See on map clicked", Toast.LENGTH_SHORT).show() },
-                shape = RoundedSquareShape.large,
-                backgroundColor = MaterialTheme.colors.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.LocationOn,
-                    contentDescription = "SeeOnMap",
-                    tint = Color.White,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .padding(10.dp),
-            contentAlignment = Alignment.TopStart
-        ) {
-            Button(
-                modifier = Modifier.alpha(0.6f),
-                onClick = { Toast.makeText(context, "Back clicked", Toast.LENGTH_SHORT).show() },
-                shape = RoundedSquareShape.large,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBackIos,
-                    contentDescription = "Back",
-                    tint = Color.White
-                )
+    }
+    else{
+        RentlyTheme {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                CircularProgressIndicator()
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun NewSingleApartmentScreenPreview() {
-    val apartment = Constants.apartment
-    RentlyTheme() {
-        NewSingleApartmentScreen(apartment = apartment)
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun NewSingleApartmentScreenPreview() {
+//    val apartment = Constants.apartment
+//    RentlyTheme() {
+//        NewSingleApartmentScreen(apartment = apartment)
+//    }
+//}

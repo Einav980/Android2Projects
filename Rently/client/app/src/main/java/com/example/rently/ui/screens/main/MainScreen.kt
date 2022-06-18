@@ -90,7 +90,8 @@ fun BottomBar(navController: NavController) {
             AddItem(
                 screen = screen,
                 currentDestination = currentDestination,
-                navController = navController
+                navController = navController,
+                label = screen.title
             )
         }
     }
@@ -100,9 +101,13 @@ fun BottomBar(navController: NavController) {
 fun RowScope.AddItem(
     screen: BottomBarScreen,
     currentDestination: NavDestination?,
-    navController: NavController
+    navController: NavController,
+    label: String
 ) {
     BottomNavigationItem(
+        alwaysShowLabel = currentDestination?.hierarchy?.any {
+            it.route == screen.route
+        } == true,
         icon = {
             Icon(
                 modifier = Modifier.size(30.dp),
@@ -115,7 +120,8 @@ fun RowScope.AddItem(
         } == true,
         onClick = {
             navController.navigate(screen.route)
-        }
+        },
+        label = {Text(text = label)}
     )
 }
 

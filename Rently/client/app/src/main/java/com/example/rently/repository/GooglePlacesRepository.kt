@@ -3,8 +3,8 @@ package com.example.rently.repository
 import android.util.Log
 import com.example.rently.Resource
 import com.example.rently.api.GooglePlacesApi
-import com.example.rently.model.GooglePrediction
-import com.example.rently.model.GooglePredictionsResponse
+import com.example.rently.model.google.GoogleLocationResponse
+import com.example.rently.model.google.GooglePredictionsResponse
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
@@ -18,6 +18,17 @@ class GooglePlacesRepository @Inject constructor(
         } catch (e: Exception) {
             Log.d("Rently", "Exception: ${e}")
             return Resource.Error("Failed prediction")
+        }
+
+        return Resource.Success(response)
+    }
+
+    suspend fun getAddressLocation(address: String): Resource<GoogleLocationResponse>{
+        val response = try {
+            api.getAddressLocation(address = address)
+        } catch (e: Exception) {
+            Log.d("Rently", "Exception: ${e}")
+            return Resource.Error("Failed getting address location")
         }
 
         return Resource.Success(response)

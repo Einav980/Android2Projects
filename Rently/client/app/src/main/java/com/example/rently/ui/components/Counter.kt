@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -38,7 +39,10 @@ fun Counter(
     Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = label, fontSize = labelSize, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(5.dp))
-        Row(
+        Box(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp)).background(backgroundColor), contentAlignment = Alignment.Center){
+            Text(modifier = Modifier.padding(5.dp), text = value.toString(), fontSize = fontSize)
+        }
+        /*Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -54,7 +58,7 @@ fun Counter(
                     )
                 },
             )
-            Text(modifier = Modifier.padding(15.dp), text = value.toString(), fontSize = fontSize)
+
             IconButton(
                 modifier = Modifier
                     .clip(CircleShape)
@@ -68,7 +72,7 @@ fun Counter(
                     )
                 },
             )
-        }
+        }*/
     }
 }
 
