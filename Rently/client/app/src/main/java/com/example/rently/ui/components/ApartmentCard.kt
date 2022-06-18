@@ -38,7 +38,6 @@ fun ApartmentCard(
     onDeleteApartment: (apartment: Apartment) -> Unit = {},
     onChangeApartmentStatus: (apartment: Apartment) -> Unit ={}
 ) {
-    val checkedState = remember { mutableStateOf(false) }
 
     RentlyApartmentCardTheme {
         Card(

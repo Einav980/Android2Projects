@@ -27,7 +27,6 @@ class ManageApartmentsViewModel @Inject constructor(
 ) : ViewModel() {
     val apartments = mutableStateListOf<Apartment>()
     val isLoading = mutableStateOf(false)
-    val checkedState = mutableStateOf(false)
 
     fun listUserApartments() {
         viewModelScope.launch {

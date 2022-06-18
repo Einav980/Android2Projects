@@ -1,17 +1,14 @@
 package com.example.rently.ui.screens.profile
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
-import com.example.rently.model.Apartment
 import com.example.rently.model.User
 import com.example.rently.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,8 +51,8 @@ class ProfileScreenViewModel @Inject constructor(private val repository: UserRep
                     is Resource.Success -> {
                         val data =  response.data!!
                         email.value = data.email
-                        lastname.value = data.lastName
-                        firstname.value = data.firstName
+                        lastname.value = data.lastname
+                        firstname.value = data.firstname
                         phone.value = data.phone
                     }
                     else -> {

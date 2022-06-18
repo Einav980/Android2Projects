@@ -1,7 +1,6 @@
 package com.example.rently.ui.screens
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -73,7 +72,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = "${user.firstName} ${user.lastName}")
+                    Text(text = "${user.firstname} ${user.lastname}")
                 }
                 Row(
                     modifier = Modifier
