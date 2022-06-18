@@ -20,7 +20,7 @@ import com.example.rently.ui.theme.RentlyTheme
 @Composable
 fun ManageApartmentTypeScreen(
     viewModel: ManageApartmentTypeViewModel = hiltViewModel(),
-    onAddClicked: (typeName: String) -> Unit
+//    onAddClicked: (typeName: String) -> Unit
 ) {
     val context = LocalContext.current
     var typeName by remember { mutableStateOf("") }
@@ -100,5 +100,5 @@ fun ManageApartmentTypeScreen(
 @Preview(showBackground = true)
 @Composable
 fun ManageApartmentTypeScreenPreview() {
-    ManageApartmentTypeScreen(onAddClicked = {})
+    ManageApartmentTypeScreen(/*onAddClicked = {}*/)
 }
