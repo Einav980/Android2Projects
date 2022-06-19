@@ -1,6 +1,9 @@
 package com.example.rently.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -25,9 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rently.ui.theme.RentlyTheme
-import com.example.rently.ui.theme.RoundedSquareShape
-import com.example.rently.ui.theme.Varela
+import com.example.rently.ui.theme.*
 
 @Composable
 fun Chip(
@@ -118,6 +119,42 @@ fun ChipGroup(
                     padding = PaddingValues(start = 18.dp, end = 18.dp, top = 5.dp, bottom = 5.dp)
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+fun OutlinedChip(
+    text: String,
+    icon: ImageVector? = null,
+) {
+    val shape = RoundedCornerShape(32.dp)
+    val background = animateColorAsState(MaterialTheme.colors.background)
+    val textColor = animateColorAsState(MaterialTheme.colors.primary)
+    Box(
+        modifier = Modifier
+            .border(width = 1.dp, color = textColor.value, shape = shape)
+            .clip(shape)
+            .height(32.dp)
+            .background(background.value)
+            .padding(start = 12.dp, end = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Icon(imageVector = icon, contentDescription = "Icon", tint = textColor.value)
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+            Text(
+                text = text,
+                color = textColor.value,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

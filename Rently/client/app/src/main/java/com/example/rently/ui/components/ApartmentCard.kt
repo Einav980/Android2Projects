@@ -138,7 +138,6 @@ fun ApartmentCard(
                             .padding(10.dp)
                             .weight(2f),
                     )
-                    val format = NumberFormat.getCurrencyInstance()
                     val apartmentCardColor =
                         if (pageType != ApartmentPageType.Explore) {
                             if (apartment.status != ApartmentStatus.Available.status) {
@@ -149,6 +148,7 @@ fun ApartmentCard(
                         } else {
                             MaterialTheme.colors.primary
                         }
+                    val format = NumberFormat.getCurrencyInstance()
                     format.maximumFractionDigits = 0
                     format.currency = Currency.getInstance("ILS")
                     Column(
