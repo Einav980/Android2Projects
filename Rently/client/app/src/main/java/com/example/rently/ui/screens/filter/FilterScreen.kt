@@ -25,6 +25,7 @@ import com.example.rently.ui.components.*
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.*
+import com.example.rently.validation.presentation.FilterFormEvent
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -47,8 +48,7 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
     var selectedBalconyState by remember { mutableStateOf(false) }
     var selectedFurnishedState by remember { mutableStateOf(false) }
 
-
-
+    val state = viewModel.state
 
     var bedroomsNumberList = listOf("1+", "2+", "3+", "4+", "5+")
     var bathroomsNumberList = listOf("1+", "2+", "3+", "4+", "5+")
@@ -135,24 +135,26 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                 ) {
                     Section(title = "City", icon = Icons.Filled.LocationCity) {
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            RentlyTextField(
-                                modifier = Modifier
-                                    .weight(6f)
-                                    .padding(5.dp),
-                                value = city.value,
-                                onValueChange = { city.value = it },
-                                label = "Add City",
-                            )
-                            Button(
-                                shape = RoundedSquareShape.large,
-                                onClick = {
-                                    citiesList.add(city.value)
-                                    city.value = "" },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxSize()
-                            ){
-                                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
+                            Box(modifier = Modifier.weight(6f)){
+                                RentlyTextField(
+                                    modifier = Modifier
+                                        .padding(5.dp),
+                                    value = city.value,
+                                    onValueChange = { city.value = it },
+                                    label = "Add City",
+                                )
+                            }
+                            Box(modifier = Modifier.weight(1f)){
+                                Button(
+                                    shape = RoundedSquareShape.large,
+                                    onClick = {
+                                        citiesList.add(city.value)
+                                        city.value = "" },
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                ){
+                                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
+                                }
                             }
                         }
                         Column(modifier = Modifier.fillMaxWidth()) {
@@ -177,10 +179,9 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            var sliderPosition by remember { mutableStateOf(0.25f..0.75f)}
                             RangeSlider(
-                                values = sliderPosition,
-                                onValueChange = {sliderPosition = it},
+                                values = viewModel.priceRange,
+                                onValueChange = { viewModel.priceRangeChanged(it)},
                                 valueRange = 0f..1f
                             )
                             Box(
@@ -190,13 +191,13 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                     modifier = Modifier
                                         .align(Alignment.BottomStart)
                                         .padding(8.dp),
-                                    text = format.format((sliderPosition.toRange().lower * 10000).roundToInt())
+                                    text = format.format((state.priceRange.toRange().lower * 10000).roundToInt())
                                 )
                                 Text(
                                     modifier = Modifier
                                         .align(Alignment.BottomEnd)
                                         .padding(8.dp),
-                                    text = format.format((sliderPosition.toRange().upper * 10000).roundToInt())
+                                    text = format.format((state.priceRange.toRange().upper * 10000).roundToInt())
                                 )
                             }
                         }
@@ -205,10 +206,9 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            var sliderPosition by remember { mutableStateOf(0.5f)}
                             Slider(
-                                value = sliderPosition,
-                                onValueChange = {sliderPosition = it},
+                                value = state.size,
+                                onValueChange = {viewModel.onEvent(FilterFormEvent.SizeChanged(it))},
                             )
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -217,7 +217,7 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                     modifier = Modifier
                                         .align(Alignment.BottomEnd)
                                         .padding(8.dp),
-                                    text = "${ (sliderPosition * 150).roundToInt() } sqft"
+                                    text = "${ (state.size * 150).roundToInt() } sqft"
                                 )
                             }
                         }
@@ -279,13 +279,13 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                         }
                     }
                     Section(title = "Options", icon = Icons.Filled.List) {
-                        ToggleRow(text = "Parking", isChecked = selectedParkingState , onCheck = {selectedParkingState = !selectedParkingState})
+                        ToggleRow(text = "Parking", isChecked = selectedParkingState , onCheckedChange = {selectedParkingState = !selectedParkingState})
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Balcony",isChecked = selectedBalconyState , onCheck = { selectedBalconyState = !selectedBalconyState })
+                        ToggleRow(text = "Balcony",isChecked = selectedBalconyState , onCheckedChange = { selectedBalconyState = !selectedBalconyState })
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Animals Allowed",isChecked = selectedPetsState , onCheck = { selectedPetsState = !selectedPetsState })
+                        ToggleRow(text = "Animals Allowed",isChecked = selectedPetsState , onCheckedChange = { selectedPetsState = !selectedPetsState })
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Furnished",isChecked = selectedFurnishedState , onCheck = { selectedFurnishedState = !selectedFurnishedState})
+                        ToggleRow(text = "Furnished",isChecked = selectedFurnishedState , onCheckedChange = { selectedFurnishedState = !selectedFurnishedState})
                     }
                 }
             }
