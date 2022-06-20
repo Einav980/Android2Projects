@@ -1,7 +1,9 @@
 package com.example.rently.ui.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -20,23 +22,30 @@ fun RentlyTextField(
     maxLines: Int = 1,
     trailingIcon: @Composable() (() -> Unit)? = null,
     leadingIcon: @Composable() (() -> Unit)? = null,
-    keyboardType: KeyboardType = KeyboardType.Text
-
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false,
+    errorMessage: String = ""
 ) {
-    TextField(
-        modifier = modifier.fillMaxWidth(),
-        value = value,
-        onValueChange = onValueChange,
-        label = { label?.let { Text(text = it) } },
-        maxLines = maxLines,
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        colors = TextFieldDefaults.textFieldColors(
-            disabledIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        shape = RoundedSquareShape.large,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
-    )
+    Column {
+        TextField(
+            modifier = modifier.fillMaxWidth(),
+            value = value,
+            onValueChange = onValueChange,
+            label = { label?.let { Text(text = it) } },
+            maxLines = maxLines,
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
+            colors = TextFieldDefaults.textFieldColors(
+                disabledIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            isError = false,
+            shape = RoundedSquareShape.large,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
+        )
+        if(isError){
+            Text(text = errorMessage, color = MaterialTheme.colors.error)
+        }
+    }
 }

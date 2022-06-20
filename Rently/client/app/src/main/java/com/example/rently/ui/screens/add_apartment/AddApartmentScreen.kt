@@ -1,23 +1,18 @@
 package com.example.rently.ui.screens.add_apartment
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Base64
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -26,86 +21,57 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.rently.config.APARTMENT_DESCRIPTION_MAX_LENGTH
-import com.example.rently.model.Apartment
-import com.example.rently.model.ApartmentType
-import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.*
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.*
-import java.io.ByteArrayOutputStream
-import java.util.function.UnaryOperator
+import com.example.rently.validation.presentation.AddApartmentFormEvent
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
-    var addressInput by remember {
-        mutableStateOf("")
-    }
-
-    var apartmentDescription by remember {
-        mutableStateOf("")
-    }
-
-    var apartmentPrice by remember {
-        mutableStateOf(0)
-    }
 
     val context = LocalContext.current
-
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-
-    var imageEncodedString by remember {
-        mutableStateOf("")
-    }
-
-    val bitmap = remember {
-        mutableStateOf<Bitmap?>(null)
-    }
 
     var counter by remember {
         mutableStateOf(0)
     }
 
-    var apartmentTypeList =
-        listOf(
-            ApartmentType(type = "Grass"),
-            ApartmentType(type = "Apartment"),
-            ApartmentType(type = "Cottage"),
-        )
-    var selectedApartmentTypeIndex by remember { mutableStateOf(0) }
 
     val launcher = rememberLauncherForActivityResult(
         contract =
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        imageUri = uri
-        if (imageUri != null) {
-            bitmap.value = getImageBitmap(context = context, imageUri = imageUri!!)
-            imageEncodedString = convertImageToBase64(bitmap = bitmap.value!!)
-            if (imageEncodedString.isNotEmpty()) {
-                viewModel.uploadImage(imageEncodedString)
+        viewModel.apartmentImageUri.value = uri
+        if (uri != null) {
+            viewModel.apartmentImageBitmap.value = getImageBitmap(context = context, imageUri = uri)
+        }
+    }
+
+    val state = viewModel.state
+
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                is AddApartmentViewModel.ValidationEvent.Success -> {
+//                    viewModel.sendApartment()
+                    Toast.makeText(context, "Send Apartment", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+
+        viewModel.listApartmentTypes()
     }
 
     RentlyTheme {
@@ -116,29 +82,42 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                     elevation = 10.dp,
                     shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp)
                 ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        TextButton(onClick = { /*TODO*/ }) {
+                            Text(text = "Back")
+                        }
+                    }
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Button(onClick = { /*TODO*/ }) {
-                                Text(text = "Back")
-                            }
-                        }
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            text = "Add Apartment",
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center
+                        )
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 50.dp, end = 50.dp)
                         ) {
                             RentlyTextField(
-                                value = addressInput,
+                                value = state.address,
                                 onValueChange = {
-                                    addressInput = it
-                                    viewModel.onSearchAddressChange(it)
+                                    viewModel.onEvent(AddApartmentFormEvent.AddressChanged(it))
                                 },
                                 label = "Address",
+                                isError = state.addressError != null,
+                                errorMessage = state.addressError ?: "",
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Filled.LocationOn,
@@ -146,18 +125,18 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                                     )
                                 }
                             )
-                            if (viewModel.isLoading.value) {
+                            if (viewModel.placesLoading.value) {
                                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                             }
-                            if (viewModel.showPredictions.value) {
+                            if (state.showPredictions) {
                                 LazyColumn() {
                                     items(items = viewModel.predictions) { prediction ->
                                         Surface(
                                             modifier = Modifier
                                                 .clickable {
-                                                    addressInput = prediction.description
-                                                    viewModel.hidePredictions()
-                                                    viewModel.getAddressLocation(address = addressInput)
+                                                    viewModel.onEvent(AddApartmentFormEvent.AddressClicked(prediction.description))
+                                                    viewModel.onEvent(AddApartmentFormEvent.CityChanged(prediction.terms[2].value))
+                                                    viewModel.onEvent(AddApartmentFormEvent.HidePredictions)
                                                 }
                                                 .fillMaxWidth()
                                                 .background(MaterialTheme.colors.background)
@@ -181,11 +160,15 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                     shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Button(shape = RoundedSquareShape.large, onClick = {/*TODO*/ }) {
+                        Button(
+                            shape = RoundedSquareShape.large,
+                            onClick = { viewModel.onEvent(AddApartmentFormEvent.Submit) }) {
                             Icon(imageVector = Icons.Filled.Done, contentDescription = "Done")
                             Text(text = "Done")
                         }
@@ -213,8 +196,14 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                                 .fillMaxWidth()
                         ) {
                             RentlyTextField(
-                                value = apartmentDescription,
-                                onValueChange = { apartmentDescription = it },
+                                value = state.description,
+                                onValueChange = {
+                                    viewModel.onEvent(
+                                        AddApartmentFormEvent.DescriptionChanged(it)
+                                    )
+                                },
+                                isError = state.descriptionError != null,
+                                errorMessage = state.descriptionError ?: "",
                                 label = "Description"
                             )
                         }
@@ -232,9 +221,9 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                                     .size(150.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                if (imageUri != null) {
+                                if (viewModel.apartmentImageUri.value != null) {
                                     Image(
-                                        bitmap = bitmap.value!!.asImageBitmap(),
+                                        bitmap = viewModel.apartmentImageBitmap.value!!.asImageBitmap(),
                                         contentDescription = null,
                                         modifier = Modifier
                                             .fillMaxSize(),
@@ -255,43 +244,76 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                     Section(title = "Price", icon = Icons.Filled.Sell) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             RentlyTextField(
-                                value = apartmentPrice.toString(),
-                                onValueChange = { apartmentPrice = it.toInt() },
+                                value = state.price.toString(),
+                                onValueChange = { viewModel.onEvent(AddApartmentFormEvent.PriceChanged(it.toInt())) },
                                 label = "Price",
+                                isError = state.priceError != null,
+                                errorMessage = state.priceError ?: "",
+                                keyboardType = KeyboardType.Number
+                            )
+                        }
+                    }
+                    Section(title = "Size", icon = Icons.Filled.Straighten) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            RentlyTextField(
+                                value = state.size.toString(),
+                                onValueChange = { viewModel.onEvent(AddApartmentFormEvent.SizeChanged(it.toInt())) },
+                                label = "Sqft",
+                                isError = state.sizeError != null,
+                                errorMessage = state.sizeError ?: "",
                                 keyboardType = KeyboardType.Number
                             )
                         }
                     }
                     Section(title = "Type", icon = Icons.Filled.HomeWork) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentPadding = PaddingValues(10.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                itemsIndexed(items = apartmentTypeList) { index, apartmentType ->
-                                    OutlinedChoiceChip(
-                                        text = apartmentType.type,
-                                        chosen = index == selectedApartmentTypeIndex,
-                                        onSelect = { selectedApartmentTypeIndex = index },
-                                        icon = getIconResourceByName(name = apartmentType.type)
-                                    )
+                            if (viewModel.apartmentTypesLoading.value) {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            } else {
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentPadding = PaddingValues(10.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    itemsIndexed(items = viewModel.apartmentTypes) { index, apartmentType ->
+                                        OutlinedChoiceChip(
+                                            text = apartmentType.type,
+                                            chosen = index == viewModel.apartmentTypeSelectedIndex.value,
+                                            onSelect = {
+                                                viewModel.apartmentTypeSelectedIndex.value = index
+                                            },
+                                            icon = getIconResourceByName(name = apartmentType.type)
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                     Section(title = "Options", icon = Icons.Filled.List) {
-                        when (apartmentTypeList[selectedApartmentTypeIndex].type) {
-                            "Apartment" -> {
-                                ApartmentOptions()
-                            }
-                            else -> {
-                                Text(text = "In Construction")
-                            }
-                        }
+                        Options(
+                            parkingOptionChecked = state.hasParking,
+                            balconyOptionChecked = state.hasBalcony,
+                            animalsOptionChecked = state.isAnimalFriendly,
+                            furnishedOptionChecked = state.isFurnished,
+                            onParkingOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.HasParkingChanged(it)) },
+                            onBalconyOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.HasBalconyChanged(it)) },
+                            onAnimalsOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.IsAnimalFriendlyChanged(it)) },
+                            onFurnishedOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.IsFurnishedChanged(it)) })
                     }
                 }
             }
+        }
+        if (viewModel.apartmentIsUploading.value) {
+            AlertDialog(
+                onDismissRequest = { /*TODO*/ },
+                title = { Text("Title") },
+                buttons = {},
+                text = { CircularProgressIndicator() })
         }
     }
 }
@@ -304,13 +326,30 @@ fun AddApartmentScreenPreview() {
 }
 
 @Composable
-fun ApartmentOptions() {
-    ToggleRow(text = "Parking", onCheck = { /*TODO*/ })
+fun Options(
+    parkingOptionChecked: Boolean,
+    balconyOptionChecked: Boolean,
+    animalsOptionChecked: Boolean,
+    furnishedOptionChecked: Boolean,
+    onParkingOptionToggle: (Boolean) -> Unit,
+    onBalconyOptionToggle: (Boolean) -> Unit,
+    onAnimalsOptionToggle: (Boolean) -> Unit,
+    onFurnishedOptionToggle: (Boolean) -> Unit,
+) {
+    ToggleRow(text = "Parking", isChecked = parkingOptionChecked, onCheckedChange = {onParkingOptionToggle(it)})
     Spacer(modifier = Modifier.height(10.dp))
-    ToggleRow(text = "Balcony", onCheck = { /*TODO*/ })
+    ToggleRow(text = "Balcony", isChecked = balconyOptionChecked, onCheckedChange = {onBalconyOptionToggle(it)})
     Spacer(modifier = Modifier.height(10.dp))
-    ToggleRow(text = "Animals Allowed", onCheck = { /*TODO*/ })
+    ToggleRow(
+        text = "Animals Allowed",
+        isChecked = animalsOptionChecked,
+        onCheckedChange = {onAnimalsOptionToggle(it)}
+    )
     Spacer(modifier = Modifier.height(10.dp))
-    ToggleRow(text = "Furnished", onCheck = { /*TODO*/ })
+    ToggleRow(
+        text = "Furnished",
+        isChecked = furnishedOptionChecked,
+        onCheckedChange = {onFurnishedOptionToggle(it)}
+    )
 }
 

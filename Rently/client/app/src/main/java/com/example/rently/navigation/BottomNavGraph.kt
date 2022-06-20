@@ -58,9 +58,7 @@ fun BottomNavGraph(
             ManageApartmentsScreen(
                 navController = navController,
                 sharedViewModel = sharedViewModel,
-                onAddApartmentClicked = {
-                    navController.navigate(Screen.AddApartment.route)
-                })
+            )
         }
 
         composable(route = Screen.SingleApartment.route) {

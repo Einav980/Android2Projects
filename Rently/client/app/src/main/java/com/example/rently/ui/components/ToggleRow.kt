@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.rently.ui.theme.RoundedSquareShape
 
 @Composable
-fun ToggleRow(text: String, isChecked: Boolean = false, onCheck: () -> Unit, style: TextStyle = MaterialTheme.typography.body1) {
+fun ToggleRow(text: String, isChecked: Boolean = false, onCheckedChange: (Boolean) -> Unit, style: TextStyle = MaterialTheme.typography.body1) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -29,12 +29,12 @@ fun ToggleRow(text: String, isChecked: Boolean = false, onCheck: () -> Unit, sty
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = text, style = style)
-        Switch(checked = isChecked, onCheckedChange = { onCheck() })
+        Switch(checked = isChecked, onCheckedChange = { onCheckedChange(it) })
     }
 }
 
 @Preview
 @Composable
 fun ToggleRowPreview() {
-    ToggleRow(text = "Is parking included?", onCheck = {})
+    ToggleRow(text = "Is parking included?", onCheckedChange = {})
 }
