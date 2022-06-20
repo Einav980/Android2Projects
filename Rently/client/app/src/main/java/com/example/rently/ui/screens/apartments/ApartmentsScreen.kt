@@ -4,21 +4,26 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
+import com.example.rently.ui.screens.manageApartments.TopBarTitle
 import com.example.rently.ui.theme.RentlyDrawerItemBackground
+import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.ApartmentStatus
 import com.squareup.moshi.Moshi
 
@@ -44,6 +49,9 @@ fun ApartmentsScreen(
             floatingActionButton = {
                 FloatingButton()
             },
+            topBar = {
+                TopBarTitle(navController)
+            },
             content = {
                 LazyColumn(
                     modifier = Modifier
@@ -51,7 +59,7 @@ fun ApartmentsScreen(
                     contentPadding = PaddingValues(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(items = viewModel.apartments.value) { apartment ->
+                    items(items = viewModel.apartments) { apartment ->
                         ApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
                             sharedViewModel.setApartment(it)
                             navController.navigate(Screen.SingleApartment.route)
@@ -71,6 +79,43 @@ fun FloatingButton() {
         onClick = { }
     ) {
         Icon(Icons.Filled.Place, "", modifier = Modifier.size(30.dp))
+    }
+}
+
+@Composable
+fun TopBarTitle(navController: NavHostController) {
+    TopAppBar(
+        elevation = 50.dp,
+        modifier = Modifier
+            .wrapContentSize(),
+        backgroundColor = Color.White,
+    ) {
+        Button(
+            modifier = Modifier
+                .padding(10.dp)
+                .weight(1f)
+                .fillMaxWidth(),
+            shape = RoundedSquareShape.large,
+            onClick = {
+                navController.navigate(Screen.Filter.route) {
+                    popUpTo(Screen.Filter.route)
+                }
+            }
+        ) {
+            Icon(imageVector = Icons.Filled.FilterAlt, contentDescription = "Filter")
+        }
+        Text(
+            modifier = Modifier
+                .padding(10.dp)
+                .weight(5f)
+                .fillMaxWidth(),
+            text = "Apartments",
+            style = MaterialTheme.typography.h3,
+            textAlign = TextAlign.Center,
+            color = Color.Black,
+            fontSize = 30.sp
+        )
+
     }
 }
 

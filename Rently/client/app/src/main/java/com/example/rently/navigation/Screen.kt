@@ -15,6 +15,7 @@ sealed class Screen(val route: String){
     object Apartments: Screen(route = "apartments_screen")
     object SingleApartment: Screen(route = "single_apartment_screen/{apartment}")
     object ManageApartmentType: Screen(route = "manage_apartment_screen")
+    object Filter: Screen(route = "filter_screen")
     object Splash: Screen(route = "splash_screen")
     object Map: Screen(route = "map_screen/{lat}/{lng}"){
         fun passLatLng(lat: Double, lng: Double): String{

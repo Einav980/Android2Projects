@@ -17,6 +17,7 @@ import com.example.rently.ui.screens.*
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
+import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.login.LoginScreen
 import com.example.rently.ui.screens.map.MapScreen
 import com.example.rently.ui.screens.single_apartment.NewSingleApartmentScreen
@@ -38,7 +39,7 @@ fun SetupNavGraph(
 ) {
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.AddApartment.route,
+        startDestination = Screen.Splash.route,
     ) {
         composable(
             route = Screen.Details.route
@@ -107,8 +108,15 @@ fun SetupNavGraph(
         composable(
             route = Screen.ManageApartmentType.route
         ) {
-            ManageApartmentTypeScreen(onAddClicked = {})
+            ManageApartmentTypeScreen(/*onAddClicked = {}*/)
         }
+
+        composable(
+            route = Screen.Filter.route
+        ) {
+            FilterScreen(navController = navController)
+        }
+
         composable(
             route = Screen.Splash.route
         ) {

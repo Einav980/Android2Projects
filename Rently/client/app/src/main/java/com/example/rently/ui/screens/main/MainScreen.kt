@@ -1,53 +1,32 @@
 package com.example.rently.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.ButtonDefaults.elevation
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.rently.R
 import com.example.rently.navigation.*
 import com.example.rently.ui.screens.main.MainScreenViewModel
-import com.example.rently.ui.theme.RentlyDrawerItemBackground
-import com.example.rently.ui.theme.RentlyPrimaryVariantColor
-import com.example.rently.ui.theme.RentlySecondaryColor
 import com.example.rently.ui.theme.RentlyTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.example.rently.util.UserType
 
 
+@RequiresApi(Build.VERSION_CODES.N)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
@@ -56,9 +35,12 @@ fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
+
+    viewModel.getLoggedInUserPermissions()
+
     RentlyTheme {
         Scaffold(
-            bottomBar = { BottomBar(navController = navController) },
+            bottomBar = { BottomBar(navController = navController, userType = viewModel.userType.value) },
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 BottomNavGraph(navController = navController, onLogout = onLogout)
@@ -68,13 +50,9 @@ fun MainScreen(
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
-    val screens = listOf(
-        BottomBarScreen.Apartments,
-        BottomBarScreen.ManageApartments,
-        BottomBarScreen.Favorites,
-        BottomBarScreen.Profile
-    )
+fun BottomBar(navController: NavController, userType: UserType) {
+
+    val screens = navListForUserType(userType)
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -125,6 +103,23 @@ fun RowScope.AddItem(
     )
 }
 
+@Composable
+fun navListForUserType(userType: UserType) : List<BottomBarScreen>{
+    if (userType.equals(UserType.Normal)){
+        return listOf(BottomBarScreen.Apartments,
+            BottomBarScreen.ManageApartments,
+            BottomBarScreen.Watchlist,
+            BottomBarScreen.Profile)
+    }
+    else {
+        return listOf(BottomBarScreen.Apartments,
+            BottomBarScreen.AdminManageApartments,
+            BottomBarScreen.AdminManageApartmentsType,
+            BottomBarScreen.Profile)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.N)
 @Preview
 @Composable
 fun MainScreenPreview() {

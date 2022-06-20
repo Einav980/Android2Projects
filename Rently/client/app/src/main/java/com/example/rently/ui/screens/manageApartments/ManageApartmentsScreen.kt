@@ -86,6 +86,7 @@ fun FloatingButton() {
 @Composable
 fun TopBarTitle() {
     TopAppBar(
+        elevation = 50.dp,
         modifier = Modifier
             .wrapContentSize(),
         backgroundColor = Color.White

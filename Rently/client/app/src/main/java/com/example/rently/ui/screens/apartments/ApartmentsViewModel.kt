@@ -1,6 +1,7 @@
 package com.example.rently.ui.screens.apartments
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.rently.Resource
 import com.example.rently.model.Apartment
 import com.example.rently.model.User
 import com.example.rently.repository.ApartmentRepository
+import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -15,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ApartmentsViewModel @Inject constructor(private val repository: ApartmentRepository): ViewModel(){
-    val apartments = mutableStateOf(ArrayList<Apartment>())
+    val apartments = mutableStateListOf<Apartment>()
     val isLoading = mutableStateOf(false)
 
     fun listApartments() {
@@ -24,7 +26,7 @@ class ApartmentsViewModel @Inject constructor(private val repository: ApartmentR
             val response = repository.listApartments()
             when(response){
                 is Resource.Success -> {
-                    apartments.value = response.data!!
+                    apartments.addAll(response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status })
                 }
             }
 
