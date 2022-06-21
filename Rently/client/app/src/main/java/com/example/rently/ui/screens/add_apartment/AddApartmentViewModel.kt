@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.Apartment
 import com.example.rently.model.ApartmentType
+import com.example.rently.model.google.GoogleLocation
 import com.example.rently.model.google.GooglePrediction
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.GooglePlacesRepository
@@ -17,9 +18,12 @@ import com.example.rently.util.convertImageToBase64
 import com.example.rently.validation.presentation.AddApartmentFormEvent
 import com.example.rently.validation.use_case.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,11 +54,21 @@ class AddApartmentViewModel @Inject constructor(
     var predictions = mutableStateListOf<GooglePrediction>()
     var apartmentTypes = mutableStateListOf<ApartmentType>()
 
-    fun onEvent(event: AddApartmentFormEvent){
-        when(event){
+    init {
+        loadApartmentTypes()
+    }
+
+    fun onEvent(event: AddApartmentFormEvent) {
+        when (event) {
+            is AddApartmentFormEvent.Submit -> {
+                submitData()
+            }
+
             is AddApartmentFormEvent.AddressChanged -> {
-                state = state.copy(address = event.address, showPredictions = true)
-                getPredictions(state.address)
+                viewModelScope.launch {
+                    state = state.copy(address = event.address, showPredictions = true)
+                    getPredictions(state.address)
+                }
             }
 
             is AddApartmentFormEvent.AddressClicked -> {
@@ -101,14 +115,48 @@ class AddApartmentViewModel @Inject constructor(
                 state = state.copy(city = event.city)
             }
 
-            is AddApartmentFormEvent.Submit -> {
-                submitData()
+            is AddApartmentFormEvent.BedroomsAmountChanged -> {
+                state = state.copy(numberOfBedrooms = event.numberOfBedrooms)
             }
+
+            is AddApartmentFormEvent.BathroomsAmountChanged -> {
+                state = state.copy(numberOfBathrooms = event.numberOfBathrooms)
+            }
+
+            is AddApartmentFormEvent.ApartmentTypeChanged -> {
+                state = state.copy(selectedApartmentTypeIndex = event.index)
+            }
+
+            is AddApartmentFormEvent.ApartmentUploadingStateChanged -> {
+                state = state.copy(apartmentIsUploading = event.state)
+            }
+
         }
     }
 
-    private fun clearAllErrors(){
-        state = state.copy(addressError = null, descriptionError = null, priceError = null, sizeError = null)
+    private fun loadApartmentTypes() {
+        viewModelScope.launch {
+            state = state.copy(isApartmentTypesLoading = true)
+            val response = apartmentRepository.listApartmentTypes()
+            when (response) {
+                is Resource.Success -> {
+                    state = state.copy(apartmentTypes = response.data!!)
+                }
+                else -> {
+                    Log.d("Rently", "Error listing apartment types")
+                }
+            }
+            state = state.copy(isApartmentTypesLoading = false)
+        }
+    }
+
+    private fun clearAllErrors() {
+        state = state.copy(
+            addressError = null,
+            descriptionError = null,
+            priceError = null,
+            sizeError = null
+        )
     }
 
     private fun submitData() {
@@ -118,9 +166,10 @@ class AddApartmentViewModel @Inject constructor(
         val priceResult = validatePrice.execute(state.price)
         val sizeResult = validateSize.execute(state.size)
 
-        val hasError = listOf(addressResult, descriptionResult, priceResult, sizeResult).any { !it.successful }
+        val hasError =
+            listOf(addressResult, descriptionResult, priceResult, sizeResult).any { !it.successful }
 
-        if(hasError){
+        if (hasError) {
             state = state.copy(
                 addressError = addressResult.errorMessage,
                 descriptionError = descriptionResult.errorMessage,
@@ -129,106 +178,129 @@ class AddApartmentViewModel @Inject constructor(
             )
             return
         }
+
         viewModelScope.launch {
             clearAllErrors()
-            validationEventChannel.send(ValidationEvent.Success)
+            addApartment()
         }
     }
 
-    private fun getPredictions(address: String) {
-        viewModelScope.launch {
-            placesLoading.value = true
-            val response = googleRepository.getPredictions(input = address)
+    private suspend fun getPredictions(address: String) {
+        placesLoading.value = true
+        val response = googleRepository.getPredictions(input = address)
+        when (response) {
+            is Resource.Success -> {
+                predictions = response?.data?.predictions!!.toMutableStateList()
+            }
+        }
+        placesLoading.value = false
+    }
+
+    suspend fun listApartmentTypes(): List<ApartmentType> {
+        apartmentTypesLoading.value = true
+        val response = apartmentRepository.listApartmentTypes()
+        val types = if (response is Resource.Success) {
+            return response.data!!
+        } else return emptyList()
+        apartmentTypesLoading.value = false
+    }
+
+
+    private suspend fun addApartment() {
+        validationEventChannel.send(ValidationEvent.ApartmentUploading)
+
+        val apartmentEncodedString = convertImageToBase64(bitmap = apartmentImageBitmap.value!!)
+
+        val imageUploadResponse = uploadImage(apartmentEncodedString)
+        if (imageUploadResponse.isEmpty()) {
+            validationEventChannel.send(ValidationEvent.ApartmentUploadError)
+            return
+        }
+
+        state = state.copy(apartmentImageUrl = imageUploadResponse)
+
+        val location = getAddressLocation(state.address)
+        if (location == null) {
+            validationEventChannel.send(ValidationEvent.ApartmentUploadError)
+            return
+        }
+
+        state = state.copy(apartmentAddressLocation = location)
+
+        val apartment = Apartment(
+            address = state.address,
+            city = state.city,
+            type = "Apartment",
+            size = state.size,
+            hasBalcony = state.hasBalcony,
+            hasParking = state.hasParking,
+            isAnimalsFriendly = state.isAnimalFriendly,
+            isFurnished = state.isFurnished,
+            price = state.price,
+            imageUrl = state.apartmentImageUrl,
+            location = state.apartmentAddressLocation,
+            numberOfBaths = state.numberOfBathrooms,
+            numberOfBeds = state.numberOfBedrooms,
+        )
+
+        val apartmentUploadResponse = uploadApartment(apartment)
+        if(!apartmentUploadResponse){
+            validationEventChannel.send(ValidationEvent.ApartmentUploadError)
+            return
+        }
+
+        validationEventChannel.send(ValidationEvent.ApartmentUploadSuccess)
+
+    }
+
+    private suspend fun uploadApartment(apartment: Apartment): Boolean {
+        return withContext(Dispatchers.IO) {
+            val response = apartmentRepository.addApartment(apartment)
             when (response) {
                 is Resource.Success -> {
-                    predictions = response?.data?.predictions!!.toMutableStateList()
+                    true
+                }
+                else -> {
+                    false
                 }
             }
-
-            placesLoading.value = false
         }
     }
 
-    fun listApartmentTypes() {
-        viewModelScope.launch {
-            apartmentTypesLoading.value = true
-            val response = apartmentRepository.listApartmentTypes()
-            when (response) {
-                is Resource.Success -> {
-                    apartmentTypes = response?.data?.toMutableStateList()!!
-                }
-            }
-            apartmentTypesLoading.value = false
-        }
-    }
-
-    fun sendApartment() {
-        apartmentIsUploading.value = true
-        viewModelScope.launch {
-            if (apartmentImageBitmap.value != null) {
-                apartmentImageEncodedString.value =
-                    convertImageToBase64(bitmap = apartmentImageBitmap.value!!)
-                val imageUploadResponse =
-                    imagesRepository.uploadImage(apartmentImageEncodedString.value)
-                when (imageUploadResponse) {
-                    is Resource.Success -> {
-                        apartmentUploadedImageUrl.value = imageUploadResponse.data!!.data.url
-                        val apartment = Apartment(
-                            address = state.address,
-                            city = state.city,
-                            type = apartmentTypes[apartmentTypeSelectedIndex.value].type,
-                            size = state.size,
-                            hasBalcony = state.hasBalcony,
-                            hasParking = state.hasParking,
-                            isAnimalsFriendly = state.isAnimalFriendly,
-                            isFurnished = state.isFurnished,
-                            price = state.price,
-                            imageUrl = apartmentUploadedImageUrl.value
-                        )
-                        val response = apartmentRepository.addApartment(apartment)
-                        when (response) {
-                            is Resource.Success -> {
-                                Log.d("Rently", "Apartment has been added successfully!")
-                            }
-                        }
-                    }
-                }
-            }
-            apartmentIsUploading.value = false
-        }
-    }
-
-    fun uploadImage(imageBase64: String): String {
-        var uploadedImageUrl = ""
-        viewModelScope.launch {
+    private suspend fun uploadImage(imageBase64: String): String {
+        return withContext(Dispatchers.IO) {
             val response = imagesRepository.uploadImage(image = imageBase64)
             when (response) {
                 is Resource.Success -> {
-                    uploadedImageUrl = response.data?.data!!.url
+                    Log.d("Rently", "Upload image succesfully")
+                    response.data?.data!!.url
                 }
                 else -> {
-                    uploadedImageUrl = "error"
+                    ""
                 }
             }
         }
-        return uploadedImageUrl
     }
 
-    fun getAddressLocation(address: String) {
-        viewModelScope.launch {
+    private suspend fun getAddressLocation(address: String): GoogleLocation? {
+        return withContext(Dispatchers.IO) {
             val response = googleRepository.getAddressLocation(address = address)
             when (response) {
                 is Resource.Success -> {
-                    Log.d("Rently", "Address location: ${response.data?.results!![0].geometry}")
+                    Log.d("Rently", "Got address location successfully!")
+                    response.data!!.results[0].geometry.location
                 }
                 else -> {
-                    Log.d("Rently", "Error has occured")
+                    null
                 }
             }
         }
     }
 
     sealed class ValidationEvent {
-        object Success: ValidationEvent()
+        object Success : ValidationEvent()
+        object ApartmentUploading : ValidationEvent()
+        object ApartmentUploadSuccess : ValidationEvent()
+        object ApartmentUploadError : ValidationEvent()
     }
 }

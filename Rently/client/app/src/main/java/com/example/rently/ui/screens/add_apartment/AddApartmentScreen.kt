@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,10 +45,11 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
 
-    var counter by remember {
-        mutableStateOf(0)
-    }
+    val state = viewModel.state
 
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var showLoadingDialog by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract =
@@ -59,14 +61,22 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
         }
     }
 
-    val state = viewModel.state
 
     LaunchedEffect(key1 = context) {
         viewModel.validationEvents.collect { event ->
             when (event) {
-                is AddApartmentViewModel.ValidationEvent.Success -> {
-//                    viewModel.sendApartment()
-                    Toast.makeText(context, "Send Apartment", Toast.LENGTH_SHORT).show()
+                is AddApartmentViewModel.ValidationEvent.ApartmentUploading -> {
+                    showLoadingDialog = true
+                }
+
+                is AddApartmentViewModel.ValidationEvent.ApartmentUploadSuccess -> {
+                    showLoadingDialog = false
+                    showSuccessDialog = true
+                }
+
+                is AddApartmentViewModel.ValidationEvent.ApartmentUploadError -> {
+                    showLoadingDialog = false
+                    showErrorDialog = true
                 }
             }
         }
@@ -134,8 +144,16 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                                         Surface(
                                             modifier = Modifier
                                                 .clickable {
-                                                    viewModel.onEvent(AddApartmentFormEvent.AddressClicked(prediction.description))
-                                                    viewModel.onEvent(AddApartmentFormEvent.CityChanged(prediction.terms[2].value))
+                                                    viewModel.onEvent(
+                                                        AddApartmentFormEvent.AddressClicked(
+                                                            prediction.description
+                                                        )
+                                                    )
+                                                    viewModel.onEvent(
+                                                        AddApartmentFormEvent.CityChanged(
+                                                            prediction.terms[2].value
+                                                        )
+                                                    )
                                                     viewModel.onEvent(AddApartmentFormEvent.HidePredictions)
                                                 }
                                                 .fillMaxWidth()
@@ -245,7 +263,13 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             RentlyTextField(
                                 value = state.price.toString(),
-                                onValueChange = { viewModel.onEvent(AddApartmentFormEvent.PriceChanged(it.toInt())) },
+                                onValueChange = {
+                                    viewModel.onEvent(
+                                        AddApartmentFormEvent.PriceChanged(
+                                            it.toInt()
+                                        )
+                                    )
+                                },
                                 label = "Price",
                                 isError = state.priceError != null,
                                 errorMessage = state.priceError ?: "",
@@ -257,7 +281,13 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             RentlyTextField(
                                 value = state.size.toString(),
-                                onValueChange = { viewModel.onEvent(AddApartmentFormEvent.SizeChanged(it.toInt())) },
+                                onValueChange = {
+                                    viewModel.onEvent(
+                                        AddApartmentFormEvent.SizeChanged(
+                                            it.toInt()
+                                        )
+                                    )
+                                },
                                 label = "Sqft",
                                 isError = state.sizeError != null,
                                 errorMessage = state.sizeError ?: "",
@@ -267,7 +297,7 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                     }
                     Section(title = "Type", icon = Icons.Filled.HomeWork) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            if (viewModel.apartmentTypesLoading.value) {
+                            if (state.isApartmentTypesLoading) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth(),
                                     contentAlignment = Alignment.Center
@@ -280,12 +310,16 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                                     contentPadding = PaddingValues(10.dp),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    itemsIndexed(items = viewModel.apartmentTypes) { index, apartmentType ->
+                                    itemsIndexed(items = state.apartmentTypes) { index, apartmentType ->
                                         OutlinedChoiceChip(
                                             text = apartmentType.type,
-                                            chosen = index == viewModel.apartmentTypeSelectedIndex.value,
+                                            chosen = index == state.selectedApartmentTypeIndex,
                                             onSelect = {
-                                                viewModel.apartmentTypeSelectedIndex.value = index
+                                                viewModel.onEvent(
+                                                    AddApartmentFormEvent.ApartmentTypeChanged(
+                                                        index
+                                                    )
+                                                )
                                             },
                                             icon = getIconResourceByName(name = apartmentType.type)
                                         )
@@ -294,26 +328,176 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                             }
                         }
                     }
+                    Section(title = "Rooms", icon = Icons.Filled.Room) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Counter(
+                                value = state.numberOfBedrooms,
+                                onValueChanged = {
+                                    viewModel.onEvent(
+                                        AddApartmentFormEvent.BedroomsAmountChanged(it)
+                                    )
+                                },
+                                icon = Icons.Filled.Bed
+                            )
+                            Counter(
+                                value = state.numberOfBathrooms,
+                                onValueChanged = {
+                                    viewModel.onEvent(
+                                        AddApartmentFormEvent.BathroomsAmountChanged(it)
+                                    )
+                                },
+                                icon = Icons.Filled.Bathtub
+                            )
+                        }
+                    }
                     Section(title = "Options", icon = Icons.Filled.List) {
                         Options(
                             parkingOptionChecked = state.hasParking,
                             balconyOptionChecked = state.hasBalcony,
                             animalsOptionChecked = state.isAnimalFriendly,
                             furnishedOptionChecked = state.isFurnished,
-                            onParkingOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.HasParkingChanged(it)) },
-                            onBalconyOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.HasBalconyChanged(it)) },
-                            onAnimalsOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.IsAnimalFriendlyChanged(it)) },
-                            onFurnishedOptionToggle = { viewModel.onEvent(AddApartmentFormEvent.IsFurnishedChanged(it)) })
+                            onParkingOptionToggle = {
+                                viewModel.onEvent(
+                                    AddApartmentFormEvent.HasParkingChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            onBalconyOptionToggle = {
+                                viewModel.onEvent(
+                                    AddApartmentFormEvent.HasBalconyChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            onAnimalsOptionToggle = {
+                                viewModel.onEvent(
+                                    AddApartmentFormEvent.IsAnimalFriendlyChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            onFurnishedOptionToggle = {
+                                viewModel.onEvent(
+                                    AddApartmentFormEvent.IsFurnishedChanged(
+                                        it
+                                    )
+                                )
+                            })
                     }
                 }
             }
         }
-        if (viewModel.apartmentIsUploading.value) {
+        if (showLoadingDialog) {
             AlertDialog(
-                onDismissRequest = { /*TODO*/ },
-                title = { Text("Title") },
+                onDismissRequest = { /* DO NOTHING */ },
+                title = {
+                    Text(
+                        text = "Uploading Apartment",
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
                 buttons = {},
-                text = { CircularProgressIndicator() })
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                })
+        }
+
+        if (showSuccessDialog) {
+            AlertDialog(
+                onDismissRequest = { /* DO NOTHING */ },
+                buttons = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(onClick = { showSuccessDialog = false }) {
+                            Text("OK")
+                        }
+                    }
+                },
+                title = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = Color.Green
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Success",
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                text = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Your apartment has been added succesfully!",
+                        textAlign = TextAlign.Center
+                    )
+                })
+        }
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { /* DO NOTHING */ },
+                buttons = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(onClick = { showErrorDialog = false }) {
+                            Text("OK")
+                        }
+                    }
+                },
+                title = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = Color.Green
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Error",
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                text = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Encountered an error while uploading your apartment\nPlease try again later",
+                        textAlign = TextAlign.Center
+                    )
+                })
         }
     }
 }
@@ -336,20 +520,26 @@ fun Options(
     onAnimalsOptionToggle: (Boolean) -> Unit,
     onFurnishedOptionToggle: (Boolean) -> Unit,
 ) {
-    ToggleRow(text = "Parking", isChecked = parkingOptionChecked, onCheckedChange = {onParkingOptionToggle(it)})
+    ToggleRow(
+        text = "Parking",
+        isChecked = parkingOptionChecked,
+        onCheckedChange = { onParkingOptionToggle(it) })
     Spacer(modifier = Modifier.height(10.dp))
-    ToggleRow(text = "Balcony", isChecked = balconyOptionChecked, onCheckedChange = {onBalconyOptionToggle(it)})
+    ToggleRow(
+        text = "Balcony",
+        isChecked = balconyOptionChecked,
+        onCheckedChange = { onBalconyOptionToggle(it) })
     Spacer(modifier = Modifier.height(10.dp))
     ToggleRow(
         text = "Animals Allowed",
         isChecked = animalsOptionChecked,
-        onCheckedChange = {onAnimalsOptionToggle(it)}
+        onCheckedChange = { onAnimalsOptionToggle(it) }
     )
     Spacer(modifier = Modifier.height(10.dp))
     ToggleRow(
         text = "Furnished",
         isChecked = furnishedOptionChecked,
-        onCheckedChange = {onFurnishedOptionToggle(it)}
+        onCheckedChange = { onFurnishedOptionToggle(it) }
     )
 }
 
