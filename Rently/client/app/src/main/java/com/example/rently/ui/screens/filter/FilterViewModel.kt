@@ -12,7 +12,6 @@ class FilterViewModel @Inject constructor() : ViewModel() {
 
     var state by mutableStateOf(FilterFormState())
 
-    var priceRange by mutableStateOf(0.25f..0.75f)
 
     fun onEvent(event: FilterFormEvent){
         when(event){
@@ -30,6 +29,10 @@ class FilterViewModel @Inject constructor() : ViewModel() {
 
             is FilterFormEvent.NumberOfBathroomsChanged -> {
                 state = state.copy(numberOfBathrooms = event.amount)
+            }
+
+            is FilterFormEvent.PropertyTypesChanged -> { //todo fix the property type in the ui
+                state = state.copy(propertyTypes = event.types)
             }
 
             is FilterFormEvent.NumberOfBedroomsChanged -> {
@@ -59,11 +62,6 @@ class FilterViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun priceRangeChanged(priceRange: ClosedFloatingPointRange<Float>){
-        this.priceRange = priceRange
-    }
-
-    fun filterData(){
-
+    private fun filterData() {
     }
 }

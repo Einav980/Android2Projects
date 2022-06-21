@@ -10,29 +10,26 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
-import com.example.rently.model.Apartment
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
-import com.example.rently.ui.screens.manageApartments.TopBarTitle
 import com.example.rently.ui.theme.RentlyDrawerItemBackground
 import com.example.rently.ui.theme.RoundedSquareShape
-import com.example.rently.util.ApartmentStatus
-import com.squareup.moshi.Moshi
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ApartmentsScreen(
     viewModel: ApartmentsViewModel = hiltViewModel(),
     navController: NavHostController,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    filterSharedViewModel: FilterSharedViewModel
 ) {
 //    var apartments = listOf<Apartment>(
 //        Apartment("Tel-Aviv", price = 7800, numberOfRooms = 3, address = "Dov Nov 16", numberOfBaths = 1, numberOfBeds = 2, size = 54, imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"),
@@ -43,7 +40,9 @@ fun ApartmentsScreen(
 //    var apartments = Apartment(_id = "test",status= ApartmentStatus.Available.status,  city= "Tel-Aviv", price = 7800, numberOfRooms = 3, address = "Dov Nov 16", numberOfBaths = 1, numberOfBeds = 2, size = 54, imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1")
 //    viewModel.addApartment(apartments)
 
-    viewModel.listApartments()
+    val state = filterSharedViewModel.state
+
+    viewModel.listApartments(state)
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             floatingActionButton = {
