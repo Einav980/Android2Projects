@@ -1,20 +1,19 @@
 package com.example.rently.model
 
 import android.os.Parcelable
+import com.example.rently.model.google.GoogleLocation
+import com.example.rently.model.google.GoogleLocationResponse
 import com.example.rently.util.ApartmentStatus
-import com.example.rently.util.ApartmentType
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.SerialName
 
 @Parcelize
 data class Apartment(
     val _id: String = "",
     val city: String = "",
-    val numberOfRooms: Int = 0,
+    val description: String = "",
     val numberOfBaths: Int = 0,
     val numberOfBeds: Int = 0,
-    val lat: Double = 0.0,
-    val lng: Double = 0.0,
+    val location: GoogleLocation = GoogleLocation(0, 0),
     val address: String = "",
     val size: Int = 0,
     val type: String = "",
@@ -28,8 +27,4 @@ data class Apartment(
     var hasParking: Boolean = false,
     var isAnimalsFriendly: Boolean = false,
     var isFurnished: Boolean = false
-) : Parcelable {
-//    override fun toString(): String {
-//        return "city: $city, price: $price"
-//    }
-}
+) : Parcelable
