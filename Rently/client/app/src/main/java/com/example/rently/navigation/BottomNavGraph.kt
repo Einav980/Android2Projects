@@ -13,7 +13,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
-import com.example.rently.ui.screens.DetailsScreen
 import com.example.rently.ui.screens.manageApartments.ManageApartmentsScreen
 import com.example.rently.ui.screens.ProfileScreen
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
@@ -24,6 +23,7 @@ import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.map.MapScreen
 import com.example.rently.ui.screens.single_apartment.NewSingleApartmentScreen
 import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
+import com.example.rently.ui.screens.watchList.WatchListScreen
 import com.google.android.gms.maps.model.LatLng
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -54,7 +54,7 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.Watchlist.route,
         ) {
-            DetailsScreen(navController = navController)
+            WatchListScreen(navController = navController, sharedViewModel = sharedViewModel)
         }
 
         composable(

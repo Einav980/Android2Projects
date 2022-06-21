@@ -45,11 +45,6 @@ fun SetupNavGraph(
         startDestination = Screen.Splash.route,
     ) {
         composable(
-            route = Screen.Details.route
-        ) {
-            DetailsScreen(navController = navController)
-        }
-        composable(
             route = Screen.MainPage.route
         ) {
             MainScreen(onFloatingButtonClicked = {
