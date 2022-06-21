@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.ui.screens.*
@@ -37,9 +38,11 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 fun SetupNavGraph(
     navController: NavHostController
 ) {
+    val filterSharedViewModel: FilterSharedViewModel = viewModel()
+
     AnimatedNavHost(
         navController = navController,
-        startDestination = Screen.Filter.route,
+        startDestination = Screen.Splash.route,
     ) {
         composable(
             route = Screen.Details.route
@@ -114,7 +117,7 @@ fun SetupNavGraph(
         composable(
             route = Screen.Filter.route
         ) {
-            FilterScreen(navController = navController)
+            FilterScreen(navController = navController, filterSharedViewModel = filterSharedViewModel)
         }
 
         composable(

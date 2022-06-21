@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.util.toRange
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.rently.FilterSharedViewModel
 import com.example.rently.model.ApartmentType
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.*
@@ -26,6 +27,7 @@ import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.*
 import com.example.rently.validation.presentation.FilterFormEvent
+import com.example.rently.validation.use_case.FilterFormState
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -35,21 +37,15 @@ import kotlin.math.roundToInt
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: NavHostController) {
+fun FilterScreen(
+    viewModel: FilterViewModel = hiltViewModel(),
+    navController: NavHostController,
+    filterSharedViewModel: FilterSharedViewModel
+) {
+
+    val state = viewModel.state //todo make the filter remember the search
 
     var city = mutableStateOf("")
-    var citiesList = remember { mutableStateListOf<String>() }
-    var selectedBedroomsIndex by remember { mutableStateOf(0) }
-    var selectedBathroomsIndex by remember { mutableStateOf(0) }
-    val selectedApartmentTypeIndex = remember { mutableStateListOf<Int>() }
-
-    var selectedParkingState by remember { mutableStateOf(false) }
-    var selectedPetsState by remember { mutableStateOf(false) }
-    var selectedBalconyState by remember { mutableStateOf(false) }
-    var selectedFurnishedState by remember { mutableStateOf(false) }
-
-    val state = viewModel.state
-
     var bedroomsNumberList = listOf("1+", "2+", "3+", "4+", "5+")
     var bathroomsNumberList = listOf("1+", "2+", "3+", "4+", "5+")
     var apartmentTypeList =
@@ -59,8 +55,6 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
             ApartmentType(type = "Grass"),
             ApartmentType(type = "Cottage"),
             )
-
-
 
     RentlyTheme {
         Scaffold(
@@ -110,7 +104,10 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                     ) {
                         Button(
                             shape = RoundedSquareShape.large,
-                            onClick = {}
+                            onClick = {
+                                filterSharedViewModel.setState(state)
+                                navController.navigate(Screen.Apartments.route)
+                            }
                         ) {
                             Icon(imageVector = Icons.Filled.FilterAlt, contentDescription = "Filter")
                             Text(text = "Filter")
@@ -148,7 +145,7 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                 Button(
                                     shape = RoundedSquareShape.large,
                                     onClick = {
-                                        citiesList.add(city.value)
+                                        state.cities.add(city.value)
                                         city.value = "" },
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -163,7 +160,7 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                 contentPadding = PaddingValues(10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                itemsIndexed(items = citiesList) { index, value ->
+                                itemsIndexed(items = state.cities) { index, value ->
                                     OutlinedChip(
                                         text= value
                                     )
@@ -180,8 +177,10 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             RangeSlider(
-                                values = viewModel.priceRange,
-                                onValueChange = { viewModel.priceRangeChanged(it)},
+                                values = state.priceRange,
+                                onValueChange = { viewModel.onEvent(
+                                    FilterFormEvent.PriceRangeChanged(it)
+                                )},
                                 valueRange = 0f..1f
                             )
                             Box(
@@ -217,7 +216,7 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                     modifier = Modifier
                                         .align(Alignment.BottomEnd)
                                         .padding(8.dp),
-                                    text = "${ (state.size * 150).roundToInt() } sqft"
+                                    text = "+ ${ (state.size * 150).roundToInt() } sqft"
                                 )
                             }
                         }
@@ -232,12 +231,16 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                 itemsIndexed(items = apartmentTypeList) { index, apartmentType ->
                                     OutlinedChoiceChip(
                                         text = apartmentType.type,
-                                        chosen = selectedApartmentTypeIndex.contains(index),
+                                        chosen = state.propertyTypes.contains(apartmentTypeList[index]),
                                         onSelect = {
-                                            if(selectedApartmentTypeIndex.contains(index))
-                                                selectedApartmentTypeIndex.remove(index)
-                                            else
-                                                selectedApartmentTypeIndex.add(index)},
+                                            if(state.propertyTypes.contains(apartmentTypeList[index])) {
+                                                state.propertyTypes.remove(apartmentTypeList[index])
+                                            }
+                                            else {
+                                                state.propertyTypes.add(apartmentTypeList[index])
+                                            }
+                                            viewModel.onEvent(FilterFormEvent.PropertyTypesChanged(state.propertyTypes))
+                                        },
                                         icon = getIconResourceByName(name = apartmentType.type)
                                     )
                                 }
@@ -254,8 +257,8 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                 itemsIndexed(items = bedroomsNumberList) { index, value ->
                                     OutlinedChoiceChip(
                                         text = value,
-                                        chosen = index == selectedBedroomsIndex,
-                                        onSelect = { selectedBedroomsIndex = index },
+                                        chosen = index == state.numberOfBedrooms,
+                                        onSelect = { viewModel.onEvent(FilterFormEvent.NumberOfBedroomsChanged(index)) },
                                     )
                                 }
                             }
@@ -271,27 +274,28 @@ fun FilterScreen(viewModel: FilterViewModel = hiltViewModel(), navController: Na
                                 itemsIndexed(items = bathroomsNumberList) { index, value ->
                                     OutlinedChoiceChip(
                                         text = value,
-                                        chosen = index == selectedBathroomsIndex,
-                                        onSelect = { selectedBathroomsIndex = index },
+                                        chosen = index == state.numberOfBathrooms,
+                                        onSelect = { viewModel.onEvent(FilterFormEvent.NumberOfBathroomsChanged(index)) },
                                     )
                                 }
                             }
                         }
                     }
                     Section(title = "Options", icon = Icons.Filled.List) {
-                        ToggleRow(text = "Parking", isChecked = selectedParkingState , onCheckedChange = {selectedParkingState = !selectedParkingState})
+                        ToggleRow(text = "Parking", isChecked = state.hasParking , onCheckedChange = {viewModel.onEvent(FilterFormEvent.HasParkingChanged(it))})
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Balcony",isChecked = selectedBalconyState , onCheckedChange = { selectedBalconyState = !selectedBalconyState })
+                        ToggleRow(text = "Balcony",isChecked = state.hasBalcony , onCheckedChange = { viewModel.onEvent(FilterFormEvent.HasBalconyChanged(it)) })
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Animals Allowed",isChecked = selectedPetsState , onCheckedChange = { selectedPetsState = !selectedPetsState })
+                        ToggleRow(text = "Animals Allowed",isChecked = state.isAnimalFriendly , onCheckedChange = { viewModel.onEvent(FilterFormEvent.IsAnimalFriendlyChanged(it)) })
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Furnished",isChecked = selectedFurnishedState , onCheckedChange = { selectedFurnishedState = !selectedFurnishedState})
+                        ToggleRow(text = "Furnished",isChecked = state.isFurnished , onCheckedChange = { viewModel.onEvent(FilterFormEvent.IsFurnishedChanged(it)) })
                     }
                 }
             }
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Preview

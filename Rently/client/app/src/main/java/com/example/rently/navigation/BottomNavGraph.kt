@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.ui.screens.DetailsScreen
 import com.example.rently.ui.screens.manageApartments.ManageApartmentsScreen
@@ -33,6 +34,7 @@ fun BottomNavGraph(
 ) {
 
     val sharedViewModel: SharedViewModel = viewModel()
+    val filterSharedViewModel: FilterSharedViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -41,7 +43,7 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.Apartments.route,
         ) {
-            ApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel)
+            ApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel, filterSharedViewModel = filterSharedViewModel)
         }
         composable(
             route = BottomBarScreen.Profile.route,
@@ -92,6 +94,7 @@ fun BottomNavGraph(
         composable(route = Screen.Filter.route) {
             FilterScreen(
                 navController = navController,
+                filterSharedViewModel = filterSharedViewModel
             )
         }
 
