@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.Apartment
-import com.example.rently.model.ApartmentType
 import com.example.rently.model.google.GoogleLocation
 import com.example.rently.model.google.GooglePrediction
 import com.example.rently.repository.ApartmentRepository
@@ -19,7 +18,6 @@ import com.example.rently.validation.presentation.AddApartmentFormEvent
 import com.example.rently.validation.use_case.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -42,20 +40,13 @@ class AddApartmentViewModel @Inject constructor(
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    val errorWhileAddingApartment = mutableStateOf(false)
-    val apartmentUploadedImageUrl = mutableStateOf("")
     val apartmentImageUri = mutableStateOf<Uri?>(null)
     val apartmentImageBitmap = mutableStateOf<Bitmap?>(null)
-    val apartmentImageEncodedString = mutableStateOf("")
-    val apartmentTypeSelectedIndex = mutableStateOf(0)
     val placesLoading = mutableStateOf(false)
-    val apartmentTypesLoading = mutableStateOf(false)
-    val apartmentIsUploading = mutableStateOf(false)
     var predictions = mutableStateListOf<GooglePrediction>()
-    var apartmentTypes = mutableStateListOf<ApartmentType>()
 
     init {
-        loadApartmentTypes()
+        fetchApartmentTypes()
     }
 
     fun onEvent(event: AddApartmentFormEvent) {
@@ -134,7 +125,7 @@ class AddApartmentViewModel @Inject constructor(
         }
     }
 
-    private fun loadApartmentTypes() {
+    private fun fetchApartmentTypes() {
         viewModelScope.launch {
             state = state.copy(isApartmentTypesLoading = true)
             val response = apartmentRepository.listApartmentTypes()
@@ -196,16 +187,6 @@ class AddApartmentViewModel @Inject constructor(
         placesLoading.value = false
     }
 
-    suspend fun listApartmentTypes(): List<ApartmentType> {
-        apartmentTypesLoading.value = true
-        val response = apartmentRepository.listApartmentTypes()
-        val types = if (response is Resource.Success) {
-            return response.data!!
-        } else return emptyList()
-        apartmentTypesLoading.value = false
-    }
-
-
     private suspend fun addApartment() {
         validationEventChannel.send(ValidationEvent.ApartmentUploading)
 
@@ -250,7 +231,6 @@ class AddApartmentViewModel @Inject constructor(
         }
 
         validationEventChannel.send(ValidationEvent.ApartmentUploadSuccess)
-
     }
 
     private suspend fun uploadApartment(apartment: Apartment): Boolean {
@@ -298,7 +278,6 @@ class AddApartmentViewModel @Inject constructor(
     }
 
     sealed class ValidationEvent {
-        object Success : ValidationEvent()
         object ApartmentUploading : ValidationEvent()
         object ApartmentUploadSuccess : ValidationEvent()
         object ApartmentUploadError : ValidationEvent()

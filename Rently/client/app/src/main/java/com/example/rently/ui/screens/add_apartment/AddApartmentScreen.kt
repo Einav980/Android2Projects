@@ -80,8 +80,6 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                 }
             }
         }
-
-        viewModel.listApartmentTypes()
     }
 
     RentlyTheme {
