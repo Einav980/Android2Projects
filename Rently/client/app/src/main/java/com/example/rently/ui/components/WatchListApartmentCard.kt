@@ -33,6 +33,7 @@ import com.example.rently.model.Apartment
 import com.example.rently.ui.theme.*
 import com.example.rently.util.ApartmentPageType
 import com.example.rently.util.ApartmentStatus
+import com.example.rently.util.Constants
 import java.text.NumberFormat
 import java.util.*
 
@@ -245,19 +246,8 @@ fun WatchListDeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apar
 @Preview(showBackground = true)
 fun WatchListApartmentCardPreview() {
     val context = LocalContext.current
-    var apartment = Apartment(
-        _id = "test",
-        city = "Tel-Aviv",
-        price = 7800,
-        numberOfRooms = 3,
-        address = "Dov Hauzner 2",
-        numberOfBaths = 1,
-        numberOfBeds = 2,
-        size = 54,
-        imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"
-    )
     WatchListApartmentCard(
-        apartment = apartment,
+        apartment = Constants.apartment,
         navController = NavController(context = context),
         onApartmentClick = {})
 }
