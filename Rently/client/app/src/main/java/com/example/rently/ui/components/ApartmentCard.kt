@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -134,9 +135,11 @@ fun ApartmentCard(
                         text = apartment.address,
                         style = MaterialTheme.typography.h5,
                         color = MaterialTheme.colors.secondaryVariant,
+                        maxLines = 1,
                         modifier = Modifier
                             .padding(10.dp)
                             .weight(2f),
+                        overflow = TextOverflow.Ellipsis,
                     )
                     val apartmentCardColor =
                         if (pageType != ApartmentPageType.Explore) {
@@ -324,7 +327,6 @@ fun ApartmentCardPreview() {
         _id = "test",
         city = "Tel-Aviv",
         price = 7800,
-        numberOfRooms = 3,
         address = "Dov Hauzner 2",
         numberOfBaths = 1,
         numberOfBeds = 2,
