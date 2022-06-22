@@ -6,14 +6,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -21,9 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.model.User
+import com.example.rently.ui.components.RentlyTextField
+import com.example.rently.ui.screens.add_apartment.AddApartmentViewModel
 import com.example.rently.ui.theme.RentlyLightColors
 import com.example.rently.ui.theme.RentlyTypography
 import com.example.rently.util.Constants
+import com.example.rently.validation.presentation.AddApartmentFormEvent
+import com.example.rently.validation.presentation.LoginFormEvent
 
 @Composable
 fun LoginScreen(
@@ -31,18 +35,31 @@ fun LoginScreen(
     onSignUpClicked: () -> Unit,
     onLoginSuccessful: () -> Unit
 ) {
-    if (viewModel.isLoggedIn.value) {
-        LaunchedEffect(key1 = Unit) {
-            onLoginSuccessful()
+    val context = LocalContext.current
+    val state = viewModel.state
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var showLoadingProgress by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                is LoginViewModel.ValidationEvent.LoginError -> {
+                    showLoadingProgress = false
+                    showErrorDialog = true
+                }
+
+                is LoginViewModel.ValidationEvent.LoginLoading -> {
+                    showLoadingProgress = true
+                }
+
+                is LoginViewModel.ValidationEvent.LoginSuccess -> {
+                    onLoginSuccessful()
+                }
+            }
         }
     }
 
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
     MaterialTheme(colors = RentlyLightColors, typography = RentlyTypography) {
         Column(
             modifier = Modifier
@@ -76,95 +93,47 @@ fun LoginScreen(
                         .padding(15.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    TextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = {
-                            Text(
-                                text = "Email",
-                                style = MaterialTheme.typography.subtitle2
-                            )
+                    RentlyTextField(
+                        value = state.email,
+                        onValueChange = {
+                            viewModel.onEvent(LoginFormEvent.EmailChanged(it))
                         },
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text
-                        ),
-                        singleLine = true,
-                        isError = !viewModel.isValidEmail.value,
+                        label = "Email",
+                        isError = state.emailError != null,
+                        errorMessage = state.emailError ?: "",
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Filled.Email,
-                                contentDescription = "Email Icon"
+                                contentDescription = "Email"
                             )
-                        },
-                        trailingIcon = {
-                            if (!viewModel.isValidEmail.value) {
-                                Icon(
-                                    imageVector = Icons.Filled.Warning,
-                                    contentDescription = "error",
-                                    tint = MaterialTheme.colors.error
-                                )
-                            }
                         }
                     )
-                    if (!viewModel.isValidEmail.value) {
-                        Text(
-                            text = "Invalid email address",
-                            color = MaterialTheme.colors.error,
-                            style = MaterialTheme.typography.caption,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
                     Spacer(modifier = Modifier.size(10.dp))
-                    TextField(
-                        value = password,
+                    RentlyTextField(
+                        value = state.password,
                         onValueChange = {
-                            password = it
-                            viewModel.isValidPassword.value = true
+                            viewModel.onEvent(LoginFormEvent.PasswordChanged(it))
                         },
-                        label = {
-                            Text(
-                                text = "Password",
-                                style = MaterialTheme.typography.subtitle2
-                            )
-                        },
-                        visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        label = "Password",
+                        isError = state.passwordError != null,
+                        errorMessage = state.passwordError ?: "",
                         leadingIcon = {
-                            Icon(Icons.Filled.Lock, "Lock Icon")
-                        },
-                        isError = !viewModel.isValidPassword.value,
-                        trailingIcon = {
-                            if (!viewModel.isValidPassword.value) {
-                                Icon(
-                                    imageVector = Icons.Filled.Warning,
-                                    contentDescription = "error",
-                                    tint = MaterialTheme.colors.error
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = "Password"
+                            )
                         }
                     )
-                    if (!viewModel.isValidPassword.value) {
-                        Text(
-                            text = "Password cannot be empty",
-                            color = MaterialTheme.colors.error,
-                            style = MaterialTheme.typography.caption,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = {
-                        val user = User(email = email, password = password)
-                        loginUser(viewModel = viewModel, user = user)
-                    },
+                    onClick = { viewModel.onEvent(LoginFormEvent.Login) },
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp)),
                     contentPadding = PaddingValues(15.dp),
                     shape = MaterialTheme.shapes.large,
                 ) {
-                    if (viewModel.isLoggingIn.value) {
+                    if (showLoadingProgress) {
                         CircularProgressIndicator(color = Color.White)
                     } else {
                         Text(
@@ -173,23 +142,6 @@ fun LoginScreen(
                             style = MaterialTheme.typography.h6
                         )
                     }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                if (viewModel.invalidCredentials.value) {
-                    Text(
-                        text = "Invalid credentials",
-                        color = MaterialTheme.colors.primaryVariant,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.h4
-                    )
-                }
-                if (viewModel.errorOccurred.value) {
-                    Text(
-                        text = "Network Error",
-                        color = MaterialTheme.colors.primaryVariant,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.h4
-                    )
                 }
                 Column(
                     verticalArrangement = Arrangement.Bottom,
@@ -206,6 +158,42 @@ fun LoginScreen(
                 }
             }
         }
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { /* DO NOTHING */ },
+                buttons = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(onClick = { showErrorDialog = false }) {
+                            Text("OK")
+                        }
+                    }
+                },
+                title = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Error",
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                text = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = state.loginErrorMessage?: "",
+                        textAlign = TextAlign.Center
+                    )
+                })
+        }
     }
 
 }
@@ -215,7 +203,3 @@ fun LoginScreen(
 //fun LoginScreenPreview() {
 //    LoginScreen(rememberNavController())
 //}
-
-fun loginUser(viewModel: LoginViewModel, user: User) {
-    viewModel.loginUser(user = user)
-}
