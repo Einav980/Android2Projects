@@ -1,1 +1,0 @@
-mongosh mongodb+srv://rently:PpJObxeyTQCkqc4U@tomsmongo.jsldc.mongodb.net/rently?retryWrites=true&w=majority
