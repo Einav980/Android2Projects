@@ -1,10 +1,7 @@
 package com.example.rently.api
 
 import android.content.Context
-import com.example.rently.repository.ApartmentRepository
-import com.example.rently.repository.GooglePlacesRepository
-import com.example.rently.repository.ImagesRepository
-import com.example.rently.repository.UserRepository
+import com.example.rently.repository.*
 import com.example.rently.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -105,5 +102,11 @@ object AppModule {
             .baseUrl(ImagesApi.BASE_URL)
             .build()
             .create(ImagesApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDatastore(@ApplicationContext context: Context): DatastorePreferenceRepository {
+        return DatastorePreferenceRepository(context)
     }
 }
