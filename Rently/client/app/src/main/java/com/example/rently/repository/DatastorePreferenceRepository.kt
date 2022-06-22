@@ -7,14 +7,19 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.rently.Resource
 import com.example.rently.util.Constants
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = Constants.DATASTORE_NAME)
+@ActivityScoped
+class DatastorePreferenceRepository @Inject constructor(@ApplicationContext private val context: Context) {
 
-class DatastorePreferenceRepository(private val context: Context) {
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constants.DATASTORE_NAME)
 
     companion object{
         val LOGGED_IN = booleanPreferencesKey(name = "LOGGED_IN")
@@ -22,25 +27,35 @@ class DatastorePreferenceRepository(private val context: Context) {
     }
 
     suspend fun setLoggedIn(email : String){
-        context.datastore.edit { settings ->
+        context.dataStore.edit { settings ->
             settings[LOGGED_IN] = true
             settings[USER_EMAIL] = email
         }
     }
 
     suspend fun setLoggedOut(){
-        context.datastore.edit { settings ->
+        context.dataStore.edit { settings ->
             settings[LOGGED_IN] = false
             settings[USER_EMAIL] = ""
         }
     }
 
     suspend fun isLoggedIn(): Boolean {
-        val preferences = context.datastore.data.first()
+        val preferences = context.dataStore.data.first()
         return preferences[LOGGED_IN] ?: false
     }
 
-    fun getUserEmail(): Flow<String> = context.datastore.data
+        suspend fun checkIfUserIsLoggedIn(): Resource<Boolean?> {
+        try{
+            val preferences = context.dataStore.data.first()
+            return Resource.Success(preferences[LOGGED_IN])
+        }
+        catch (e: java.lang.Exception){
+            return Resource.Error("Failed retrieving user state", false)
+        }
+    }
+
+    fun getUserEmail(): Flow<String> = context.dataStore.data
         .map { preferences -> preferences[USER_EMAIL] ?: ""
         }
 }

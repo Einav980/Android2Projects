@@ -19,23 +19,14 @@ import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
 @ActivityScoped
 class UserRepository @Inject constructor(
     private val api: UserApi,
     private val context: Context
 ) {
-    private val USER_EMAIL= stringPreferencesKey("user_email")
-    private val DATASTORE_KEY = booleanPreferencesKey("isLoggedIn")
-
     suspend fun loginUser(user: User): Resource<AuthResponse>{
         return try {
             val response = api.loginUser(user = user)
-            context.datastore.edit { settings ->
-                settings[DATASTORE_KEY] = true
-                settings[USER_EMAIL] = user.email
-            }
             Resource.Success(response)
         } catch (e: Exception){
             Timber.d("Response", e.message.toString())
@@ -43,19 +34,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun logoutUser(): Resource<Boolean> {
-        return try {
-            context.datastore.edit { settings ->
-                settings[DATASTORE_KEY] = false
-                settings[USER_EMAIL] = ""
-            }
-            Resource.Success(true)
-        } catch (e: java.lang.Exception){
-            Resource.Error("Failed to change the login state of the user", false)
-        }
-    }
-
-    suspend fun signUpUser(user: User): Resource<AuthResponse>{
+      suspend fun signUpUser(user: User): Resource<AuthResponse>{
         val response = try{
             api.registerUser(user = user)
         } catch (e: Exception){
@@ -67,16 +46,6 @@ class UserRepository @Inject constructor(
 
     suspend fun listUsers(): ArrayList<User>{
         return api.listUsers()
-    }
-
-    suspend fun checkIfUserIsLoggedIn(): Resource<Boolean?>{
-        try{
-            val preferences = context.datastore.data.first()
-            return Resource.Success(preferences[DATASTORE_KEY])
-        }
-        catch (e: java.lang.Exception){
-            return Resource.Error("Failed retrieving user state", false)
-        }
     }
 
     suspend fun getUser(email: String): Resource<User>{
@@ -98,10 +67,5 @@ class UserRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
-
-
-    fun getUserEmail(): Flow<String> = context.datastore.data
-        .map { preferences -> preferences[USER_EMAIL] ?: ""
-        }
 }
 
