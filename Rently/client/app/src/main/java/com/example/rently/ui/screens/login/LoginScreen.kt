@@ -1,9 +1,7 @@
 package com.example.rently.ui.screens.login
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -14,19 +12,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.rently.model.User
 import com.example.rently.ui.components.RentlyTextField
-import com.example.rently.ui.screens.add_apartment.AddApartmentViewModel
 import com.example.rently.ui.theme.RentlyLightColors
 import com.example.rently.ui.theme.RentlyTypography
 import com.example.rently.util.Constants
-import com.example.rently.validation.presentation.AddApartmentFormEvent
 import com.example.rently.validation.presentation.LoginFormEvent
 
 @Composable
@@ -66,7 +58,6 @@ fun LoginScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
