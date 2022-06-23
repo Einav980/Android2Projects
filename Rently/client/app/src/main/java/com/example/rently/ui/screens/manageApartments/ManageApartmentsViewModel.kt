@@ -12,6 +12,7 @@ import com.example.rently.model.Apartment
 import com.example.rently.model.User
 import com.example.rently.navigation.Screen
 import com.example.rently.repository.ApartmentRepository
+import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
 import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManageApartmentsViewModel @Inject constructor(
+    private val datastore: DatastorePreferenceRepository,
     private val apartmentRepository: ApartmentRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
@@ -31,7 +33,7 @@ class ManageApartmentsViewModel @Inject constructor(
     fun listUserApartments() {
         viewModelScope.launch {
             isLoading.value = true
-            val userEmailResult = userRepository.getUserEmail().first()
+            val userEmailResult = datastore.getUserEmail().first()
             if (userEmailResult.isNotEmpty()) {
                 val response = apartmentRepository.listUserApartments(userEmailResult)
                 when (response) {
