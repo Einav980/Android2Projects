@@ -14,6 +14,7 @@ import androidx.navigation.NavGraph
 import com.example.rently.Resource
 import com.example.rently.model.User
 import com.example.rently.navigation.Screen
+import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
 import com.example.rently.util.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,30 +25,13 @@ import java.util.logging.Level.INFO
 import javax.inject.Inject
 
 @HiltViewModel
-class MainScreenViewModel @Inject constructor(private val repository: UserRepository): ViewModel() {
+class MainScreenViewModel @Inject constructor(private val repository: UserRepository, private val datastore: DatastorePreferenceRepository): ViewModel() {
 
     var userType = mutableStateOf(UserType.Normal)
 
-
-    fun logoutUser() {
-        viewModelScope.launch {
-            val result = repository.logoutUser()
-            when (result) {
-                is Resource.Success -> {
-                    if(result.data == true){
-                        Timber.i("logout success")
-                    }
-                }
-                else -> {
-                    Timber.i("logout failed")
-                }
-            }
-        }
-    }
-
     fun getLoggedInUserPermissions() {
         viewModelScope.launch {
-            val userEmailResult = repository.getUserEmail().first()
+            val userEmailResult = datastore.getUserEmail().first()
             if (userEmailResult.isNotEmpty()){
                 val response = repository.getUser(userEmailResult)
                 when(response){
