@@ -1,108 +1,153 @@
 package com.example.rently.ui.screens.register
 
+import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.User
+import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
+import com.example.rently.ui.screens.register.events.RegisterFormEvent
+import com.example.rently.ui.screens.register.state.RegisterFormState
+import com.example.rently.validation.use_case.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(private val repository: UserRepository): ViewModel() {
+class RegisterViewModel @Inject constructor(
+    private val datastore: DatastorePreferenceRepository,
+    private val repository: UserRepository,
+    private val validateEmail: ValidateEmail = ValidateEmail(),
+    private val validatePassword: ValidatePassword,
+    private val validateFirstName: ValidateFirstName,
+    private val validateLastName: ValidateLastName,
+    private val validatePhone: ValidatePhone,
+) : ViewModel() {
 
-    private val EMAIL_IS_IN_USE = 405
-    private val REGISTER_SUCCESSFULL = 201
-    private val emailRegex =  Regex("^\\S+@\\S+\\.\\S+\$")
-    private val phoneRegex =  Regex("^05\\d[0-9]{7}")
+    companion object{
+        private const val EMAIL_IN_USE = 405
+        private const val REGISTER_SUCCESS = 200
+    }
 
-    val isLoading = mutableStateOf(false)
-    val registeredSuccessfully = mutableStateOf(false)
-    val emailIsInUse = mutableStateOf(false)
-    val isEmailValid = mutableStateOf(true)
-    val isPasswordValid = mutableStateOf(true)
-    val errorOccurred = mutableStateOf(false)
-    val isPhoneValid = mutableStateOf(true)
-    val isLastNameValid = mutableStateOf(true)
-    val isFirstNameValid = mutableStateOf(true)
+    var state by mutableStateOf(RegisterFormState())
 
-    fun registerUser(user: User){
-        viewModelScope.launch {
-            Timber.d("Register")
-            validateData(user)
-            if(isEmailValid.value && isPhoneValid.value && isPasswordValid.value && isFirstNameValid.value && isLastNameValid.value)
-            {
-                isLoading.value = true
-                val result = repository.signUpUser(user)
-                when(result){
-                    is Resource.Success -> {
-                        val returnCode = result.data?.returnCode
-                        if( returnCode == REGISTER_SUCCESSFULL ){
-                            registeredSuccessfully.value = true
-                        }
-                        else if(returnCode == EMAIL_IS_IN_USE){
-                            emailIsInUse.value = true
-                        }
-                    }
-                    else -> {
-                        errorOccurred.value = true
-                        Timber.d("Error while registering")
-                    }
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
+    fun onEvent(event: RegisterFormEvent) {
+        when (event) {
+            is RegisterFormEvent.EmailChanged -> {
+                state = state.copy(email = event.email)
+            }
+
+            is RegisterFormEvent.PasswordChanged -> {
+                state = state.copy(password = event.password)
+            }
+
+            is RegisterFormEvent.FirstNameChanged -> {
+                state = state.copy(firstName = event.firstName)
+            }
+
+            is RegisterFormEvent.LastNameChanged -> {
+                state = state.copy(lastName = event.lastName)
+            }
+
+            is RegisterFormEvent.PhoneChanged -> {
+                if(event.phone.length < 10){
+                    state = state.copy(phone = event.phone)
                 }
-                isLoading.value = false
+            }
+
+            is RegisterFormEvent.Register -> {
+                Log.d("Rently", "Registration event")
+                register()
             }
         }
     }
 
-    private fun validateEmail(email: String){
-        isEmailValid.value = email.matches(emailRegex)
+    private fun registerUser() {
+        viewModelScope.launch {
+            validationEventChannel.send(ValidationEvent.RegisterLoading)
+            val user = User(
+                email = state.email,
+                password = state.password,
+                firstname = state.firstName,
+                lastname = state.lastName,
+                phone = state.phone
+            )
+            val result = repository.registerUser(user)
+            when (result) {
+                is Resource.Success -> {
+                    val returnCode = result.data?.returnCode
+                    if (returnCode == REGISTER_SUCCESS) {
+                        Log.d("Rently", "Registered successfully!")
+                        state = state.copy(registerErrorMessage = null)
+                        datastore.setLoggedIn(state.email)
+                        validationEventChannel.send(ValidationEvent.RegisterSuccess)
+                    } else if (returnCode == EMAIL_IN_USE) {
+                        state = state.copy(registerErrorMessage = "Email is already in use")
+                        validationEventChannel.send(ValidationEvent.RegisterError)
+                    }
+                }
+                else -> {
+                    state = state.copy(registerErrorMessage = "Error while registering")
+                    validationEventChannel.send(ValidationEvent.RegisterError)
+                }
+            }
+        }
     }
 
-    private fun validatePassword(password: String){
-        isPasswordValid.value = password.length > 6
+    private fun register() {
+        val emailResult = validateEmail.execute(state.email)
+        val passwordResult = validatePassword.execute(state.password)
+        val firstNameResult = validateFirstName.execute(state.firstName)
+        val lastNameResult = validateLastName.execute(state.lastName)
+        val phoneResult = validatePhone.execute(state.phone)
+
+        val hasError = listOf(
+            emailResult,
+            passwordResult,
+            firstNameResult,
+            lastNameResult,
+            phoneResult
+        ).any { !it.successful }
+
+        if (hasError) {
+            state = state.copy(
+                emailError = emailResult.errorMessage,
+                passwordError = passwordResult.errorMessage,
+                firstNameError = firstNameResult.errorMessage,
+                lastNameError = lastNameResult.errorMessage,
+                phoneError = phoneResult.errorMessage
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            clearErrors()
+            registerUser()
+        }
     }
 
-    private fun validatePhone(phone: String){
-        isPhoneValid.value = phone.matches(phoneRegex)
+    private fun clearErrors() {
+        state = state.copy(
+            emailError = null,
+            passwordError = null,
+            firstNameError = null,
+            lastNameError = null,
+            phoneError = null,
+        )
     }
 
-    private fun validateLastName(lastName: String){
-        isLastNameValid.value = lastName.isNotEmpty()
-    }
-
-    private fun validateFirstName(firstName: String){
-        isFirstNameValid.value = firstName.isNotEmpty()
-    }
-
-    private fun validateData(user: User){
-        validateEmail(user.email)
-        validatePassword(user.password)
-        validatePhone(user.phone)
-        validateLastName(user.lastname)
-        validateFirstName(user.firstname)
-    }
-
-    fun clearPasswordError(){
-        isPasswordValid.value = true
-    }
-
-    fun clearEmailError(){
-        isEmailValid.value = true
-        emailIsInUse.value = false
-    }
-
-    fun clearPhoneError(){
-        isPhoneValid.value = true
-    }
-
-    fun clearFirstNameError(){
-        isFirstNameValid.value = true
-    }
-
-    fun clearLastNameError(){
-        isLastNameValid.value = true
+    sealed class ValidationEvent {
+        object RegisterLoading : ValidationEvent()
+        object RegisterSuccess : ValidationEvent()
+        object RegisterError : ValidationEvent()
     }
 }
