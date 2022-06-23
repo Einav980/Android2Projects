@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.ui.screens.profile.ProfileScreenViewModel
 import com.example.rently.ui.theme.*
 import com.example.rently.util.PhoneMaskTransformation
+import com.example.rently.validation.presentation.ProfileFormEvent
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -212,9 +213,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 Button(
-                    onClick = {
-
-                    },
+                    onClick = { viewModel.onEvent(ProfileFormEvent.Logout) },
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .padding(8.dp)

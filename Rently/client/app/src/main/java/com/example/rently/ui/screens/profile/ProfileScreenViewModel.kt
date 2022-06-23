@@ -7,14 +7,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.User
 import com.example.rently.repository.ApartmentRepository
+import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
+import com.example.rently.validation.presentation.ProfileFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileScreenViewModel @Inject constructor(private val userRepository: UserRepository, private val apartmentRepository: ApartmentRepository) :
+class ProfileScreenViewModel @Inject constructor(private val datastore: DatastorePreferenceRepository, private val userRepository: UserRepository, private val apartmentRepository: ApartmentRepository) :
     ViewModel() {
 
     private val phoneRegex =  Regex("^05\\d[0-9]{7}")
@@ -33,7 +35,13 @@ class ProfileScreenViewModel @Inject constructor(private val userRepository: Use
     val isLastNameValid = mutableStateOf(true)
     val isFirstNameValid = mutableStateOf(true)
 
-
+    fun onEvent(event: ProfileFormEvent){
+        when(event){
+            is ProfileFormEvent.Logout -> {
+                logout()
+            }
+        }
+    }
 
     fun isUserHeadNotEmpty(): Boolean{
         return headLastname.value.isNotEmpty() && headFirstname.value.isNotEmpty()
@@ -45,7 +53,7 @@ class ProfileScreenViewModel @Inject constructor(private val userRepository: Use
 
     fun getLoggedInUser() {
         viewModelScope.launch {
-            val userEmailResult = userRepository.getUserEmail().first()
+            val userEmailResult = datastore.getUserEmail().first()
             if (userEmailResult.isNotEmpty()){
                 val response = userRepository.getUser(userEmailResult)
                 when(response){
@@ -67,7 +75,7 @@ class ProfileScreenViewModel @Inject constructor(private val userRepository: Use
 
     fun getLoggedInUserApartments() {
         viewModelScope.launch {
-            val userEmailResult = userRepository.getUserEmail().first()
+            val userEmailResult = datastore.getUserEmail().first()
             if (userEmailResult.isNotEmpty()){
                 val response = apartmentRepository.listUserApartments(userEmailResult)
                 when(response){
@@ -85,7 +93,7 @@ class ProfileScreenViewModel @Inject constructor(private val userRepository: Use
     fun editTextFields() {
         if(editableText.value){
             viewModelScope.launch {
-                val userEmailResult = userRepository.getUserEmail().first()
+                val userEmailResult = datastore.getUserEmail().first()
                 validateData()
                 if (userEmailResult.isNotEmpty() && isUserInfoValid()){
                     val response = userRepository.editUser(userEmailResult, User(firstname = firstname.value, lastname = lastname.value, phone = phone.value))
@@ -139,5 +147,11 @@ class ProfileScreenViewModel @Inject constructor(private val userRepository: Use
     fun updateHeadName(){
         headLastname.value = lastname.value
         headFirstname.value = firstname.value
+    }
+
+    private fun logout(){
+        viewModelScope.launch {
+            datastore.setLoggedOut()
+        }
     }
 }
