@@ -77,8 +77,8 @@ fun SetupNavGraph(
         composable(
             route = Screen.Signup.route,
         ) {
-            SignUpScreen(
-                onSignUpSuccessful = {
+            RegisterScreen(
+                onRegisterSuccess = {
                     navController.navigate(Screen.ThankYou.route)
                 },
                 closeScreen = {

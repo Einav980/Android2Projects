@@ -133,21 +133,21 @@ fun SingleApartmentScreen(
                             .height(200.dp)
                             .clip(MaterialTheme.shapes.small)
                     ) {
-                        LatLng(
-                            apartment!!.lat,
-                            apartment!!.lng
-                        )
-                            ?.let { Map(static = true, latLng = it) }
+//                        LatLng(
+//                            apartment!!.lat,
+//                            apartment!!.lng
+//                        )
+//                            ?.let { Map(static = true, latLng = it) }
                     }
                     Spacer(modifier = Modifier.height(5.dp))
                     Button(
                         onClick = {
-                            navController.navigate(
-                                Screen.Map.passLatLng(
-                                    apartment!!.lat,
-                                    apartment!!.lng
-                                )
-                            )
+//                            navController.navigate(
+//                                Screen.Map.passLatLng(
+//                                    apartment!!.lat,
+//                                    apartment!!.lng
+//                                )
+//                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()

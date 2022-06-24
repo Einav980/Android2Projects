@@ -30,7 +30,7 @@ class ApartmentsViewModel @Inject constructor(private val repository: ApartmentR
                     if (state != null) {
                         apartments.addAll(response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status &&
                                 apartment.numberOfBaths >= state.numberOfBathrooms + 1 &&
-                                apartment.numberOfRooms >= state.numberOfBedrooms + 1 &&
+                                apartment.numberOfBeds >= state.numberOfBedrooms + 1 &&
                                 apartment.price in (state.priceRange.toRange().lower * 10000).roundToInt()..
                                 (state.priceRange.toRange().upper * 10000).roundToInt() &&
                                 apartment.size >= (state.size * 150).roundToInt() &&
