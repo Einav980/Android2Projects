@@ -1,6 +1,7 @@
 package com.example.rently.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -27,6 +28,7 @@ class DatastorePreferenceRepository @Inject constructor(@ApplicationContext priv
     }
 
     suspend fun setLoggedIn(email : String){
+        Log.d("Rently", "Set user - $email -> LoggedIn: true")
         context.dataStore.edit { settings ->
             settings[LOGGED_IN] = true
             settings[USER_EMAIL] = email

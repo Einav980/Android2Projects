@@ -16,12 +16,12 @@ class ValidatePassword @Inject constructor(){
                 errorMessage = "Password cannot be empty"
             )
         }
-        if(password.length  < 8){
-            return ValidateResult(
-                successful = false,
-                errorMessage = "Password must contain at least 8 characters"
-            )
-        }
+//        if(password.length  < 8){
+//            return ValidateResult(
+//                successful = false,
+//                errorMessage = "Password must contain at least 8 characters"
+//            )
+//        }
 //        if(!password.matches(PASSWORD_REGEX)){
 //            return ValidateResult(
 //                successful = false,

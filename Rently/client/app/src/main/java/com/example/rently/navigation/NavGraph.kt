@@ -1,36 +1,22 @@
 package com.example.rently.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.example.rently.FilterSharedViewModel
-import com.example.rently.SharedViewModel
-import com.example.rently.model.Apartment
 import com.example.rently.ui.screens.*
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
-import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.login.LoginScreen
-import com.example.rently.ui.screens.map.MapScreen
-import com.example.rently.ui.screens.single_apartment.NewSingleApartmentScreen
-import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.example.rently.ui.screens.splash.SplashScreen
 import com.example.rently.ui.screens.thankyou.ThankYou
-import com.example.rently.util.Constants
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.google.android.gms.maps.model.LatLng
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 @RequiresApi(Build.VERSION_CODES.N)
 @ExperimentalAnimationApi
@@ -77,9 +63,13 @@ fun SetupNavGraph(
         composable(
             route = Screen.Signup.route,
         ) {
-            SignUpScreen(
-                onSignUpSuccessful = {
-                    navController.navigate(Screen.ThankYou.route)
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate(Screen.MainPage.route){
+                        popUpTo(route = Screen.MainPage.route){
+                            inclusive = true
+                        }
+                    }
                 },
                 closeScreen = {
                     navController.popBackStack()
@@ -119,8 +109,11 @@ fun SetupNavGraph(
             route = Screen.Splash.route
         ) {
             SplashScreen(onSplashEnds = {
-                navController.popBackStack()
-                navController.navigate(it)
+                navController.navigate(it){
+                    popUpTo(it){
+                        inclusive = false
+                    }
+                }
             })
         }
         composable(

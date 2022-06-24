@@ -29,10 +29,10 @@ class AddApartmentViewModel @Inject constructor(
     private val googleRepository: GooglePlacesRepository,
     private val imagesRepository: ImagesRepository,
     private val apartmentRepository: ApartmentRepository,
-    private val validateAddress: ValidateAddress = ValidateAddress(),
-    private val validateDescription: ValidateDescription = ValidateDescription(),
-    private val validatePrice: ValidatePrice = ValidatePrice(),
-    private val validateSize: ValidateSize = ValidateSize()
+    private val validateAddress: ValidateAddress,
+    private val validateDescription: ValidateDescription,
+    private val validatePrice: ValidatePrice,
+    private val validateSize: ValidateSize
 ) : ViewModel() {
 
     var state by mutableStateOf(AddApartmentFormState())

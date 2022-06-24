@@ -40,9 +40,9 @@ fun ApartmentsScreen(
 //    var apartments = Apartment(_id = "test",status= ApartmentStatus.Available.status,  city= "Tel-Aviv", price = 7800, numberOfRooms = 3, address = "Dov Nov 16", numberOfBaths = 1, numberOfBeds = 2, size = 54, imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1")
 //    viewModel.addApartment(apartments)
 
-    val state = filterSharedViewModel.state
+    val filterState = filterSharedViewModel.state
+    val state = viewModel.state
 
-    viewModel.listApartments(state)
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             floatingActionButton = {
@@ -58,7 +58,7 @@ fun ApartmentsScreen(
                     contentPadding = PaddingValues(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(items = viewModel.apartments) { apartment ->
+                    items(items = state.apartments) { apartment ->
                         ApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
                             sharedViewModel.setApartment(it)
                             navController.navigate(Screen.SingleApartment.route)

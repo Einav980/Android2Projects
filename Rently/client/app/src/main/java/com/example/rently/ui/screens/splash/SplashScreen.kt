@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.navigation.Screen
@@ -27,20 +29,29 @@ fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
     onSplashEnds: (route: String) -> Unit
 ) {
+    val context = LocalContext.current
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(
-            durationMillis = 1500
+            durationMillis = 1250
         )
     )
-    LaunchedEffect(key1 = true) {
-        startAnimation = true
-        viewModel.checkIfUserLoggedIn()
-        delay(1000)
-        onSplashEnds(if (viewModel.isLoggedIn.value) Screen.MainPage.route else Screen.Login.route)
-    }
+
     Splash(alpha = alphaAnim.value)
+    LaunchedEffect(key1 = context){
+        viewModel.validationEvents.collect { event ->
+            when(event){
+                is SplashScreenViewModel.ValidationEvent.LoggedIn -> {
+                    onSplashEnds(Screen.MainPage.route)
+                }
+
+                is SplashScreenViewModel.ValidationEvent.NotLoggedIn -> {
+                    onSplashEnds(Screen.Login.route)
+                }
+            }
+        }
+    }
 
 }
 
@@ -74,4 +85,10 @@ fun Splash(alpha: Float) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SplashPreview() {
+    Splash(1f)
 }

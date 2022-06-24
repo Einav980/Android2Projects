@@ -34,7 +34,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-      suspend fun signUpUser(user: User): Resource<AuthResponse>{
+      suspend fun registerUser(user: User): Resource<AuthResponse>{
         val response = try{
             api.registerUser(user = user)
         } catch (e: Exception){

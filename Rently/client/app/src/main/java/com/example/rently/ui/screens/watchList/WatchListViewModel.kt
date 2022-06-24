@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.Apartment
 import com.example.rently.repository.ApartmentRepository
+import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
 import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchListViewModel @Inject constructor(private val ApartmentRepository: ApartmentRepository, private val userRepository : UserRepository) :
+class WatchListViewModel @Inject constructor(private val ApartmentRepository: ApartmentRepository, private val datastore: DatastorePreferenceRepository) :
     ViewModel() {
     val apartments = mutableStateListOf<Apartment>()
     val isLoading = mutableStateOf(false)
@@ -24,7 +25,7 @@ class WatchListViewModel @Inject constructor(private val ApartmentRepository: Ap
     fun watchListApartments() {
         viewModelScope.launch {
             isLoading.value = true
-            val userEmailResult = userRepository.getUserEmail().first()
+            val userEmailResult = datastore.getUserEmail().first()
             val response = ApartmentRepository.listApartments() // todo create WatchList API and create new table in DB
             when (response) {
                 is Resource.Success -> {
