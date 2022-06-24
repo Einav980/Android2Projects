@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rently.navigation.Screen
+import com.example.rently.ui.components.OutlinedChip
+import com.example.rently.ui.components.Section
 import com.example.rently.ui.screens.profile.ProfileScreenViewModel
 import com.example.rently.ui.theme.*
 import com.example.rently.util.PhoneMaskTransformation
@@ -56,7 +59,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 modifier = Modifier
                     .weight(2f)
                     .fillMaxWidth()
-                    .border(0.5.dp, color = Color.Black)
+                    .clip(RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp))
                     .background(MaterialTheme.colors.primary),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -68,7 +71,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    if(viewModel.isUserHeadNotEmpty()){
+                    if (viewModel.isUserHeadNotEmpty()) {
                         UserHead(
                             firstName = viewModel.headFirstname.value,
                             lastName = viewModel.headLastname.value,
@@ -84,8 +87,10 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 ) {
                     Text(
                         text = "${viewModel.firstname.value} ${viewModel.lastname.value}",
+                        color = Color.White,
                         style = MaterialTheme.typography.h3,
-                        fontSize = 20.sp)
+                        fontSize = 20.sp
+                    )
                 }
                 Row(
                     modifier = Modifier
@@ -213,25 +218,14 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 }
                 Spacer(modifier = Modifier.height(15.dp))
                 Button(
-                    onClick = { viewModel.onEvent(ProfileFormEvent.Logout) },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .padding(8.dp)
-                        .weight(1f),
+                    shape = RoundedSquareShape.large,
+                    onClick = {
+                        viewModel.onEvent(ProfileFormEvent.Logout)
+                    },
                     enabled = !viewModel.editableText.value
                 ) {
-                    Text(
-                        text = "Logout",
-                        style = MaterialTheme.typography.h6,
-                        modifier = Modifier
-                            .padding(5.dp)
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.ExitToApp,
-                        contentDescription = "Logout",
-                        tint = Color.White,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                    Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "Logout")
+                    Text(text = "Logout")
                 }
             }
         }
@@ -242,15 +236,17 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
             contentAlignment = Alignment.TopEnd
         ) {
             FloatingActionButton(
-                onClick = { viewModel.editTextFields()},
+                onClick = { viewModel.editTextFields() },
                 shape = RoundedSquareShape.large,
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = Color.White,
+                modifier = Modifier
+                    .border(0.5.dp, MaterialTheme.colors.primary)
+                    .size(40.dp)
             ) {
                 Icon(
                     imageVector = if (!viewModel.editableText.value) Icons.Filled.Edit else Icons.Filled.Save,
                     contentDescription = "Edit Profile",
-                    tint = Color.White,
-                    modifier = Modifier.padding(8.dp)
+                    tint = MaterialTheme.colors.primary,
                 )
             }
         }
@@ -268,9 +264,10 @@ fun UserHead(
 ) {
     Box(
         modifier = modifier
+            .border(1.dp,Color.White , shape = CircleShape )
             .size(size)
             .clip(CircleShape)
-            .background(MaterialTheme.colors.primaryVariant),
+            .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -294,10 +291,8 @@ fun ChipGroup(
     ) {
         LazyRow {
             items(items) {
-                com.example.rently.ui.components.Chip(
-                    name = it,
-                    textStyle = MaterialTheme.typography.button,
-                    padding = PaddingValues(start = 18.dp, end = 18.dp, top = 5.dp, bottom = 5.dp)
+                OutlinedChip(
+                    text = it
                 )
             }
         }

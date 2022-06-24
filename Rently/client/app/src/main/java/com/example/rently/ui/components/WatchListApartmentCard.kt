@@ -230,12 +230,12 @@ fun WatchListDeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apar
                 modifier = Modifier.wrapContentSize(),
                 onClick = {onDeleteApartment(apartment)},
                 shape = RoundedCornerShape(0.dp, 0.dp, 0.dp , 15.dp),
-                backgroundColor = Color.Red
+                backgroundColor = Color.White
             ) {
                 Icon(
                     imageVector = Icons.Filled.Remove,
                     contentDescription = "Delete Apartment",
-                    tint = Color.White,
+                    tint = MaterialTheme.colors.primary,
                 )
             }
         }

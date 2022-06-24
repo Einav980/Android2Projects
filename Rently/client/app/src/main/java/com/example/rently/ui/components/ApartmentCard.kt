@@ -269,12 +269,12 @@ fun DeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apartment: Ap
                 modifier = Modifier.wrapContentSize(),
                 onClick = {onDeleteApartment(apartment)},
                 shape = RoundedSquareShape.large,
-                backgroundColor = Color.Red
+                backgroundColor = Color.White
             ) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "Delete Apartment",
-                    tint = Color.White,
+                    tint = MaterialTheme.colors.primary,
                 )
             }
         }
@@ -308,9 +308,9 @@ fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartm
                     checkedState.value = it
                 },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = ApartmentAvailableStatusColor,
-                    uncheckedThumbColor = ApartmentClosedStatusColor,
-                    checkedTrackColor = Color.DarkGray,
+                    checkedThumbColor = Color.White,
+                    uncheckedThumbColor = Color.White,
+                    checkedTrackColor = MaterialTheme.colors.secondary,
                     uncheckedTrackColor = Color.DarkGray,
                 )
             )
