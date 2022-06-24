@@ -2,6 +2,8 @@ package com.example.rently.api
 
 import android.content.Context
 import com.example.rently.repository.*
+import com.example.rently.model.WatchList
+import com.example.rently.repository.*
 import com.example.rently.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -33,6 +35,29 @@ object AppModule {
             .baseUrl(Constants.BASE_URL)
             .build()
             .create(UserApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideWatchListRepository(
+        api: WatchListApi,
+    ) = WatchListRepository(api)
+
+
+    @Singleton
+    @Provides
+    fun provideWatchListApi(): WatchListApi{
+        val clientBuilder = OkHttpClient.Builder()
+
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        clientBuilder.addInterceptor(loggingInterceptor)
+
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(Constants.BASE_URL)
+            .build()
+            .create(WatchListApi::class.java)
     }
 
     @Singleton
