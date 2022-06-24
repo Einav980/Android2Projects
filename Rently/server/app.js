@@ -17,6 +17,7 @@ db.on('connected', () => {
 app.use('/api', jsonParser, routers.apartmentTypeRouter);
 app.use('/api', routers.apartmentRouter);
 app.use('/api', jsonParser, routers.userRouter);
+app.use('/api', jsonParser, routers.watchlistRouter);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

@@ -49,6 +49,9 @@ fun WatchListScreen(
                         WatchListApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
                             sharedViewModel.setApartment(it)
                             navController.navigate(Screen.SingleApartment.route)
+                        },
+                        onRemoveApartment = {
+                            viewModel.removeWatchListApartments(it)
                         })
                     }
                 }

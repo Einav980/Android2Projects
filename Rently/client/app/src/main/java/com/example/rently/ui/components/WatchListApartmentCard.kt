@@ -43,8 +43,7 @@ fun WatchListApartmentCard(
     pageType: ApartmentPageType = ApartmentPageType.Explore,
     apartment: Apartment,
     onApartmentClick: (apartment: Apartment) -> Unit,
-    onDeleteApartment: (apartment: Apartment) -> Unit = {},
-    onChangeApartmentStatus: (apartment: Apartment) -> Unit ={}
+    onRemoveApartment: (apartment: Apartment) -> Unit = {},
 ) {
 
     RentlyApartmentCardTheme {
@@ -148,23 +147,23 @@ fun WatchListApartmentCard(
                             .weight(2f),
 //                        verticalArrangement = Arrangement.Center
                     ) {
-                        WatchListDeleteApartmentBadge(apartment, onDeleteApartment)
+                        WatchListDeleteApartmentBadge(apartment, onRemoveApartment)
 
-                        Spacer(modifier = Modifier.height(10.dp).weight(2f))
+                        Spacer(modifier = Modifier
+                            .height(10.dp)
+                            .weight(2f))
 
                         val apartmentCardColor =MaterialTheme.colors.primary
                         val format = NumberFormat.getCurrencyInstance()
                         format.maximumFractionDigits = 0
                         format.currency = Currency.getInstance("ILS")
-                        Column(
+                        Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
-                                .background(apartmentCardColor)
-                                .padding(5.dp)
-                                .clip(CircleShape),
-                            horizontalAlignment = Alignment.End,
-                            verticalArrangement = Arrangement.Bottom
+                                .clip(RoundedCornerShape(15.dp, 0.dp, 0.dp, 0.dp))
+                                .background(apartmentCardColor),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = format.format(apartment.price),
@@ -193,23 +192,25 @@ fun WatchListApartmentImage(url: String) {
         }
     )
     val painterState = painter.state
-    Box(
-        modifier = Modifier
-            .wrapContentSize(),
-        contentAlignment = Alignment.Center
-    )
-    {
-        Image(
-            painter = painter,
-            contentScale = ContentScale.Crop,
-            contentDescription = "Image",
+    Card(shape = CircleShape, elevation = 10.dp, modifier = Modifier.padding(3.dp)) {
+        Box(
             modifier = Modifier
-                .size(110.dp)
-                .clip(CircleShape)
-                .fillMaxSize()
+                .wrapContentSize(),
+            contentAlignment = Alignment.Center
         )
-        if (painterState is AsyncImagePainter.State.Loading) {
-            CircularProgressIndicator()
+        {
+            Image(
+                painter = painter,
+                contentScale = ContentScale.Crop,
+                contentDescription = "Image",
+                modifier = Modifier
+                    .size(110.dp)
+                    .clip(CircleShape)
+                    .fillMaxSize()
+            )
+            if (painterState is AsyncImagePainter.State.Loading) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
@@ -227,7 +228,7 @@ fun WatchListDeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apar
         ) {
             FloatingActionButton(
                 modifier = Modifier.wrapContentSize(),
-                onClick = {},// todo change the function
+                onClick = {onDeleteApartment(apartment)},
                 shape = RoundedCornerShape(0.dp, 0.dp, 0.dp , 15.dp),
                 backgroundColor = Color.Red
             ) {
