@@ -3,8 +3,6 @@ package com.example.rently.api
 import com.example.rently.model.Apartment
 import com.example.rently.model.ApartmentType
 import com.example.rently.model.AuthResponse
-import com.example.rently.model.User
-import com.example.rently.util.ApartmentStatus
 import retrofit2.http.*
 
 interface ApartmentApi {

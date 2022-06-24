@@ -18,12 +18,11 @@ class WatchListRepository @Inject constructor(
         } catch (e: Exception) {
             return Resource.Error("Failed listing user watchlist apartments")
         }
-
         return Resource.Success(response)
     }
 
 
-    suspend fun removeWatchListApartment(watchList: WatchList): Resource<AuthResponse> {
+    suspend fun removeWatchListApartment(watchList: Watchlist): Resource<AuthResponse> {
         val response = try {
             api.removeWatchItem(watchList = watchList)
         } catch (e: Exception) {
@@ -32,7 +31,7 @@ class WatchListRepository @Inject constructor(
         return Resource.Success(response)
     }
 
-    suspend fun addWatchListApartment(watchList: WatchList): Resource<AuthResponse>{
+    suspend fun addWatchListApartment(watchList: Watchlist): Resource<AuthResponse>{
         val response = try{
             api.addWatchItem(watchList = watchList)
         } catch (e: Exception){

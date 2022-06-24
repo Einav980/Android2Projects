@@ -81,7 +81,7 @@ class RegisterViewModel @Inject constructor(
                 lastname = state.lastName,
                 phone = state.phone
             )
-            val result = repository.signUpUser(user)
+            val result = repository.registerUser(user)
             when (result) {
                 is Resource.Success -> {
                     val returnCode = result.data?.returnCode

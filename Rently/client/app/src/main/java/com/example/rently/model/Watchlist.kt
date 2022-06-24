@@ -1,6 +1,7 @@
 package com.example.rently.model
 
-data class WatchList(
+data class Watchlist(
+    val _id: String = "",
     val email: String = "",
     val apartmentId: String = "",
 )

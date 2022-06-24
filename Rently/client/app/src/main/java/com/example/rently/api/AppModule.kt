@@ -2,8 +2,6 @@ package com.example.rently.api
 
 import android.content.Context
 import com.example.rently.repository.*
-import com.example.rently.model.WatchList
-import com.example.rently.repository.*
 import com.example.rently.util.Constants
 import dagger.Module
 import dagger.Provides
@@ -24,8 +22,7 @@ object AppModule {
     @Provides
     fun provideAuthRepository(
         api: UserApi,
-        @ApplicationContext context: Context
-    ) = UserRepository(api, context)
+    ) = UserRepository(api)
 
     @Singleton
     @Provides

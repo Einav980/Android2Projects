@@ -1,6 +1,5 @@
 package com.example.rently.api
 
-import com.example.rently.model.Apartment
 import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
 import retrofit2.http.*

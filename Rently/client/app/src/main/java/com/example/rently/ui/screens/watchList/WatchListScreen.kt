@@ -8,9 +8,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +24,7 @@ import com.example.rently.ui.components.ApartmentCard
 import com.example.rently.ui.components.WatchListApartmentCard
 import com.example.rently.ui.theme.RentlyDrawerItemBackground
 import com.example.rently.ui.theme.RoundedSquareShape
+import kotlinx.coroutines.flow.collect
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -31,29 +33,63 @@ fun WatchListScreen(
     navController: NavHostController,
     sharedViewModel: SharedViewModel,
 ) {
+    val context = LocalContext.current
+    val state = viewModel.state
 
-    viewModel.watchListApartments()
+    var listError by remember { mutableStateOf(false)}
+    var listLoading by remember { mutableStateOf(false)}
+    var listSuccess by remember { mutableStateOf(false)}
+
+    LaunchedEffect(key1 = context){
+        viewModel.validationEvents.collect{ event ->
+            when(event){
+
+                WatchListViewModel.ValidationEvent.PageLoading -> {
+                    listLoading = true
+                }
+
+                WatchListViewModel.ValidationEvent.PageError -> {
+                    listLoading = false
+                    listError = true
+                }
+
+                WatchListViewModel.ValidationEvent.PageSuccess -> {
+                    listLoading = false
+                    listSuccess = true
+                }
+            }
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 TopBarTitle()
             },
             content = {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    items(items = viewModel.apartments) { apartment ->
-                        WatchListApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
-                            sharedViewModel.setApartment(it)
-                            navController.navigate(Screen.SingleApartment.route)
-                        },
-                        onRemoveApartment = {
-                            viewModel.removeWatchListApartments(it)
-                        })
+                if(listSuccess){
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(items = state.apartments) { apartment ->
+                            WatchListApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
+                                sharedViewModel.setApartment(it)
+                                navController.navigate(Screen.SingleApartment.route)
+                            },
+                                onRemoveApartment = {
+                                    viewModel.removeWatchListApartments(it)
+                                })
+                        }
                     }
+                }
+                if(listError){
+                    Text(text = "Error listing apartments")
+                }
+                if(listLoading){
+                    CircularProgressIndicator()
                 }
             }
         )

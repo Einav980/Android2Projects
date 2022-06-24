@@ -1,28 +1,16 @@
 package com.example.rently.repository
 
-import android.content.Context
-import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.preferencesDataStore
 import com.example.rently.Resource
 import com.example.rently.api.UserApi
-import com.example.rently.model.Apartment
 import com.example.rently.model.AuthResponse
 import com.example.rently.model.User
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityScoped
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
 @ActivityScoped
 class UserRepository @Inject constructor(
     private val api: UserApi,
-    private val context: Context
 ) {
     suspend fun loginUser(user: User): Resource<AuthResponse>{
         return try {
