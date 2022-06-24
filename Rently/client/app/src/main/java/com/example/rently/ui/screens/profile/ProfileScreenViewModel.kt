@@ -9,6 +9,7 @@ import com.example.rently.model.User
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
+import com.example.rently.repository.WatchListRepository
 import com.example.rently.validation.presentation.ProfileFormEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileScreenViewModel @Inject constructor(private val datastore: DatastorePreferenceRepository, private val userRepository: UserRepository, private val apartmentRepository: ApartmentRepository) :
+class ProfileScreenViewModel @Inject constructor(private val datastore: DatastorePreferenceRepository, private val userRepository: UserRepository,
+                                                 private val apartmentRepository: ApartmentRepository, private val watchListRepository: WatchListRepository) :
     ViewModel() {
 
     private val phoneRegex =  Regex("^05\\d[0-9]{7}")
@@ -26,6 +28,7 @@ class ProfileScreenViewModel @Inject constructor(private val datastore: Datastor
     val email = mutableStateOf("")
     val lastname = mutableStateOf("")
     val myApartments = mutableStateOf(0)
+    val myWatchlist = mutableStateOf(0)
     val firstname = mutableStateOf("")
     val headLastname = mutableStateOf("")
     val headFirstname = mutableStateOf("")
@@ -82,6 +85,23 @@ class ProfileScreenViewModel @Inject constructor(private val datastore: Datastor
                     is Resource.Success -> {
                         val data =  response.data!!
                         myApartments.value = data.size
+                    }
+                    else -> {
+                        Log.d("Rently", "could not find user")}
+                }
+            }
+        }
+    }
+
+    fun getLoggedInUserWatchlist() {
+        viewModelScope.launch {
+            val userEmailResult = datastore.getUserEmail().first()
+            if (userEmailResult.isNotEmpty()){
+                val response = watchListRepository.listUserWatchListApartments(userEmailResult)
+                when(response){
+                    is Resource.Success -> {
+                        val data =  response.data!!
+                        myWatchlist.value = data.size
                     }
                     else -> {
                         Log.d("Rently", "could not find user")}

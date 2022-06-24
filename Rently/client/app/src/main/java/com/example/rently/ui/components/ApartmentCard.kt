@@ -50,7 +50,7 @@ fun ApartmentCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(350.dp)
-                .clickable { /* TODO: Click on apartment function */
+                .clickable {
                     onApartmentClick(apartment)
                 },
             elevation = 10.dp,
@@ -175,31 +175,6 @@ fun ApartmentCard(
             if (pageType == ApartmentPageType.UserManage && apartment.status != null) {
                 switchApartmentStatus(apartment , onChangeApartmentStatus)
             }
-            if (pageType == ApartmentPageType.AdminManage){
-                swipeIndications()
-            }
-        }
-    }
-}
-
-@Composable
-fun swipeIndications() {
-    RentlyApartmentCardTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier
-                    .padding(bottom = 20.dp)
-                    .size(50.dp)
-                    .shadow(elevation = 50.dp),
-                imageVector = Icons.Outlined.Swipe,
-                contentDescription = null,
-                tint = Color.White
-            )
         }
     }
 }
