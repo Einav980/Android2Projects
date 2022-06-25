@@ -8,11 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.rently.FilterSharedViewModel
+import com.example.rently.SharedViewModel
 import com.example.rently.ui.screens.*
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.login.LoginScreen
+import com.example.rently.ui.screens.map.MapScreen
+import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.example.rently.ui.screens.splash.SplashScreen
 import com.example.rently.ui.screens.thankyou.ThankYou
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -25,6 +28,7 @@ fun SetupNavGraph(
     navController: NavHostController
 ) {
     val filterSharedViewModel: FilterSharedViewModel = viewModel()
+    val sharedViewModel = SharedViewModel()
 
     AnimatedNavHost(
         navController = navController,
@@ -33,16 +37,25 @@ fun SetupNavGraph(
         composable(
             route = Screen.MainPage.route
         ) {
-            MainScreen(onFloatingButtonClicked = {
-                navController.navigate(Screen.Splash.route)
-            },
+            MainScreen(
+                sharedViewModel = sharedViewModel,
                 onLogout = {
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.MainPage.route) {
                             inclusive = true
                         }
                     }
-                })
+                },
+                onMapClicked = {
+                    navController.navigate(Screen.Map.passLatLng(0.0,0.0))
+                },
+                onApartmentClicked = {
+                    navController.navigate(Screen.SingleApartment.route)
+                },
+                onAddApartmentClicked = {
+                    navController.navigate(Screen.AddApartment.route)
+                }
+            )
         }
         composable(
             route = Screen.Login.route
@@ -120,6 +133,18 @@ fun SetupNavGraph(
             route = Screen.AddApartment.route
         ){
             AddApartmentScreen()
+        }
+
+        composable(
+            route = Screen.SingleApartment.route
+        ){
+            SingleApartmentScreen(sharedViewModel = sharedViewModel)
+        }
+
+        composable(
+            route = Screen.Map.route
+        ){
+            MapScreen()
         }
     }
 }

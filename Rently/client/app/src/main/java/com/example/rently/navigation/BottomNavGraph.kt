@@ -3,9 +3,7 @@ package com.example.rently.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,19 +19,20 @@ import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentT
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.map.MapScreen
-import com.example.rently.ui.screens.single_apartment.NewSingleApartmentScreen
-import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.example.rently.ui.screens.watchList.WatchListScreen
 import com.google.android.gms.maps.model.LatLng
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun BottomNavGraph(
+    sharedViewModel: SharedViewModel,
     navController: NavHostController,
+    onApartmentClicked: () -> Unit,
+    onMapClicked: () -> Unit,
+    onAddApartmentClicked: () -> Unit,
     onLogout: () -> Unit
 ) {
 
-    val sharedViewModel: SharedViewModel = viewModel()
     val filterSharedViewModel: FilterSharedViewModel = viewModel()
 
     NavHost(
@@ -43,7 +42,13 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.Apartments.route,
         ) {
-            ApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel, filterSharedViewModel = filterSharedViewModel)
+            ApartmentsScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel,
+                filterSharedViewModel = filterSharedViewModel,
+                onApartmentClicked = onApartmentClicked,
+                onMapClicked = onMapClicked
+            )
         }
         composable(
             route = BottomBarScreen.Profile.route,
@@ -54,7 +59,11 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.Watchlist.route,
         ) {
-            WatchListScreen(navController = navController, sharedViewModel = sharedViewModel)
+            WatchListScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel,
+                onApartmentClicked = onApartmentClicked
+            )
         }
 
         composable(
@@ -63,32 +72,23 @@ fun BottomNavGraph(
             ManageApartmentsScreen(
                 navController = navController,
                 sharedViewModel = sharedViewModel,
+                onAddApartmentClicked = onAddApartmentClicked
             )
         }
 
         composable(
             route = BottomBarScreen.AdminManageApartments.route,
         ) {
-            AdminManageApartmentsScreen(navController = navController, sharedViewModel = sharedViewModel)
+            AdminManageApartmentsScreen(
+                navController = navController,
+                sharedViewModel = sharedViewModel
+            )
         }
 
         composable(
             route = BottomBarScreen.AdminManageApartmentsType.route,
         ) {
             ManageApartmentTypeScreen()
-        }
-
-        composable(route = Screen.SingleApartment.route) {
-            SingleApartmentScreen(
-                navController = navController,
-                sharedViewModel = sharedViewModel
-            )
-        }
-
-        composable(route = Screen.NewSingleApartment.route) {
-            NewSingleApartmentScreen(
-                sharedViewModel = sharedViewModel
-            )
         }
 
         composable(route = Screen.Filter.route) {
@@ -112,11 +112,6 @@ fun BottomNavGraph(
             val lat = it.arguments?.getFloat("lat")!!.toDouble()
             val lng = it.arguments?.getFloat("lng")!!.toDouble()
             MapScreen(LatLng(lat, lng))
-        }
-        composable(
-            Screen.AddApartment.route
-        ){
-            AddApartmentScreen()
         }
     }
 }

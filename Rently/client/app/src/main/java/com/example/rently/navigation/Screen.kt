@@ -7,13 +7,12 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 sealed class Screen(val route: String){
-    object Details: Screen(route = "details_screen")
     object Login: Screen(route = "login_screen")
     object Signup: Screen(route = "signup_screen")
     object ThankYou: Screen(route = "thankyou_screen")
     object MainPage: Screen(route = "main_screen")
     object Apartments: Screen(route = "apartments_screen")
-    object SingleApartment: Screen(route = "single_apartment_screen/{apartment}")
+    object SingleApartment: Screen(route = "single_apartment_screen")
     object ManageApartmentType: Screen(route = "manage_apartment_screen")
     object Filter: Screen(route = "filter_screen")
     object Splash: Screen(route = "splash_screen")
@@ -22,7 +21,6 @@ sealed class Screen(val route: String){
             return "map_screen/$lat/$lng"
         }
     }
-    object NewSingleApartment: Screen(route = "new_single_apartment")
     object AddApartment: Screen(route = "add_apartment_screen")
 
 }
