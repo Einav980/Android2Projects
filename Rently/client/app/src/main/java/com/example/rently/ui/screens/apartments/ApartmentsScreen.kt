@@ -1,44 +1,44 @@
 package com.example.rently.ui.screens.apartments
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.House
+import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
-import com.example.rently.ui.theme.RentlyDrawerItemBackground
-import com.example.rently.ui.theme.RoundedSquareShape
+import com.example.rently.ui.screens.apartments.events.ApartmentsFormEvent
+import com.example.rently.ui.theme.RentlyCardShape
+import com.example.rently.ui.theme.RentlyMapButtonBackgroundColor
+import com.example.rently.ui.theme.RentlyMapButtonForegroundColor
+import com.example.rently.util.Constants
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ApartmentsScreen(
     viewModel: ApartmentsViewModel = hiltViewModel(),
     navController: NavHostController,
+    onApartmentClicked: () -> Unit,
     sharedViewModel: SharedViewModel,
-    filterSharedViewModel: FilterSharedViewModel
+    filterSharedViewModel: FilterSharedViewModel,
+    onMapClicked: () -> Unit,
 ) {
-//    var apartments = listOf<Apartment>(
-//        Apartment("Tel-Aviv", price = 7800, numberOfRooms = 3, address = "Dov Nov 16", numberOfBaths = 1, numberOfBeds = 2, size = 54, imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"),
-//        Apartment("Bat Yam", price = 5500, numberOfRooms = 2, address = "Poetry Rachel 22", numberOfBaths = 1, numberOfBeds = 1, size = 88, imageUrl = "https://q-xx.bstatic.com/xdata/images/hotel/840x460/200051570.jpg?k=52c15a2aa674672a1440bd1d596e57f918b2fbdc0c942b6a5add5a6dc0f4a165"),
-//        Apartment("Ramat-Gan", price = 6300, numberOfRooms = 2, address = "35 Bialik St.", numberOfBaths = 2, numberOfBeds = 2, size = 95,  imageUrl = "https://media.istockphoto.com/photos/exterior-view-of-modern-apartment-building-offering-luxury-rental-in-picture-id1322575582?b=1&k=20&m=1322575582&s=170667a&w=0&h=bGCtLpgCEorQuVdW2lbWguNZHcOGPePSwDibgbgyh0U="),
-//        Apartment("Ramat-Gan", price = 6300, numberOfRooms = 2, address = "35 Bialik St.", numberOfBaths = 2, numberOfBeds = 2, size = 95,  imageUrl = "https://media.istockphoto.com/photos/exterior-view-of-modern-apartment-building-offering-luxury-rental-in-picture-id1322575582?b=1&k=20&m=1322575582&s=170667a&w=0&h=bGCtLpgCEorQuVdW2lbWguNZHcOGPePSwDibgbgyh0U=")
-//    )
-//    var apartments = Apartment(_id = "test",status= ApartmentStatus.Available.status,  city= "Tel-Aviv", price = 7800, numberOfRooms = 3, address = "Dov Nov 16", numberOfBaths = 1, numberOfBeds = 2, size = 54, imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1")
-//    viewModel.addApartment(apartments)
 
     val filterState = filterSharedViewModel.state
     val state = viewModel.state
@@ -46,23 +46,73 @@ fun ApartmentsScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             floatingActionButton = {
-                FloatingButton()
+                MapButton(
+                    onClick = onMapClicked
+                )
             },
             topBar = {
                 TopBarTitle(navController)
             },
             content = {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    items(items = state.apartments) { apartment ->
-                        ApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
-                            sharedViewModel.setApartment(it)
-                            navController.navigate(Screen.SingleApartment.route)
-                        })
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${state.apartments.size} properties",
+                            style = MaterialTheme.typography.body1
+                        )
+                        OutlinedButton(
+                            onClick = {
+                                navController.navigate(Screen.Filter.route) {
+                                    popUpTo(Screen.Filter.route)
+                                }
+                            },
+                            shape = CircleShape,
+                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Transparent),
+                            border = BorderStroke(0.dp, Color.Transparent)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.FilterAlt,
+                                contentDescription = null,
+                                tint = if (state.isFiltered) MaterialTheme.colors.primary else Color.Gray
+                            )
+                        }
+                    }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(items = state.apartments) { apartment ->
+                            ApartmentCard(
+                                apartment = apartment,
+                                onApartmentClick = {
+                                    sharedViewModel.setApartment(it)
+                                    onApartmentClicked()
+                                },
+                                isWatched = state.userWatchlist.any { item -> item.apartmentId == apartment._id },
+                                onAddToWatchlist = {
+                                    viewModel.onEvent(
+                                        ApartmentsFormEvent.AddToWatchlist(
+                                            it
+                                        )
+                                    )
+                                },
+                                onRemoveFromWatchlist = {
+                                    viewModel.onEvent(
+                                        ApartmentsFormEvent.RemoveFromWatchList(
+                                            it
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -71,50 +121,46 @@ fun ApartmentsScreen(
 }
 
 @Composable
-fun FloatingButton() {
+fun MapButton(onClick: () -> Unit) {
     FloatingActionButton(
-        modifier = Modifier.wrapContentSize(),
-        backgroundColor = RentlyDrawerItemBackground,
-        onClick = { }
+        backgroundColor = RentlyMapButtonBackgroundColor,
+        onClick = onClick
     ) {
-        Icon(Icons.Filled.Place, "", modifier = Modifier.size(30.dp))
+        Icon(
+            Icons.Outlined.TravelExplore,
+            null,
+            modifier = Modifier.size(30.dp),
+            tint = RentlyMapButtonForegroundColor
+        )
     }
 }
 
 @Composable
 fun TopBarTitle(navController: NavHostController) {
-    TopAppBar(
-        elevation = 50.dp,
-        modifier = Modifier
-            .wrapContentSize(),
-        backgroundColor = Color.White,
-    ) {
-        Button(
+    Card(modifier = Modifier.fillMaxWidth(), elevation = 30.dp, shape = RentlyCardShape.large) {
+        Box(
             modifier = Modifier
-                .padding(10.dp)
-                .weight(1f)
-                .fillMaxWidth(),
-            shape = RoundedSquareShape.large,
-            onClick = {
-                navController.navigate(Screen.Filter.route) {
-                    popUpTo(Screen.Filter.route)
-                }
-            }
+                .fillMaxWidth()
+                .padding(10.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = Icons.Filled.FilterAlt, contentDescription = "Filter")
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.House,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primary
+                )
+                Spacer(Modifier.width(10.dp))
+                Text(
+                    text = Constants.APARTMENTS_PAGE_TITLE,
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
-        Text(
-            modifier = Modifier
-                .padding(10.dp)
-                .weight(5f)
-                .fillMaxWidth(),
-            text = "Apartments",
-            style = MaterialTheme.typography.h3,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            fontSize = 30.sp
-        )
-
     }
 }
 
