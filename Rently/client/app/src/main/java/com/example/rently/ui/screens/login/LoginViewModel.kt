@@ -9,8 +9,8 @@ import com.example.rently.Resource
 import com.example.rently.model.User
 import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
-import com.example.rently.validation.presentation.LoginFormEvent
-import com.example.rently.validation.use_case.LoginFormState
+import com.example.rently.ui.screens.login.events.LoginFormEvent
+import com.example.rently.ui.screens.login.state.LoginFormState
 import com.example.rently.validation.use_case.ValidateEmail
 import com.example.rently.validation.use_case.ValidatePassword
 import dagger.hilt.android.lifecycle.HiltViewModel

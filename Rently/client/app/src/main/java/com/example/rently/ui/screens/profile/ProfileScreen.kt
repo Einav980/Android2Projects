@@ -1,4 +1,4 @@
-package com.example.rently.ui.screens
+package com.example.rently.ui.screens.profile
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -29,16 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.ui.components.OutlinedChip
-import com.example.rently.ui.screens.profile.ProfileScreenViewModel
 import com.example.rently.ui.screens.profile.events.ProfileFormEvent
-import com.example.rently.ui.screens.register.RegisterViewModel
-import com.example.rently.ui.screens.register.events.RegisterFormEvent
 import com.example.rently.ui.theme.*
 import com.example.rently.util.PhoneMaskTransformation
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
+fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel(), onLogout: () -> Unit) {
     val scrollState = rememberScrollState()
 
 
@@ -229,6 +226,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                     shape = RoundedSquareShape.large,
                     onClick = {
                         viewModel.onEvent(ProfileFormEvent.Logout)
+                        onLogout()
                     },
                     enabled = !state.editableText
                 ) {

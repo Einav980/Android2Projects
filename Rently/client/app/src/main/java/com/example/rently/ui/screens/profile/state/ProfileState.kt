@@ -1,5 +1,4 @@
 package com.example.rently.ui.screens.profile.state
-import com.example.rently.model.User
 
 data class ProfileState(
     val userApartments: Int = 0,
@@ -12,7 +11,6 @@ data class ProfileState(
     val editableText: Boolean = false,
     val headLastname : String = "",
     val headFirstname : String = "",
-    val user : User = User(),
     val firstNameError: String? = null,
     val lastNameError: String? = null,
     val phoneError: String? = null,

@@ -92,7 +92,6 @@ fun AdminManageApartmentsScreen(
                                 ApartmentCard(
                                     apartment = apartment,
                                     pageType = ApartmentPageType.AdminManage,
-                                    navController = navController,
                                     onApartmentClick = {
                                         sharedViewModel.setApartment(it)
                                         navController.navigate(Screen.SingleApartment.route)

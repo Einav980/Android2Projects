@@ -23,6 +23,7 @@ import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
+import com.example.rently.ui.screens.PageTitleCard
 import com.example.rently.ui.screens.apartments.events.ApartmentsFormEvent
 import com.example.rently.ui.theme.RentlyCardShape
 import com.example.rently.ui.theme.RentlyMapButtonBackgroundColor
@@ -51,7 +52,10 @@ fun ApartmentsScreen(
                 )
             },
             topBar = {
-                TopBarTitle(navController)
+                PageTitleCard(
+                    title = Constants.APARTMENTS_PAGE_TITLE,
+                    icon = Icons.Filled.House
+                )
             },
             content = {
                 Column(modifier = Modifier.fillMaxWidth()) {
@@ -132,35 +136,6 @@ fun MapButton(onClick: () -> Unit) {
             modifier = Modifier.size(30.dp),
             tint = RentlyMapButtonForegroundColor
         )
-    }
-}
-
-@Composable
-fun TopBarTitle(navController: NavHostController) {
-    Card(modifier = Modifier.fillMaxWidth(), elevation = 30.dp, shape = RentlyCardShape.large) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.House,
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.primary
-                )
-                Spacer(Modifier.width(10.dp))
-                Text(
-                    text = Constants.APARTMENTS_PAGE_TITLE,
-                    style = MaterialTheme.typography.h4,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
     }
 }
 

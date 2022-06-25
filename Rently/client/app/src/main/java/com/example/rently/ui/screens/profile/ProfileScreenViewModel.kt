@@ -11,7 +11,7 @@ import com.example.rently.model.User
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.UserRepository
-import com.example.rently.repository.WatchListRepository
+import com.example.rently.repository.WatchlistRepository
 import com.example.rently.ui.screens.profile.events.ProfileFormEvent
 import com.example.rently.ui.screens.profile.state.ProfileState
 import com.example.rently.validation.use_case.ValidateFirstName
@@ -29,7 +29,7 @@ class ProfileScreenViewModel @Inject constructor(
     private val datastore: DatastorePreferenceRepository,
     private val userRepository: UserRepository,
     private val apartmentRepository: ApartmentRepository,
-    private val watchListRepository: WatchListRepository,
+    private val watchListRepository: WatchlistRepository,
     private val validateFirstName: ValidateFirstName,
     private val validateLastName: ValidateLastName,
     private val validatePhone: ValidatePhone,
@@ -201,7 +201,9 @@ class ProfileScreenViewModel @Inject constructor(
 
 
     private fun updateHeadName() {
-        state = state.copy(headLastname = state.lastName , headFirstname = state.firstName)
+        viewModelScope.launch {
+            state = state.copy(headLastname = state.lastName , headFirstname = state.firstName)
+        }
     }
 
     fun isUserHeadNotEmpty(): Boolean {

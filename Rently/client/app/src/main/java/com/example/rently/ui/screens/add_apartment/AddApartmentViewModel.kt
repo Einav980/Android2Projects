@@ -18,6 +18,7 @@ import com.example.rently.util.convertImageToBase64
 import com.example.rently.ui.screens.add_apartment.events.AddApartmentFormEvent
 import com.example.rently.ui.screens.add_apartment.state.AddApartmentFormState
 import com.example.rently.validation.use_case.*
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -207,11 +208,14 @@ class AddApartmentViewModel @Inject constructor(
             state = state.copy(apartmentImageUrl = imageUploadResponse)
         }
 
-        val location = getAddressLocation(state.address)
-        if (location == null) {
+        val googleLocation = getAddressLocation(state.address)
+
+        if (googleLocation == null) {
             validationEventChannel.send(ValidationEvent.ApartmentUploadError)
             return
         }
+
+        val location = LatLng(googleLocation.lat.toDouble(), googleLocation.lng.toDouble())
 
         state = state.copy(apartmentAddressLocation = location)
 

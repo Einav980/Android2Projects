@@ -7,22 +7,30 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.House
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.rently.SharedViewModel
 import com.example.rently.navigation.*
 import com.example.rently.ui.screens.main.MainScreenViewModel
+import com.example.rently.ui.theme.RentlyCardShape
 import com.example.rently.ui.theme.RentlyTheme
+import com.example.rently.util.Constants
 import com.example.rently.util.UserType
 
 
@@ -57,7 +65,7 @@ fun MainScreen(
                     onLogout = onLogout,
                     onApartmentClicked = onApartmentClicked,
                     onMapClicked = onMapClicked,
-                    onAddApartmentClicked = onAddApartmentClicked
+                    onAddApartmentClicked = onAddApartmentClicked,
                 )
             }
         }
@@ -134,6 +142,37 @@ fun navListForUserType(userType: UserType): List<BottomBarScreen> {
             BottomBarScreen.AdminManageApartmentsType,
             BottomBarScreen.Profile
         )
+    }
+}
+
+@Composable
+fun PageTitleCard(title: String, icon: ImageVector? = null) {
+    Card(modifier = Modifier.fillMaxWidth(), elevation = 30.dp, shape = RentlyCardShape.large) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if(icon != null){
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.primary
+                    )
+                    Spacer(Modifier.width(10.dp))
+                }
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
 //

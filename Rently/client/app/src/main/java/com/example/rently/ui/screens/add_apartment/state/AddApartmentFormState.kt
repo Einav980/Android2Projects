@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.example.rently.model.Apartment
 import com.example.rently.model.ApartmentType
 import com.example.rently.model.google.GoogleLocation
+import com.google.android.gms.maps.model.LatLng
 
 data class AddApartmentFormState(
     val address: String = "",
@@ -29,6 +30,6 @@ data class AddApartmentFormState(
     val isApartmentTypesLoading: Boolean = false,
     val selectedApartmentTypeIndex: Int = 0,
     val apartmentIsUploading: Boolean = false,
-    val apartmentAddressLocation: GoogleLocation = GoogleLocation(0,0),
+    val apartmentAddressLocation: LatLng = LatLng(0.0, 0.0),
     val apartmentImageBitmap: Bitmap? = null
 )

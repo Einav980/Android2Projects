@@ -2,8 +2,8 @@ package com.example.rently.ui.screens.filter
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.example.rently.validation.presentation.FilterFormEvent
-import com.example.rently.validation.use_case.FilterFormState
+import com.example.rently.ui.screens.filter.events.FilterFormEvent
+import com.example.rently.ui.screens.filter.state.FilterFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

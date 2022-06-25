@@ -12,6 +12,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,7 +21,7 @@ import com.example.rently.ui.components.RentlyTextField
 import com.example.rently.ui.theme.RentlyLightColors
 import com.example.rently.ui.theme.RentlyTypography
 import com.example.rently.util.Constants
-import com.example.rently.validation.presentation.LoginFormEvent
+import com.example.rently.ui.screens.login.events.LoginFormEvent
 
 @Composable
 fun LoginScreen(
@@ -113,7 +115,8 @@ fun LoginScreen(
                                 imageVector = Icons.Filled.Lock,
                                 contentDescription = "Password"
                             )
-                        }
+                        },
+                        visualTransformation = PasswordVisualTransformation()
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))

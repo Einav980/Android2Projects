@@ -1,4 +1,4 @@
-package com.example.rently.validation.use_case
+package com.example.rently.ui.screens.filter.state
 
 import com.example.rently.model.ApartmentType
 

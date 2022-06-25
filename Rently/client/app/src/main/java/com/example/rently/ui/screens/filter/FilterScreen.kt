@@ -26,8 +26,8 @@ import com.example.rently.ui.components.*
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.*
-import com.example.rently.validation.presentation.FilterFormEvent
-import com.example.rently.validation.use_case.FilterFormState
+import com.example.rently.ui.screens.filter.events.FilterFormEvent
+import com.example.rently.ui.screens.filter.state.FilterFormState
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -300,13 +300,17 @@ fun FilterScreen(
                         }
                     }
                     Section(title = "Options", icon = Icons.Filled.List) {
-                        ToggleRow(text = "Parking", isChecked = state.hasParking , onCheckedChange = {viewModel.onEvent(FilterFormEvent.HasParkingChanged(it))})
+                        ToggleRow(text = "Parking", isChecked = state.hasParking , onCheckedChange = {viewModel.onEvent(
+                            FilterFormEvent.HasParkingChanged(it))})
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Balcony",isChecked = state.hasBalcony , onCheckedChange = { viewModel.onEvent(FilterFormEvent.HasBalconyChanged(it)) })
+                        ToggleRow(text = "Balcony",isChecked = state.hasBalcony , onCheckedChange = { viewModel.onEvent(
+                            FilterFormEvent.HasBalconyChanged(it)) })
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Animals Allowed",isChecked = state.isAnimalFriendly , onCheckedChange = { viewModel.onEvent(FilterFormEvent.IsAnimalFriendlyChanged(it)) })
+                        ToggleRow(text = "Animals Allowed",isChecked = state.isAnimalFriendly , onCheckedChange = { viewModel.onEvent(
+                            FilterFormEvent.IsAnimalFriendlyChanged(it)) })
                         Spacer(modifier = Modifier.height(10.dp))
-                        ToggleRow(text = "Furnished",isChecked = state.isFurnished , onCheckedChange = { viewModel.onEvent(FilterFormEvent.IsFurnishedChanged(it)) })
+                        ToggleRow(text = "Furnished",isChecked = state.isFurnished , onCheckedChange = { viewModel.onEvent(
+                            FilterFormEvent.IsFurnishedChanged(it)) })
                     }
                 }
             }

@@ -127,7 +127,7 @@ fun SetupNavGraph(
             SplashScreen(onSplashEnds = {
                 navController.navigate(it) {
                     popUpTo(it) {
-                        inclusive = false
+                        inclusive = true
                     }
                 }
             })
@@ -147,8 +147,8 @@ fun SetupNavGraph(
                 onMapClicked = {
                     navController.navigate(
                         Screen.Map.passLatLng(
-                            it.lat.toDouble(),
-                            it.lng.toDouble()
+                            it.latitude,
+                            it.longitude
                         )
                     )
                 })

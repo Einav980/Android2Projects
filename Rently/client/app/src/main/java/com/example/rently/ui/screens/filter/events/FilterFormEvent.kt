@@ -1,4 +1,4 @@
-package com.example.rently.validation.presentation
+package com.example.rently.ui.screens.filter.events
 
 import com.example.rently.model.ApartmentType
 

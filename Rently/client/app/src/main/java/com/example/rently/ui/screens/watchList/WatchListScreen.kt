@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +23,7 @@ import com.example.rently.SharedViewModel
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
 import com.example.rently.ui.components.WatchListApartmentCard
+import com.example.rently.ui.screens.PageTitleCard
 import com.example.rently.ui.theme.RentlyDrawerItemBackground
 import com.example.rently.ui.theme.RoundedSquareShape
 import kotlinx.coroutines.flow.collect
@@ -65,7 +67,7 @@ fun WatchListScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
-                TopBarTitle()
+                PageTitleCard(title = "Watch List", icon = Icons.Filled.Visibility)
             },
             content = {
                 if (listSuccess) {
@@ -100,31 +102,6 @@ fun WatchListScreen(
         )
     }
 }
-
-
-@Composable
-fun TopBarTitle() {
-    TopAppBar(
-        elevation = 50.dp,
-        modifier = Modifier
-            .wrapContentSize(),
-        backgroundColor = Color.White,
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(10.dp)
-                .weight(5f)
-                .fillMaxWidth(),
-            text = "Watch List",
-            style = MaterialTheme.typography.h3,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            fontSize = 30.sp
-        )
-
-    }
-}
-
 //@Preview
 //@Composable
 //fun ApartmentsScreenPreview() {

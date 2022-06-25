@@ -177,34 +177,36 @@ fun ApartmentCard(
                 swipeIndications()
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp), contentAlignment = Alignment.TopEnd
-            ) {
-                if (isWatched) {
-                    IconButton(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color.White),
-                        onClick = { onRemoveFromWatchlist(apartment._id) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Visibility,
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
-                } else {
-                    IconButton(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color.Gray),
-                        onClick = { onAddToWatchlist(apartment._id) }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Visibility,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
+            if (pageType === ApartmentPageType.Explore) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), contentAlignment = Alignment.TopEnd
+                ) {
+                    if (isWatched) {
+                        IconButton(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(Color.White),
+                            onClick = { onRemoveFromWatchlist(apartment._id) }) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility,
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .background(Color.Gray),
+                            onClick = { onAddToWatchlist(apartment._id) }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Visibility,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }

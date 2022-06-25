@@ -18,12 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(private val datastore: DatastorePreferenceRepository): ViewModel() {
 
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
     init {
         validateUserLoggedIn()
     }
-
-    private val validationEventChannel = Channel<ValidationEvent>()
-    val validationEvents = validationEventChannel.receiveAsFlow()
 
     private fun validateUserLoggedIn(){
         viewModelScope.launch {

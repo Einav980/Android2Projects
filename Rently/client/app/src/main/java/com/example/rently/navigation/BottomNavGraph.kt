@@ -11,9 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
-import com.example.rently.ui.screens.manageApartments.ManageApartmentsScreen
-import com.example.rently.ui.screens.ProfileScreen
-import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
+import com.example.rently.ui.screens.manage_apartments.ManageApartmentsScreen
+import com.example.rently.ui.screens.profile.ProfileScreen
 import com.example.rently.ui.screens.admin_screens.adminManageApartment.AdminManageApartmentsScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
@@ -53,7 +52,9 @@ fun BottomNavGraph(
         composable(
             route = BottomBarScreen.Profile.route,
         ) {
-            ProfileScreen()
+            ProfileScreen(
+                onLogout = onLogout
+            )
         }
 
         composable(
@@ -70,7 +71,7 @@ fun BottomNavGraph(
             route = BottomBarScreen.ManageApartments.route,
         ) {
             ManageApartmentsScreen(
-                navController = navController,
+                onApartmentClicked = onApartmentClicked,
                 sharedViewModel = sharedViewModel,
                 onAddApartmentClicked = onAddApartmentClicked
             )

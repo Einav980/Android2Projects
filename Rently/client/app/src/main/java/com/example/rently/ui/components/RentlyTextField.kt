@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.rently.ui.theme.RoundedSquareShape
 
 @Composable
@@ -23,9 +25,11 @@ fun RentlyTextField(
     trailingIcon: @Composable() (() -> Unit)? = null,
     leadingIcon: @Composable() (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     isError: Boolean = false,
-    errorMessage: String = ""
-) {
+    errorMessage: String = "",
+
+    ) {
     Column {
         TextField(
             modifier = modifier.fillMaxWidth(),
@@ -40,6 +44,7 @@ fun RentlyTextField(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
+            visualTransformation = visualTransformation,
             isError = false,
             shape = RoundedSquareShape.large,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType)

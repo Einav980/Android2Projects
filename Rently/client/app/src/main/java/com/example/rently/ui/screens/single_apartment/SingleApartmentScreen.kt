@@ -37,6 +37,7 @@ import com.example.rently.ui.theme.RentlyGrayColor
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.Constants
+import com.google.android.gms.maps.model.LatLng
 import java.text.NumberFormat
 import java.util.*
 
@@ -44,7 +45,7 @@ import java.util.*
 fun SingleApartmentScreen(
     sharedViewModel: SharedViewModel,
     onBackClicked: () -> Unit,
-    onMapClicked: (GoogleLocation) -> Unit
+    onMapClicked: (LatLng) -> Unit
 ) {
     val context = LocalContext.current
     val apartment = sharedViewModel.apartment
