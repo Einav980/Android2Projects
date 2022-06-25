@@ -47,7 +47,7 @@ fun SetupNavGraph(
                     }
                 },
                 onMapClicked = {
-                    navController.navigate(Screen.Map.passLatLng(0.0,0.0))
+                    navController.navigate(Screen.Map.passLatLng(0.0, 0.0))
                 },
                 onApartmentClicked = {
                     navController.navigate(Screen.SingleApartment.route)
@@ -78,8 +78,8 @@ fun SetupNavGraph(
         ) {
             RegisterScreen(
                 onRegisterSuccess = {
-                    navController.navigate(Screen.MainPage.route){
-                        popUpTo(route = Screen.MainPage.route){
+                    navController.navigate(Screen.MainPage.route) {
+                        popUpTo(route = Screen.MainPage.route) {
                             inclusive = true
                         }
                     }
@@ -115,15 +115,18 @@ fun SetupNavGraph(
         composable(
             route = Screen.Filter.route
         ) {
-            FilterScreen(navController = navController, filterSharedViewModel = filterSharedViewModel)
+            FilterScreen(
+                navController = navController,
+                filterSharedViewModel = filterSharedViewModel
+            )
         }
 
         composable(
             route = Screen.Splash.route
         ) {
             SplashScreen(onSplashEnds = {
-                navController.navigate(it){
-                    popUpTo(it){
+                navController.navigate(it) {
+                    popUpTo(it) {
                         inclusive = false
                     }
                 }
@@ -131,19 +134,29 @@ fun SetupNavGraph(
         }
         composable(
             route = Screen.AddApartment.route
-        ){
+        ) {
             AddApartmentScreen()
         }
 
         composable(
             route = Screen.SingleApartment.route
-        ){
-            SingleApartmentScreen(sharedViewModel = sharedViewModel)
+        ) {
+            SingleApartmentScreen(
+                sharedViewModel = sharedViewModel,
+                onBackClicked = { navController.popBackStack() },
+                onMapClicked = {
+                    navController.navigate(
+                        Screen.Map.passLatLng(
+                            it.lat.toDouble(),
+                            it.lng.toDouble()
+                        )
+                    )
+                })
         }
 
         composable(
             route = Screen.Map.route
-        ){
+        ) {
             MapScreen()
         }
     }
