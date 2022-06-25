@@ -64,11 +64,11 @@ fun FilterScreen(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp)
                 ) {
-                    Column(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+//                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             TextButton(
@@ -82,6 +82,24 @@ fun FilterScreen(
                                 )
                                 Text(
                                     text = "Back",
+                                    color = MaterialTheme.colors.primary,
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.TopEnd
+                        ) {
+                            TextButton(
+                                onClick = { viewModel.state = FilterFormState() },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Clear,
+                                    contentDescription = "Clear",
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    text = "Clear",
                                     color = MaterialTheme.colors.primary,
                                 )
                             }

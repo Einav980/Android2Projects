@@ -19,39 +19,53 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.OutlinedChip
-import com.example.rently.ui.components.Section
 import com.example.rently.ui.screens.profile.ProfileScreenViewModel
+import com.example.rently.ui.screens.profile.events.ProfileFormEvent
+import com.example.rently.ui.screens.register.RegisterViewModel
+import com.example.rently.ui.screens.register.events.RegisterFormEvent
 import com.example.rently.ui.theme.*
 import com.example.rently.util.PhoneMaskTransformation
-import com.example.rently.validation.presentation.ProfileFormEvent
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
     val scrollState = rememberScrollState()
 
-    var isPhoneError by remember {
-        mutableStateOf(false)
-    }
-    var isFirstNameError by remember {
-        mutableStateOf(false)
-    }
-    var isLastNameError by remember {
-        mutableStateOf(false)
-    }
 
-    //retrieve logged in user information
-    viewModel.getLoggedInUser()
-    viewModel.getLoggedInUserApartments()
+    val context = LocalContext.current
+    val state = viewModel.state
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var showLoadingProgress by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
+                is ProfileScreenViewModel.ValidationEvent.EditError -> {
+                    showLoadingProgress = false
+                    showErrorDialog = true
+                }
+
+                is ProfileScreenViewModel.ValidationEvent.EditLoading -> {
+                    showLoadingProgress = true
+                }
+
+                is ProfileScreenViewModel.ValidationEvent.EditSuccess -> {
+                    showLoadingProgress = false
+                }
+            }
+        }
+    }
 
     RentlyTheme() {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -73,8 +87,8 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 ) {
                     if (viewModel.isUserHeadNotEmpty()) {
                         UserHead(
-                            firstName = viewModel.headFirstname.value,
-                            lastName = viewModel.headLastname.value,
+                            firstName = state.headFirstname,
+                            lastName = state.headLastname,
                         )
                     }
                 }
@@ -86,7 +100,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "${viewModel.firstname.value} ${viewModel.lastname.value}",
+                        text = "${state.firstName} ${state.lastName}",
                         color = Color.White,
                         style = MaterialTheme.typography.h3,
                         fontSize = 20.sp
@@ -101,8 +115,8 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                 ) {
                     ChipGroup(
                         items = listOf(
-                            "My Apartments: ${viewModel.myApartments.value}",
-                            "Watch list: 50"
+                            "My Apartments: ${state.userApartments}",
+                            "Watch list: ${state.userWatchlist}"
                         )
                     )
                 }
@@ -120,31 +134,28 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                         .padding(10.dp)
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .weight(weight =5f, fill = false),
+                        .weight(weight = 5f, fill = false),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(15.dp))
                     OutlinedTextField(
-                        value = viewModel.firstname.value,
+                        value = state.firstName,
                         onValueChange = {
-                            viewModel.firstname.value = it
-                            viewModel.clearFirstNameError()
-                            isFirstNameError = false
+                            viewModel.onEvent(ProfileFormEvent.FirstNameChanged(it))
                         },
-                        label = { Text(text = "First Name", style = MaterialTheme.typography.subtitle2) },
-                        enabled = viewModel.editableText.value,
+                        label = {
+                            Text(
+                                text = "First Name",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        },
+                        enabled = state.editableText,
                         singleLine = true,
-                        isError = isFirstNameError,
-                        trailingIcon = {
-                            if(isFirstNameError){
-                                Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
-                            }
-                        }
+                        isError = state.firstNameError != null,
                     )
-                    if(! viewModel.isFirstNameValid.value){
-                        isFirstNameError = true
+                    if (state.firstNameError != null) {
                         Text(
-                            text = "First name could not be empty",
+                            text = state.firstNameError,
                             color = MaterialTheme.colors.error,
                             style = MaterialTheme.typography.caption,
                             modifier = Modifier.padding(start = 16.dp)
@@ -152,64 +163,61 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                     }
                     Spacer(modifier = Modifier.height(15.dp))
                     OutlinedTextField(
-                        value = viewModel.lastname.value,
+                        value = state.lastName,
                         onValueChange = {
-                            viewModel.lastname.value = it
-                            viewModel.clearLastNameError()
-                            isLastNameError = false
+                            viewModel.onEvent(ProfileFormEvent.LastNameChanged(it))
                         },
-                        label = { Text(text = "Last Name", style = MaterialTheme.typography.subtitle2) },
-                        enabled = viewModel.editableText.value,
+                        label = {
+                            Text(
+                                text = "Last Name",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        },
+                        enabled = state.editableText,
                         singleLine = true,
-                        isError = isLastNameError,
-                        trailingIcon = {
-                            if(isLastNameError){
-                                Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
-                            }
-                        }
+                        isError = state.lastNameError != null,
                     )
-                    if(! viewModel.isLastNameValid.value){
-                        isLastNameError = true
+                    if (state.lastNameError != null) {
                         Text(
-                            text = "Last name could not be empty",
+                            text = state.lastNameError,
                             color = MaterialTheme.colors.error,
-                            style = MaterialTheme.typography.caption,
+                            style = MaterialTheme.typography.body2,
                             modifier = Modifier.padding(start = 16.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(15.dp))
                     OutlinedTextField(
-                        value = viewModel.email.value,
-                        onValueChange = {
-                            viewModel.email.value = it
+                        value = state.userEmail,
+                        onValueChange = {},
+                        label = {
+                            Text(
+                                text = "Email",
+                                style = MaterialTheme.typography.subtitle2
+                            )
                         },
-                        label = { Text(text = "Email", style = MaterialTheme.typography.subtitle2) },
                         enabled = false,
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                     OutlinedTextField(
-                        value = viewModel.phone.value,
+                        value = state.phone,
                         onValueChange = {
-                            viewModel.phone.value = it
-                            viewModel.clearPhoneError()
-                            isPhoneError = false
+                            viewModel.onEvent(ProfileFormEvent.PhoneChanged(it))
                         },
-                        label = { Text(text = "Phone", style = MaterialTheme.typography.subtitle2) },
-                        enabled = viewModel.editableText.value,
+                        label = {
+                            Text(
+                                text = "Phone",
+                                style = MaterialTheme.typography.subtitle2
+                            )
+                        },
+                        enabled = state.editableText,
                         visualTransformation = PhoneMaskTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
-                        isError = isPhoneError,
-                        trailingIcon = {
-                            if(isPhoneError){
-                                Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
-                            }
-                        }
+                        isError = state.phoneError != null,
                     )
-                    if(! viewModel.isPhoneValid.value){
-                        isPhoneError = true
+                    if (state.phoneError != null) {
                         Text(
-                            text = "Phone number is invalid",
+                            text = state.phoneError,
                             color = MaterialTheme.colors.error,
                             style = MaterialTheme.typography.caption,
                             modifier = Modifier.padding(start = 16.dp)
@@ -222,7 +230,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
                     onClick = {
                         viewModel.onEvent(ProfileFormEvent.Logout)
                     },
-                    enabled = !viewModel.editableText.value
+                    enabled = !state.editableText
                 ) {
                     Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "Logout")
                     Text(text = "Logout")
@@ -236,20 +244,63 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
             contentAlignment = Alignment.TopEnd
         ) {
             FloatingActionButton(
-                onClick = { viewModel.editTextFields() },
+                onClick = { viewModel.onEvent(ProfileFormEvent.EditProfile) },
                 shape = RoundedSquareShape.large,
                 backgroundColor = Color.White,
                 modifier = Modifier
                     .border(0.5.dp, MaterialTheme.colors.primary)
                     .size(40.dp)
             ) {
-                Icon(
-                    imageVector = if (!viewModel.editableText.value) Icons.Filled.Edit else Icons.Filled.Save,
-                    contentDescription = "Edit Profile",
-                    tint = MaterialTheme.colors.primary,
-                )
+                if (showLoadingProgress) {
+                    CircularProgressIndicator()
+                } else {
+                    Icon(
+                        imageVector = if (!state.editableText) Icons.Filled.Edit else Icons.Filled.Save,
+                        contentDescription = "Edit Profile",
+                        tint = MaterialTheme.colors.primary,
+                    )
+                }
             }
         }
+    }
+
+
+    if (showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { /* DO NOTHING */ },
+            buttons = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TextButton(onClick = { showErrorDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            },
+            title = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Error",
+                        style = MaterialTheme.typography.h5,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            text = {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Could not change user info",
+                    textAlign = TextAlign.Center
+                )
+            }
+        )
     }
 }
 
@@ -264,7 +315,7 @@ fun UserHead(
 ) {
     Box(
         modifier = modifier
-            .border(1.dp,Color.White , shape = CircleShape )
+            .border(1.dp, Color.White, shape = CircleShape)
             .size(size)
             .clip(CircleShape)
             .background(MaterialTheme.colors.primary),
