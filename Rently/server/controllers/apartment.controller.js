@@ -32,6 +32,8 @@ const getApartmentbyUserId = async (req, res) => {
 
 const addApartment = async (req, res) => {
   try {
+    console.log('Body', req.body);
+
     const {
       city,
       description,
