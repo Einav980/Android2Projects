@@ -29,7 +29,6 @@ const getWatchListbyUserId = async (req, res) => {
       return watch.apartmentId;
     });
 
-    console.log('AparmentsId', apartmentsID);
     const apartments = await Apartment.find({
       _id: { $in: apartmentsID },
       status: 'Available',
