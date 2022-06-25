@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -20,6 +19,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.rently.SharedViewModel
 import com.example.rently.navigation.*
 import com.example.rently.ui.screens.main.MainScreenViewModel
 import com.example.rently.ui.theme.RentlyTheme
@@ -30,20 +30,35 @@ import com.example.rently.util.UserType
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
-    onFloatingButtonClicked: () -> Unit,
     onLogout: () -> Unit,
-    viewModel: MainScreenViewModel = hiltViewModel()
+    viewModel: MainScreenViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel,
+    onMapClicked: () -> Unit,
+    onApartmentClicked: () -> Unit,
+    onAddApartmentClicked: () -> Unit,
 ) {
-    val navController = rememberNavController()
-
     viewModel.getLoggedInUserPermissions()
+
+    val navController = rememberNavController()
 
     RentlyTheme {
         Scaffold(
-            bottomBar = { BottomBar(navController = navController, userType = viewModel.userType.value) },
+            bottomBar = {
+                BottomBar(
+                    navController = navController,
+                    userType = viewModel.userType.value
+                )
+            },
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                BottomNavGraph(navController = navController, onLogout = onLogout)
+                BottomNavGraph(
+                    sharedViewModel = sharedViewModel,
+                    navController = navController,
+                    onLogout = onLogout,
+                    onApartmentClicked = onApartmentClicked,
+                    onMapClicked = onMapClicked,
+                    onAddApartmentClicked = onAddApartmentClicked
+                )
             }
         }
     }
@@ -99,30 +114,33 @@ fun RowScope.AddItem(
         onClick = {
             navController.navigate(screen.route)
         },
-        label = {Text(text = label)}
+        label = { Text(text = label) }
     )
 }
 
 @Composable
-fun navListForUserType(userType: UserType) : List<BottomBarScreen>{
-    if (userType.equals(UserType.Normal)){
-        return listOf(BottomBarScreen.Apartments,
+fun navListForUserType(userType: UserType): List<BottomBarScreen> {
+    if (userType.equals(UserType.Normal)) {
+        return listOf(
+            BottomBarScreen.Apartments,
             BottomBarScreen.ManageApartments,
             BottomBarScreen.Watchlist,
-            BottomBarScreen.Profile)
-    }
-    else {
-        return listOf(BottomBarScreen.Apartments,
+            BottomBarScreen.Profile
+        )
+    } else {
+        return listOf(
+            BottomBarScreen.Apartments,
             BottomBarScreen.AdminManageApartments,
             BottomBarScreen.AdminManageApartmentsType,
-            BottomBarScreen.Profile)
+            BottomBarScreen.Profile
+        )
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.N)
-@Preview
-@Composable
-fun MainScreenPreview() {
-    MainScreen(onLogout = {}, onFloatingButtonClicked = {})
-}
+//
+//@RequiresApi(Build.VERSION_CODES.N)
+//@Preview
+//@Composable
+//fun MainScreenPreview() {
+//    MainScreen(onLogout = {}, onFloatingButtonClicked = {})
+//}
 
