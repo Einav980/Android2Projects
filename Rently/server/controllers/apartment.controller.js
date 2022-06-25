@@ -32,21 +32,42 @@ const getApartmentbyUserId = async (req, res) => {
 
 const addApartment = async (req, res) => {
   try {
-    const { city, numberOfRooms, price, numberOfBaths, address, lat, lng, size, type, imageUrl, status, userId } = req.body;
+    const {
+      city,
+      description,
+      numberOfRooms,
+      price,
+      numberOfBaths,
+      address,
+      location,
+      hasBalcony,
+      hasParking,
+      isFurnished,
+      isAnimalFriendly,
+      size,
+      type,
+      imageUrl,
+      status,
+      userId,
+    } = req.body;
 
     const newApartment = await Apartment.create({
-      city: city,
-      numberOfRooms: numberOfRooms,
-      price: price,
-      numberOfBaths: numberOfBaths,
-      address: address,
-      lat: lat,
-      lng: lng,
-      size: size,
-      type: type,
-      imageUrl: imageUrl,
-      status: status,
-      userId: userId,
+      city,
+      description,
+      numberOfRooms,
+      numberOfBaths,
+      price,
+      address,
+      location,
+      size,
+      type,
+      imageUrl,
+      status,
+      userId,
+      hasBalcony,
+      hasParking,
+      isAnimalFriendly,
+      isFurnished,
     });
 
     newApartment.save();
@@ -55,7 +76,6 @@ const addApartment = async (req, res) => {
       message: 'Successfully created new apartment',
       type: 'Success',
     });
-
   } catch (error) {
     console.log(error);
     res.status(400).json({
@@ -84,10 +104,9 @@ const editApartmentstatus = async (req, res) => {
   try {
     const { status } = req.body;
     var { id } = req.params;
-    const updatedResult = await Apartment.findByIdAndUpdate(id,
-      {
-        status: status,
-      });
+    const updatedResult = await Apartment.findByIdAndUpdate(id, {
+      status: status,
+    });
 
     console.log(updatedResult);
 
@@ -96,7 +115,6 @@ const editApartmentstatus = async (req, res) => {
       message: 'Successfully edited apartment status ',
       type: 'Success',
     });
-
   } catch (error) {
     console.log(error);
     res.status(400).json({
@@ -109,23 +127,35 @@ const editApartmentstatus = async (req, res) => {
 
 const editApartment = async (req, res) => {
   try {
-    const { city, numberOfRooms, price, numberOfBaths, address, lat, lng, size, type, imageUrl, status, userId } = req.body;
+    const {
+      city,
+      numberOfRooms,
+      price,
+      numberOfBaths,
+      address,
+      lat,
+      lng,
+      size,
+      type,
+      imageUrl,
+      status,
+      userId,
+    } = req.body;
     var { id } = req.params;
-    const updatedResult = await Apartment.findByIdAndUpdate(id,
-      {
-        city: city,
-        numberOfRooms: numberOfRooms,
-        price: price,
-        numberOfBaths: numberOfBaths,
-        address: address,
-        lat: lat,
-        lng: lng,
-        size: size,
-        type: type,
-        imageUrl: imageUrl,
-        status: status,
-        userId: userId
-      });
+    const updatedResult = await Apartment.findByIdAndUpdate(id, {
+      city: city,
+      numberOfRooms: numberOfRooms,
+      price: price,
+      numberOfBaths: numberOfBaths,
+      address: address,
+      lat: lat,
+      lng: lng,
+      size: size,
+      type: type,
+      imageUrl: imageUrl,
+      status: status,
+      userId: userId,
+    });
 
     console.log(updatedResult);
 
@@ -134,7 +164,6 @@ const editApartment = async (req, res) => {
       message: 'Successfully edited apartment ',
       type: 'Success',
     });
-
   } catch (error) {
     console.log(error);
     res.status(400).json({
@@ -152,5 +181,5 @@ module.exports = {
   addApartment,
   deleteApartment,
   editApartmentstatus,
-  editApartment
+  editApartment,
 };

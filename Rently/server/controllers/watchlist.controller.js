@@ -10,6 +10,16 @@ const listWatchlistItems = async (req, res) => {
   }
 };
 
+const listUserWatchlistItems = async (req, res) => {
+  const { userid } = req.params;
+  try {
+    const watchlistItems = await WatchList.find({ email: userid });
+    res.send(watchlistItems);
+  } catch (error) {
+    res.status(400).json({ error: "Couldn't list user watchlist items" });
+  }
+};
+
 const getWatchListbyUserId = async (req, res) => {
   try {
     const { email } = req.params;
@@ -18,6 +28,8 @@ const getWatchListbyUserId = async (req, res) => {
     const apartmentsID = watchListApartmentIds.map(function (watch) {
       return watch.apartmentId;
     });
+
+    console.log('AparmentsId', apartmentsID);
     const apartments = await Apartment.find({
       _id: { $in: apartmentsID },
       status: 'Available',
@@ -80,4 +92,5 @@ module.exports = {
   getWatchListbyUserId,
   addWatchListApartment,
   listWatchlistItems,
+  listUserWatchlistItems,
 };

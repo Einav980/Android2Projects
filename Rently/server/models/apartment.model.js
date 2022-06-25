@@ -2,6 +2,7 @@ const { default: mongoose } = require('mongoose');
 
 const apartmentModel = mongoose.Schema({
   userId: { type: String, require: true },
+  description: { type: String, require: true },
   city: { type: String, require: true },
   numberOfBeds: { type: Number, require: true },
   numberOfBaths: { type: Number, require: false },
