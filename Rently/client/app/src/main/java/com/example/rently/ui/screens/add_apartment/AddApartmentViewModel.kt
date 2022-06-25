@@ -11,14 +11,17 @@ import com.example.rently.model.Apartment
 import com.example.rently.model.google.GoogleLocation
 import com.example.rently.model.google.GooglePrediction
 import com.example.rently.repository.ApartmentRepository
+import com.example.rently.repository.DatastorePreferenceRepository
 import com.example.rently.repository.GooglePlacesRepository
 import com.example.rently.repository.ImagesRepository
 import com.example.rently.util.convertImageToBase64
-import com.example.rently.validation.presentation.AddApartmentFormEvent
+import com.example.rently.ui.screens.add_apartment.events.AddApartmentFormEvent
+import com.example.rently.ui.screens.add_apartment.state.AddApartmentFormState
 import com.example.rently.validation.use_case.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,6 +32,7 @@ class AddApartmentViewModel @Inject constructor(
     private val googleRepository: GooglePlacesRepository,
     private val imagesRepository: ImagesRepository,
     private val apartmentRepository: ApartmentRepository,
+    private val datastore: DatastorePreferenceRepository,
     private val validateAddress: ValidateAddress,
     private val validateDescription: ValidateDescription,
     private val validatePrice: ValidatePrice,
@@ -40,8 +44,6 @@ class AddApartmentViewModel @Inject constructor(
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    val apartmentImageUri = mutableStateOf<Uri?>(null)
-    val apartmentImageBitmap = mutableStateOf<Bitmap?>(null)
     val placesLoading = mutableStateOf(false)
     var predictions = mutableStateListOf<GooglePrediction>()
 
@@ -51,9 +53,6 @@ class AddApartmentViewModel @Inject constructor(
 
     fun onEvent(event: AddApartmentFormEvent) {
         when (event) {
-            is AddApartmentFormEvent.Submit -> {
-                submitData()
-            }
 
             is AddApartmentFormEvent.AddressChanged -> {
                 viewModelScope.launch {
@@ -122,6 +121,13 @@ class AddApartmentViewModel @Inject constructor(
                 state = state.copy(apartmentIsUploading = event.state)
             }
 
+            is AddApartmentFormEvent.ImageBitmapChanged -> {
+                state = state.copy(apartmentImageBitmap = event.bitmap)
+            }
+
+            is AddApartmentFormEvent.Submit -> {
+                submitData()
+            }
         }
     }
 
@@ -188,17 +194,18 @@ class AddApartmentViewModel @Inject constructor(
     }
 
     private suspend fun addApartment() {
+
         validationEventChannel.send(ValidationEvent.ApartmentUploading)
+        if(state.apartmentImageBitmap != null){
+            val apartmentEncodedString = convertImageToBase64(bitmap = state.apartmentImageBitmap!!)
+            val imageUploadResponse = uploadImage(apartmentEncodedString)
+            if (imageUploadResponse.isEmpty()) {
+                validationEventChannel.send(ValidationEvent.ApartmentUploadError)
+                return
+            }
 
-        val apartmentEncodedString = convertImageToBase64(bitmap = apartmentImageBitmap.value!!)
-
-        val imageUploadResponse = uploadImage(apartmentEncodedString)
-        if (imageUploadResponse.isEmpty()) {
-            validationEventChannel.send(ValidationEvent.ApartmentUploadError)
-            return
+            state = state.copy(apartmentImageUrl = imageUploadResponse)
         }
-
-        state = state.copy(apartmentImageUrl = imageUploadResponse)
 
         val location = getAddressLocation(state.address)
         if (location == null) {
@@ -208,14 +215,18 @@ class AddApartmentViewModel @Inject constructor(
 
         state = state.copy(apartmentAddressLocation = location)
 
+        val userId = datastore.getUserEmail().first()
+
         val apartment = Apartment(
+            userId = userId,
             address = state.address,
+            description = state.description,
             city = state.city,
             type = "Apartment",
             size = state.size,
             hasBalcony = state.hasBalcony,
             hasParking = state.hasParking,
-            isAnimalsFriendly = state.isAnimalFriendly,
+            isAnimalFriendly = state.isAnimalFriendly,
             isFurnished = state.isFurnished,
             price = state.price,
             imageUrl = state.apartmentImageUrl,

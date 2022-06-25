@@ -3,7 +3,6 @@ package com.example.rently.ui.screens.add_apartment
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -35,16 +34,18 @@ import com.example.rently.ui.components.*
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.*
-import com.example.rently.validation.presentation.AddApartmentFormEvent
+import com.example.rently.ui.screens.add_apartment.events.AddApartmentFormEvent
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
-fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
+fun AddApartmentScreen(
+    viewModel: AddApartmentViewModel = hiltViewModel(),
+    onAddApartmentFinished: () -> Unit = {}
+) {
 
     val context = LocalContext.current
-
     val state = viewModel.state
 
     var showSuccessDialog by remember { mutableStateOf(false) }
@@ -55,9 +56,8 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
         contract =
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        viewModel.apartmentImageUri.value = uri
         if (uri != null) {
-            viewModel.apartmentImageBitmap.value = getImageBitmap(context = context, imageUri = uri)
+            viewModel.onEvent(AddApartmentFormEvent.ImageBitmapChanged(getImageBitmap(context = context, imageUri = uri)))
         }
     }
 
@@ -237,9 +237,9 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                                     .size(150.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                if (viewModel.apartmentImageUri.value != null) {
+                                if (state.apartmentImageBitmap != null) {
                                     Image(
-                                        bitmap = viewModel.apartmentImageBitmap.value!!.asImageBitmap(),
+                                        bitmap = state.apartmentImageBitmap.asImageBitmap(),
                                         contentDescription = null,
                                         modifier = Modifier
                                             .fillMaxSize(),
@@ -421,7 +421,10 @@ fun AddApartmentScreen(viewModel: AddApartmentViewModel = hiltViewModel()) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        TextButton(onClick = { showSuccessDialog = false }) {
+                        TextButton(onClick = {
+                            showSuccessDialog = false
+                            onAddApartmentFinished()
+                        }) {
                             Text("OK")
                         }
                     }
