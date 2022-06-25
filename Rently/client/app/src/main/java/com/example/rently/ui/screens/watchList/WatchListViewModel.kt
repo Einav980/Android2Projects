@@ -11,7 +11,7 @@ import com.example.rently.Resource
 import com.example.rently.model.Apartment
 import com.example.rently.model.Watchlist
 import com.example.rently.repository.DatastorePreferenceRepository
-import com.example.rently.repository.WatchListRepository
+import com.example.rently.repository.WatchlistRepository
 import com.example.rently.ui.screens.watchList.state.WatchlistState
 import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WatchListViewModel @Inject constructor(private val watchListRepository: WatchListRepository, private val dataRepository : DatastorePreferenceRepository) :
+class WatchListViewModel @Inject constructor(private val watchListRepository: WatchlistRepository, private val dataRepository : DatastorePreferenceRepository) :
     ViewModel() {
     var state by mutableStateOf(WatchlistState())
 

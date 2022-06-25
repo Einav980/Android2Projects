@@ -1,5 +1,6 @@
 package com.example.rently.repository
 
+import android.util.Log
 import com.example.rently.Resource
 import com.example.rently.api.WatchListApi
 import com.example.rently.model.*
@@ -8,13 +9,22 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @ActivityScoped
-class WatchListRepository @Inject constructor(
+class WatchlistRepository @Inject constructor(
     private val api: WatchListApi,
 ) {
 
     suspend fun listUserWatchListApartments(userId: String): Resource<ArrayList<Apartment>> {
         val response = try {
             api.listUserWatchListApartments(id = userId)
+        } catch (e: Exception) {
+            return Resource.Error("Failed listing user watchlist apartments")
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun listUserWatchlistItems(userId: String): Resource<List<Watchlist>> {
+        val response = try {
+            api.listUserWatchlistItems(userId = userId)
         } catch (e: Exception) {
             return Resource.Error("Failed listing user watchlist apartments")
         }
@@ -35,7 +45,6 @@ class WatchListRepository @Inject constructor(
         val response = try{
             api.addWatchItem(watchList = watchList)
         } catch (e: Exception){
-            Timber.d("Response", e.message.toString())
             return Resource.Error("Failed adding Apartment to watchlist", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)

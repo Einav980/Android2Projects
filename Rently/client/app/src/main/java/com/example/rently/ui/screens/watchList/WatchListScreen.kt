@@ -32,17 +32,18 @@ fun WatchListScreen(
     viewModel: WatchListViewModel = hiltViewModel(),
     navController: NavHostController,
     sharedViewModel: SharedViewModel,
+    onApartmentClicked: () -> Unit,
 ) {
     val context = LocalContext.current
     val state = viewModel.state
 
-    var listError by remember { mutableStateOf(false)}
-    var listLoading by remember { mutableStateOf(false)}
-    var listSuccess by remember { mutableStateOf(false)}
+    var listError by remember { mutableStateOf(false) }
+    var listLoading by remember { mutableStateOf(false) }
+    var listSuccess by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = context){
-        viewModel.validationEvents.collect{ event ->
-            when(event){
+    LaunchedEffect(key1 = context) {
+        viewModel.validationEvents.collect { event ->
+            when (event) {
 
                 WatchListViewModel.ValidationEvent.PageLoading -> {
                     listLoading = true
@@ -67,7 +68,7 @@ fun WatchListScreen(
                 TopBarTitle()
             },
             content = {
-                if(listSuccess){
+                if (listSuccess) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -75,20 +76,24 @@ fun WatchListScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(items = state.apartments) { apartment ->
-                            WatchListApartmentCard(apartment = apartment, navController = navController, onApartmentClick = {
-                                sharedViewModel.setApartment(it)
-                                navController.navigate(Screen.SingleApartment.route)
-                            },
+                            WatchListApartmentCard(
+                                apartment = apartment,
+                                navController = navController,
+                                onApartmentClick = {
+                                    sharedViewModel.setApartment(it)
+                                    onApartmentClicked()
+                                },
                                 onRemoveApartment = {
                                     viewModel.removeWatchListApartments(it)
-                                })
+                                }
+                            )
                         }
                     }
                 }
-                if(listError){
+                if (listError) {
                     Text(text = "Error listing apartments")
                 }
-                if(listLoading){
+                if (listLoading) {
                     CircularProgressIndicator()
                 }
             }
