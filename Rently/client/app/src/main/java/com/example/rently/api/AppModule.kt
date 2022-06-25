@@ -38,7 +38,7 @@ object AppModule {
     @Provides
     fun provideWatchListRepository(
         api: WatchListApi,
-    ) = WatchListRepository(api)
+    ) = WatchlistRepository(api)
 
 
     @Singleton

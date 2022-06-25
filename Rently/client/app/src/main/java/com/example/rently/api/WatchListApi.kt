@@ -11,6 +11,10 @@ interface WatchListApi {
     @GET("watchlist/user/{userid}")
     suspend fun listUserWatchListApartments(@Path("userid") id: String): ArrayList<Apartment>
 
+    // List all user watchlist items
+    @GET("watchlist/{userid}")
+    suspend fun listUserWatchlistItems(@Path("userid") userId: String): List<Watchlist>
+
     // remove apartment from watchlist for user
     @POST("watchlist/remove")
     suspend fun removeWatchItem(@Body watchList: Watchlist): AuthResponse
