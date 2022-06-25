@@ -17,14 +17,12 @@ data class Apartment(
     val address: String = "",
     val size: Int = 0,
     val type: String = "",
-    val imageUrl: String = "",
+    val imageUrl: String = "https://www.avirealty.com/assets/images/house-placeholder.jpg",
     val price: Int = 0,
-    val floor: Int = 1,
-    val apartmentNumber: Int = 2,
     var status: String = ApartmentStatus.Pending.status,
-    val userId: String = "einav980@gmail.com",
+    val userId: String = "",
     var hasBalcony: Boolean = false,
     var hasParking: Boolean = false,
-    var isAnimalsFriendly: Boolean = false,
+    var isAnimalFriendly: Boolean = false,
     var isFurnished: Boolean = false
 ) : Parcelable
