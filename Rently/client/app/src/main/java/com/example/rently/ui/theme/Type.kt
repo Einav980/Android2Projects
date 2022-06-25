@@ -65,6 +65,10 @@ val RentlyTypography = Typography(
     subtitle2 = TextStyle(
         fontSize = 18.sp,
         fontWeight = FontWeight.Normal,
+    ),
+    body1 = TextStyle(
+        fontSize = 20.sp,
+        fontFamily = Varela
     )
 )
 val RentlyApartmentCardTypography = Typography(
