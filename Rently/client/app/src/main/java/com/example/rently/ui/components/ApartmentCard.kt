@@ -2,8 +2,10 @@ package com.example.rently.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,15 +13,19 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.ArrowLeft
 import androidx.compose.material.icons.outlined.ArrowRight
 import androidx.compose.material.icons.outlined.Swipe
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,20 +35,24 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.model.Apartment
+import com.example.rently.ui.screens.apartments.events.ApartmentsFormEvent
 import com.example.rently.ui.theme.*
 import com.example.rently.util.ApartmentPageType
 import com.example.rently.util.ApartmentStatus
+import com.example.rently.util.Constants
 import java.text.NumberFormat
 import java.util.*
 
 @Composable
 fun ApartmentCard(
-    navController: NavController,
     pageType: ApartmentPageType = ApartmentPageType.Explore,
     apartment: Apartment,
     onApartmentClick: (apartment: Apartment) -> Unit,
     onDeleteApartment: (apartment: Apartment) -> Unit = {},
-    onChangeApartmentStatus: (apartment: Apartment) -> Unit ={}
+    onChangeApartmentStatus: (apartment: Apartment) -> Unit = {},
+    isWatched: Boolean = false,
+    onRemoveFromWatchlist: (String) -> Unit = {},
+    onAddToWatchlist: (String) -> Unit = {},
 ) {
 
     RentlyApartmentCardTheme {
@@ -50,11 +60,11 @@ fun ApartmentCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(350.dp)
-                .clickable { /* TODO: Click on apartment function */
+                .clickable {
                     onApartmentClick(apartment)
                 },
-            elevation = 10.dp,
-            shape = MaterialTheme.shapes.large
+            elevation = 5.dp,
+            shape = RentlyCardShape.large
         ) {
             Column(
                 modifier = Modifier
@@ -62,7 +72,7 @@ fun ApartmentCard(
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(5f)
+                        .weight(3f)
                         .fillMaxWidth()
                 ) {
                     ApartmentImage(url = apartment.imageUrl)
@@ -70,75 +80,73 @@ fun ApartmentCard(
                         if (apartment.status.isNotEmpty()) {
                             ApartmentStatusBadge(apartmentStatus = ApartmentStatus.valueOf(apartment.status))
                         }
-                        if(pageType == ApartmentPageType.UserManage)
+                        if (pageType == ApartmentPageType.UserManage)
                             DeleteApartmentBadge(apartment, onDeleteApartment)
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                        .padding(start = 8.dp, end = 8.dp, top = 3.dp, bottom = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = apartment.city,
-                        modifier = Modifier.weight(5f),
-                        style = MaterialTheme.typography.subtitle2,
-                        color = RentlySubtitleTextColor
-                    )
-                    Text(
-                        text = "${apartment.numberOfBeds} Beds",
-                        modifier = Modifier
-                            .weight(2f)
-                            .padding(4.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.subtitle1,
-                        color = RentlySubtitleTextColor
-                    )
-                    Divider(
-                        modifier = Modifier
-                            .height(15.dp)
-                            .width(1.dp)
-                    )
-                    Text(
-                        text = "${apartment.numberOfBaths} Baths",
-                        modifier = Modifier
-                            .weight(2f)
-                            .padding(4.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.subtitle1,
-                        color = RentlySubtitleTextColor
-                    )
-                    Divider(
-                        modifier = Modifier
-                            .height(15.dp)
-                            .width(1.dp)
-                    )
-                    Text(
-                        text = "${apartment.size} sqft",
-                        modifier = Modifier
-                            .weight(3f)
-                            .padding(4.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.subtitle1,
-                        color = RentlySubtitleTextColor
-                    )
-                }
                 Column(
                     modifier = Modifier
+                        .weight(2f)
                         .fillMaxWidth()
-                        .weight(3f),
-                    verticalArrangement = Arrangement.Center
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = apartment.type,
+                            modifier = Modifier.weight(5f),
+                            style = MaterialTheme.typography.subtitle2,
+                            color = RentlySubtitleTextColor
+                        )
+                        Text(
+                            text = "${apartment.numberOfBeds} Beds",
+                            modifier = Modifier
+                                .weight(2f)
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.subtitle1,
+                            color = RentlySubtitleTextColor
+                        )
+                        Divider(
+                            modifier = Modifier
+                                .height(15.dp)
+                                .width(1.dp)
+                        )
+                        Text(
+                            text = "${apartment.numberOfBaths} Baths",
+                            modifier = Modifier
+                                .weight(2f)
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.subtitle1,
+                            color = RentlySubtitleTextColor
+                        )
+                        Divider(
+                            modifier = Modifier
+                                .height(15.dp)
+                                .width(1.dp)
+                        )
+                        Text(
+                            text = "${apartment.size} sqft",
+                            modifier = Modifier
+                                .weight(3f)
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.subtitle1,
+                            color = RentlySubtitleTextColor
+                        )
+                    }
                     Text(
                         text = apartment.address,
                         style = MaterialTheme.typography.h5,
                         color = MaterialTheme.colors.secondaryVariant,
                         maxLines = 1,
                         modifier = Modifier
-                            .padding(10.dp)
-                            .weight(2f),
+                            .fillMaxWidth(),
                         overflow = TextOverflow.Ellipsis,
                     )
                     val apartmentCardColor =
@@ -154,29 +162,51 @@ fun ApartmentCard(
                     val format = NumberFormat.getCurrencyInstance()
                     format.maximumFractionDigits = 0
                     format.currency = Currency.getInstance("ILS")
-                    Column(
-                        modifier = Modifier
-                            .weight(2f)
-                            .fillMaxWidth()
-                            .background(apartmentCardColor)
-                            .padding(10.dp)
-                            .clip(MaterialTheme.shapes.medium),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = format.format(apartment.price),
-                            style = MaterialTheme.typography.h6,
-                            color = Color.White,
-                            letterSpacing = 1.1.sp
-                        )
-                    }
+                    Text(
+                        text = format.format(apartment.price),
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.colors.primary,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
             if (pageType == ApartmentPageType.UserManage && apartment.status != null) {
-                switchApartmentStatus(apartment , onChangeApartmentStatus)
+                switchApartmentStatus(apartment, onChangeApartmentStatus)
             }
-            if (pageType == ApartmentPageType.AdminManage){
+            if (pageType == ApartmentPageType.AdminManage) {
                 swipeIndications()
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), contentAlignment = Alignment.TopEnd
+            ) {
+                if (isWatched) {
+                    IconButton(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.White),
+                        onClick = { onRemoveFromWatchlist(apartment._id) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Visibility,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                } else {
+                    IconButton(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.Gray),
+                        onClick = { onAddToWatchlist(apartment._id) }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Visibility,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
             }
         }
     }
@@ -206,7 +236,7 @@ fun swipeIndications() {
 
 
 @Composable
-fun ApartmentImage(url: String) {
+fun ApartmentImage(url: String, shape: Shape = MaterialTheme.shapes.small) {
     val painter = rememberImagePainter(
         data = url,
         builder = {
@@ -224,7 +254,7 @@ fun ApartmentImage(url: String) {
             contentScale = ContentScale.Crop,
             contentDescription = "Image",
             modifier = Modifier
-                .clip(MaterialTheme.shapes.medium)
+                .clip(shape = shape)
                 .fillMaxSize()
         )
         if (painterState is AsyncImagePainter.State.Loading) {
@@ -267,7 +297,7 @@ fun DeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apartment: Ap
         ) {
             FloatingActionButton(
                 modifier = Modifier.wrapContentSize(),
-                onClick = {onDeleteApartment(apartment)},
+                onClick = { onDeleteApartment(apartment) },
                 shape = RoundedSquareShape.large,
                 backgroundColor = Color.White
             ) {
@@ -282,7 +312,10 @@ fun DeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apartment: Ap
 }
 
 @Composable
-fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartment: Apartment) -> Unit) {
+fun switchApartmentStatus(
+    apartment: Apartment,
+    onChangeApartmentStatus: (apartment: Apartment) -> Unit
+) {
     val checkedState = rememberSaveable { mutableStateOf(false) }
 
     var isEnabled = false
@@ -290,7 +323,7 @@ fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartm
         isEnabled = true
     }
     if (apartment.status == ApartmentStatus.Available.status) {
-        checkedState.value =true
+        checkedState.value = true
     }
 
     RentlyApartmentCardTheme {
@@ -318,7 +351,6 @@ fun switchApartmentStatus(apartment: Apartment, onChangeApartmentStatus: (apartm
     }
 }
 
-
 @Composable
 @Preview(showBackground = true)
 fun ApartmentCardPreview() {
@@ -335,6 +367,5 @@ fun ApartmentCardPreview() {
     )
     ApartmentCard(
         apartment = apartment,
-        navController = NavController(context = context),
         onApartmentClick = {})
 }
