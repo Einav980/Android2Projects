@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
+import com.example.rently.model.Apartment
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.ui.screens.map.events.MapEvent
 import com.example.rently.ui.screens.map.state.MapState
@@ -33,8 +34,8 @@ class MapViewModel @Inject constructor(
 
     fun onEvent(event: MapEvent){
         when(event){
-            is MapEvent.CameraPositionChanged -> {
-                state = state.copy(cameraPosition = CameraPosition.fromLatLngZoom(event.latLng, 5f))
+            is MapEvent.SelectedApartmentChanged -> {
+                selectApartment(apartment = event.apartment)
             }
         }
     }
@@ -46,14 +47,27 @@ class MapViewModel @Inject constructor(
             when (response) {
                 is Resource.Success -> {
                     state = state.copy(apartments = response.data!!)
+                    validationEventChannel.send(ValidationEvent.LoadingFinished)
+                }
+                else -> {
+                    validationEventChannel.send(ValidationEvent.LoadingError)
                 }
             }
+        }
+    }
+
+    private fun selectApartment(apartment: Apartment){
+        viewModelScope.launch {
+            state = state.copy(selectedApartment = apartment)
+            validationEventChannel.send(ValidationEvent.ShowSelectedApartment)
         }
     }
 
     sealed class ValidationEvent{
         object LoadingApartments: ValidationEvent()
         object LoadingFinished: ValidationEvent()
+        object LoadingError: ValidationEvent()
+        object ShowSelectedApartment: ValidationEvent()
     }
 
 }

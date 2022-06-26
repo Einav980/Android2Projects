@@ -14,9 +14,11 @@ data class MapState(
         scrollGesturesEnabled = true,
         rotationGesturesEnabled = true,
         zoomGesturesEnabled = true,
-        tiltGesturesEnabled = true,
+        zoomControlsEnabled = false,
         myLocationButtonEnabled = true
     ),
     val apartments: List<Apartment> = emptyList(),
-    val cameraPosition: CameraPosition = CameraPosition.fromLatLngZoom(LatLng(0.0,0.0), 3f)
+    val cameraPosition: CameraPosition = CameraPosition.fromLatLngZoom(LatLng(30.0,0.0), 30f),
+    val selectedApartment: Apartment? = null,
+    val showSelectedApartment: Boolean = false,
 )

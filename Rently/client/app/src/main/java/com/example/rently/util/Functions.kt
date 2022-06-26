@@ -8,6 +8,8 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Base64
 import java.io.ByteArrayOutputStream
+import java.text.NumberFormat
+import java.util.*
 
 fun convertImageToBase64(bitmap: Bitmap): String {
     val byteArrayOutputStream = ByteArrayOutputStream()
@@ -33,4 +35,11 @@ fun getImageBitmap(context: Context, imageUri: Uri): Bitmap {
             .createSource(context.contentResolver, imageUri!!)
         ImageDecoder.decodeBitmap(source)
     }
+}
+
+fun priceToCurrency(price: Number, currencyCode: String = "ILS"): String {
+    val format = NumberFormat.getCurrencyInstance()
+    format.maximumFractionDigits = 0
+    format.currency = Currency.getInstance(currencyCode)
+    return format.format(price)
 }

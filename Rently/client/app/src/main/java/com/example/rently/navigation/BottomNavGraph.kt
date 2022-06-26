@@ -100,19 +100,12 @@ fun BottomNavGraph(
         }
 
         composable(
-            route = Screen.Map.route,
-            arguments = listOf(
-                navArgument("lat") {
-                    type = NavType.FloatType
-                },
-                navArgument("lng") {
-                    type = NavType.FloatType
-                },
-            )
+            route = Screen.Map.route
         ) {
-            val lat = it.arguments?.getFloat("lat")!!.toDouble()
-            val lng = it.arguments?.getFloat("lng")!!.toDouble()
-            MapScreen(LatLng(lat, lng))
+            MapScreen(onApartmentClicked = {
+                sharedViewModel.setApartment(it)
+                navController.navigate(Screen.SingleApartment.route)
+            })
         }
     }
 }

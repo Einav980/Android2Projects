@@ -8,7 +8,7 @@ const apartmentModel = mongoose.Schema({
   numberOfBaths: { type: Number, require: false },
   price: { type: Number, require: true },
   address: { type: String, require: true },
-  location: { type: { lat: Number, lng: Number }, require: true },
+  location: { type: { latitude: Number, longitude: Number }, require: true },
   size: { type: Number, require: true },
   type: { type: String, require: true },
   imageUrl: { type: String, require: true },

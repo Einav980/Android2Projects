@@ -69,6 +69,10 @@ val RentlyTypography = Typography(
     body1 = TextStyle(
         fontSize = 20.sp,
         fontFamily = Varela
+    ),
+    body2 = TextStyle(
+        fontSize = 18.sp,
+        fontFamily = Varela
     )
 )
 val RentlyApartmentCardTypography = Typography(
@@ -85,8 +89,8 @@ val RentlyApartmentCardTypography = Typography(
         fontSize = 24.sp
     ),
     h6 = TextStyle(
-      fontFamily = Varela,
-      fontSize = 20.sp
+        fontFamily = Varela,
+        fontSize = 20.sp
     ),
     subtitle1 = TextStyle(
         fontSize = 12.sp,
