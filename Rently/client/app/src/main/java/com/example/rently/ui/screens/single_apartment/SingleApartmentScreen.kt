@@ -1,6 +1,5 @@
 package com.example.rently.ui.screens.single_apartment
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,7 +8,7 @@ import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,13 +21,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.SharedViewModel
+import com.example.rently.model.User
+import com.example.rently.ui.components.RentlyChip
 import com.example.rently.ui.components.SquareChip
-import com.example.rently.ui.components.StarsChip
 import com.example.rently.ui.theme.RentlyGrayColor
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
@@ -37,12 +39,25 @@ import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun SingleApartmentScreen(
+    viewModel: SingleApartmentViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel,
     onBackClicked: () -> Unit,
     onMapClicked: (LatLng) -> Unit
 ) {
     val context = LocalContext.current
     val apartment = sharedViewModel.apartment
+
+    LaunchedEffect(key1 = sharedViewModel.apartment) {
+        if (apartment != null) {
+            viewModel.getApartmentUserInfo(apartment.userId)
+        }
+    }
+
+    var showContactDialog by remember {
+        mutableStateOf(false)
+    }
+
+    val state = viewModel.state
 
     if (apartment != null) {
         val painter = rememberImagePainter(
@@ -101,7 +116,7 @@ fun SingleApartmentScreen(
                                 .padding(15.dp)
                         ) {
                             Text(
-                                text = apartment.address,
+                                text = apartment.type,
                                 style = MaterialTheme.typography.h4,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -114,8 +129,8 @@ fun SingleApartmentScreen(
                                 )
                                 Spacer(modifier = Modifier.width(5.dp))
                                 Text(
-                                    text = apartment.city,
-                                    style = MaterialTheme.typography.h5,
+                                    text = apartment.address,
+                                    style = MaterialTheme.typography.body1,
                                     color = RentlyGrayColor,
                                     fontWeight = FontWeight.Bold,
 
@@ -134,13 +149,9 @@ fun SingleApartmentScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(20.dp),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
-                                text = priceToCurrency(apartment.price),
-                                fontSize = MaterialTheme.typography.h5.fontSize
-                            )
-                            StarsChip(4.3, shape = RoundedSquareShape.large)
+                            RentlyChip(text = "${priceToCurrency(apartment.price)} / mon", textStyle = MaterialTheme.typography.h5)
                         }
                         Row(
                             modifier = Modifier
@@ -189,6 +200,14 @@ fun SingleApartmentScreen(
                             }
                         }
                     }
+                    Text(
+                        text = "Description",
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        fontWeight = FontWeight.Bold
+                    )
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -198,7 +217,8 @@ fun SingleApartmentScreen(
                     )
                     {
                         Text(
-                            text = "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.",
+                            modifier = Modifier.padding(8.dp),
+                            text = apartment.description,
                             lineHeight = 35.sp
                         )
                     }
@@ -213,11 +233,7 @@ fun SingleApartmentScreen(
                         Button(
                             elevation = ButtonDefaults.elevation(defaultElevation = 5.dp),
                             onClick = {
-                                Toast.makeText(
-                                    context,
-                                    "Get contact inforamtion",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                showContactDialog = true
                             },
                             shape = RoundedSquareShape.large
                         ) {
@@ -281,8 +297,44 @@ fun SingleApartmentScreen(
             }
         }
     }
+    if (showContactDialog) {
+        ContactDialog(user = state.user, onCloseDialog = { showContactDialog = false })
+    }
 }
 
+@Composable
+fun ContactDialog(user: User? = null, onCloseDialog: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { /*TODO*/ },
+        title = {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Text(
+                    text = "Contact Information",
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(text = "Name: ${user?.firstname} ${user?.lastname}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Phone: ${user?.phone}")
+            }
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(onClick = onCloseDialog) {
+                    Text(text = "Close")
+                }
+            }
+        }
+    )
+}
 //@Preview(showBackground = true)
 //@Composable
 //fun NewSingleApartmentScreenPreview() {

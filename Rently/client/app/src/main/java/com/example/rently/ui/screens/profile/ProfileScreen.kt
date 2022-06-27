@@ -89,6 +89,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel(), onLogout:
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -313,18 +314,18 @@ fun UserHead(
 ) {
     Box(
         modifier = modifier
-            .border(1.dp, Color.White, shape = CircleShape)
+            .border(3.dp, Color.White, shape = CircleShape)
             .size(size)
             .clip(CircleShape)
             .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = "${firstName[0].uppercaseChar()}${lastName[0].uppercaseChar()}",
             style = textStyle,
             textAlign = TextAlign.Center,
             color = Color.White,
-            letterSpacing = 5.sp
         )
     }
 }

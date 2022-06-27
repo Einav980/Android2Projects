@@ -135,7 +135,9 @@ fun SetupNavGraph(
         composable(
             route = Screen.AddApartment.route
         ) {
-            AddApartmentScreen()
+            AddApartmentScreen(onAddApartmentFinished = {navController.navigate(Screen.MainPage.route){
+                popUpTo(Screen.MainPage.route)
+            } })
         }
 
         composable(

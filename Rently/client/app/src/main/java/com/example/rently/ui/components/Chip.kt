@@ -3,7 +3,6 @@ package com.example.rently.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -31,8 +30,8 @@ import androidx.compose.ui.unit.sp
 import com.example.rently.ui.theme.*
 
 @Composable
-fun Chip(
-    name: String = "Chip",
+fun RentlyChip(
+    text: String = "Chip",
     textStyle: TextStyle = MaterialTheme.typography.body2,
     padding: PaddingValues = PaddingValues(8.dp)
 ) {
@@ -46,7 +45,7 @@ fun Chip(
             modifier = Modifier
         ) {
             Text(
-                text = name,
+                text = text,
                 style = textStyle,
                 color = Color.White,
                 modifier = Modifier.padding(padding),
@@ -58,14 +57,22 @@ fun Chip(
 @Composable
 fun SquareChip(
     icon: ImageVector = Icons.Default.Home,
-    size: Dp = 70.dp,
+    size: Dp = 80.dp,
     backgroundColor: Color = MaterialTheme.colors.background,
     foregroundColor: Color = Color.White,
     text: String = "Text",
 ) {
-    var textSize by remember { mutableStateOf(14.sp)}
+    var textSize by remember { mutableStateOf(14.sp) }
 
-    Box(modifier = Modifier.clip(RoundedSquareShape.large)) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedSquareShape.large)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colors.primary,
+                shape = RoundedSquareShape.large
+            )
+    ) {
         Column(
             modifier = Modifier
                 .size(size)
@@ -90,7 +97,7 @@ fun SquareChip(
                     fontFamily = Varela,
                     fontSize = textSize,
                     textAlign = TextAlign.Center,
-                    onTextLayout = {textLayoutResult ->
+                    onTextLayout = { textLayoutResult ->
                         if (textLayoutResult.lineCount > 1) {
                             textSize = textSize.times(0.98f)
                         }
@@ -113,8 +120,8 @@ fun ChipGroup(
     ) {
         LazyRow {
             items(items) {
-                Chip(
-                    name = it,
+                RentlyChip(
+                    text = it,
                     textStyle = MaterialTheme.typography.body1,
                     padding = PaddingValues(start = 18.dp, end = 18.dp, top = 5.dp, bottom = 5.dp)
                 )
@@ -162,7 +169,7 @@ fun OutlinedChip(
 @Preview
 @Composable
 fun ChipPreview() {
-    Chip()
+    RentlyChip()
 }
 
 @Preview
