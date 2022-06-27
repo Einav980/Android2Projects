@@ -1,6 +1,7 @@
 package com.example.rently.ui.screens.manage_apartments
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,13 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.rently.SharedViewModel
-import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
 import com.example.rently.ui.screens.PageTitleCard
 import com.example.rently.ui.screens.manage_apartments.events.ManageApartmentsFormEvent
@@ -38,29 +37,52 @@ fun ManageApartmentsScreen(
     val context = LocalContext.current
     val state = viewModel.state
 
-    var showLoadingProgress by remember { mutableStateOf(false) }
-    var deleteInProgress by remember { mutableStateOf(false) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var showSuccessDialog by remember { mutableStateOf(false) }
+    var listError by remember { mutableStateOf(false) }
+    var listLoading by remember { mutableStateOf(false) }
+    var listSuccess by remember { mutableStateOf(false) }
+    var removeSuccess by remember { mutableStateOf(false) }
+    var removeError by remember { mutableStateOf(false) }
+    var statusChangeSuccess by remember { mutableStateOf(false) }
+    var statusChangeError by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(key1 = context) {
         viewModel.validationEvents.collect { event ->
             when (event) {
                 is ManageApartmentsViewModel.ValidationEvent.PageLoading -> {
-                    showLoadingProgress = true
+                    listLoading = true
                 }
 
                 is ManageApartmentsViewModel.ValidationEvent.PageLoaded -> {
-                    showLoadingProgress = false
+                    listLoading = false
+                    listSuccess = true
+                }
+
+                is ManageApartmentsViewModel.ValidationEvent.PageError -> {
+                    listLoading = false
+                    listError = true
                 }
 
                 is ManageApartmentsViewModel.ValidationEvent.ApartmentDeleteError -> {
-                    showErrorDialog = true
+                    listLoading = false
+                    removeError = true
                 }
 
                 is ManageApartmentsViewModel.ValidationEvent.ApartmentDeleteSuccess -> {
-                    showSuccessDialog = true
+                    listLoading = false
+                    removeSuccess = true
                 }
+
+                is ManageApartmentsViewModel.ValidationEvent.ApartmentStatusChangeSuccess -> {
+                    listLoading = false
+                    statusChangeSuccess = true
+                }
+
+                is ManageApartmentsViewModel.ValidationEvent.ApartmentStatusChangeError -> {
+                    listLoading = false
+                    statusChangeError = true
+                }
+
             }
         }
     }
@@ -77,37 +99,153 @@ fun ManageApartmentsScreen(
                     )
                 },
                 content = {
-                    if (showLoadingProgress) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .weight(4f),
-                        contentPadding = PaddingValues(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(items = state.apartments) { apartment ->
-                            ApartmentCard(
-                                apartment = apartment,
-                                pageType = ApartmentPageType.UserManage,
-                                onApartmentClick = {
-                                    sharedViewModel.setApartment(it)
-                                    onApartmentClicked()
-                                },
-                                onDeleteApartment = {
-                                    viewModel.onEvent(ManageApartmentsFormEvent.ApartmentDeleted(it))
-                                },
-                                onChangeApartmentStatus = {
-                                    viewModel.onEvent(
-                                        ManageApartmentsFormEvent.ApartmentStatusChanged(it)
+                    if (listSuccess) {
+                        if (state.apartments.isNotEmpty()) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .weight(4f),
+                                contentPadding = PaddingValues(10.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                items(items = state.apartments) { apartment ->
+                                    ApartmentCard(
+                                        apartment = apartment,
+                                        pageType = ApartmentPageType.UserManage,
+                                        onApartmentClick = {
+                                            sharedViewModel.setApartment(it)
+                                            onApartmentClicked()
+                                        },
+                                        onDeleteApartment = {
+                                            viewModel.onEvent(
+                                                ManageApartmentsFormEvent.ApartmentDeleted(
+                                                    it
+                                                )
+                                            )
+                                        },
+                                        onChangeApartmentStatus = {
+                                            viewModel.onEvent(
+                                                ManageApartmentsFormEvent.ApartmentStatusChanged(it)
+                                            )
+                                        }
                                     )
                                 }
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Your watchlist is empty",
+                                    style = MaterialTheme.typography.body1,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+                        if (removeError) {
+                            AlertDialog(
+                                onDismissRequest = { /* DO NOTHING */ },
+                                buttons = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        TextButton(onClick = { removeError = false }) {
+                                            Text("OK")
+                                        }
+                                    }
+                                },
+                                title = {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = "Error",
+                                            style = MaterialTheme.typography.h5,
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                },
+                                text = {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Could not remove apartment",
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            )
+                        }
+                        if (statusChangeError) {
+                            AlertDialog(
+                                onDismissRequest = { /* DO NOTHING */ },
+                                buttons = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        TextButton(onClick = { statusChangeError = false }) {
+                                            Text("OK")
+                                        }
+                                    }
+                                },
+                                title = {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = "Error",
+                                            style = MaterialTheme.typography.h5,
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                },
+                                text = {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Could not change apartment status",
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            )
+                        }
+                        if (statusChangeSuccess) {
+                            Toast.makeText(
+                                context,
+                                "Apartment status changed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            statusChangeSuccess = false
+                        }
+                        if (removeSuccess) {
+                            Toast.makeText(
+                                context,
+                                "Apartment deleted successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            removeSuccess = false
+                        }
+                    }
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (listLoading) {
+                            CircularProgressIndicator()
+                        }
+                        if (listError) {
+                            Text(
+                                text = "Error loading apartments",
+                                style = MaterialTheme.typography.body1,
+                                color = Color.Gray
                             )
                         }
                     }

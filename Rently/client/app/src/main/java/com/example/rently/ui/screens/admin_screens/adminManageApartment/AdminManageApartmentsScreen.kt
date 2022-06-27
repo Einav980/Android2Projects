@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import com.example.rently.R
 import com.example.rently.SharedViewModel
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
+import com.example.rently.ui.theme.RentlyCardShape
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.util.ApartmentPageType
 import me.saket.swipe.SwipeAction
@@ -36,7 +38,7 @@ fun AdminManageApartmentsScreen(
     sharedViewModel: SharedViewModel
 ) {
 
-    viewModel.listPendingApartments()
+//    viewModel.listPendingApartments()
     RentlyTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             Scaffold(
@@ -44,60 +46,74 @@ fun AdminManageApartmentsScreen(
                     TopBarTitle()
                 },
                 content = {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentPadding = PaddingValues(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(items = viewModel.apartments) { apartment ->
-                            val approve = SwipeAction(
-                                onSwipe = {
-                                    viewModel.onApproveSwipe(apartment)
-                                    Log.d("swipe" , "Approve")
-                                },
-                                icon = {
-                                    Icon(
-                                        modifier = Modifier.padding(16.dp),
-                                        imageVector = Icons.Filled.Done,
-                                        contentDescription = null,
-                                        tint = Color.White
-                                    )
-                                },
-                                background = Color.Green
-                            )
-
-                            val reject = SwipeAction(
-                                onSwipe = {
-                                    viewModel.onRejectSwipe(apartment)
-                                    Log.d("swipe" , "Reject")
-                                },
-                                icon = {
-                                    Icon(
-                                        modifier = Modifier.padding(16.dp),
-                                        imageVector = Icons.Filled.Close,
-                                        contentDescription = null,
-                                        tint = Color.White
-                                    )
-                                },
-                                background = Color.Red
-                            )
-
-                            SwipeableActionsBox(
-                                swipeThreshold = 100.dp,
-                                startActions = listOf(approve),
-                                endActions = listOf(reject),
-                                modifier = Modifier.clip(MaterialTheme.shapes.large)
-                            ){
-                                ApartmentCard(
-                                    apartment = apartment,
-                                    pageType = ApartmentPageType.AdminManage,
-                                    onApartmentClick = {
-                                        sharedViewModel.setApartment(it)
-                                        navController.navigate(Screen.SingleApartment.route)
+                    if( viewModel.apartments.isNotEmpty()){
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentPadding = PaddingValues(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            items(items = viewModel.apartments) { apartment ->
+                                val approve = SwipeAction(
+                                    onSwipe = {
+                                        viewModel.onApproveSwipe(apartment)
+                                        Log.d("swipe" , "Approve")
                                     },
+                                    icon = {
+                                        Icon(
+                                            modifier = Modifier.padding(16.dp),
+                                            imageVector = Icons.Filled.Done,
+                                            contentDescription = null,
+                                            tint = Color.White
+                                        )
+                                    },
+                                    background = Color.Green
                                 )
+
+                                val reject = SwipeAction(
+                                    onSwipe = {
+                                        viewModel.onRejectSwipe(apartment)
+                                        Log.d("swipe" , "Reject")
+                                    },
+                                    icon = {
+                                        Icon(
+                                            modifier = Modifier.padding(16.dp),
+                                            imageVector = Icons.Filled.Close,
+                                            contentDescription = null,
+                                            tint = Color.White
+                                        )
+                                    },
+                                    background = Color.Red
+                                )
+
+                                SwipeableActionsBox(
+                                    swipeThreshold = 100.dp,
+                                    startActions = listOf(approve),
+                                    endActions = listOf(reject),
+                                    modifier = Modifier.clip(RentlyCardShape.large)
+                                ){
+                                    ApartmentCard(
+                                        apartment = apartment,
+                                        pageType = ApartmentPageType.AdminManage,
+                                        onApartmentClick = {
+                                            sharedViewModel.setApartment(it)
+                                            navController.navigate(Screen.SingleApartment.route)
+                                        },
+                                    )
+                                }
                             }
+                        }
+                    }
+                    else{
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            Text(
+                                text = "No pending apartments to review",
+                                style = MaterialTheme.typography.body1,
+                                color = Color.Gray
+                            )
                         }
                     }
 

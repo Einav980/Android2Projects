@@ -27,6 +27,10 @@ class AdminManageApartmentsViewModel @Inject constructor(
     val apartments = mutableStateListOf<Apartment>()
     val isLoading = mutableStateOf(false)
 
+    init {
+        listPendingApartments()
+    }
+
     fun listPendingApartments() {
         viewModelScope.launch {
             isLoading.value = true

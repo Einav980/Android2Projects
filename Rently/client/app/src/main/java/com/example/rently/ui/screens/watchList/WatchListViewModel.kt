@@ -35,38 +35,24 @@ class WatchListViewModel @Inject constructor(private val watchListRepository: Wa
 
 
     val apartments = mutableStateListOf<Apartment>()
-    val isLoading = mutableStateOf(false)
-    var userEmailResult = mutableStateOf("")
-
-
-    fun watchListApartments() {
-        viewModelScope.launch {
-            isLoading.value = true
-            userEmailResult.value = dataRepository.getUserEmail().first()
-            val response = watchListRepository.listUserWatchListApartments(userEmailResult.value)
-            when (response) {
-                is Resource.Success -> {
-                    apartments.addAll(response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status })
-                }
-            }
-            isLoading.value = false
-        }
-    }
 
     fun removeWatchListApartments(apartment: Apartment) {
         viewModelScope.launch {
-            isLoading.value = true
-            val watchList = Watchlist(email = userEmailResult.value, apartmentId = apartment._id )
+            validationEventChannel.send(ValidationEvent.PageLoading)
+            val watchList = Watchlist(email = state.userEmail, apartmentId = apartment._id )
             val response = watchListRepository.removeWatchListApartment(watchList)
             when (response) {
                 is Resource.Success -> {
                     apartments.remove(apartment)
+                    state = state.copy(apartments = apartments)
                     Log.d("Rently", "Apartment removed from watchlist successfully")
+                    validationEventChannel.send(ValidationEvent.RemoveSuccess)
                 }
                 else -> {
-                    Log.d("Rently", "could not remove apartment from watchlist")}
+                    Log.d("Rently", "could not remove apartment from watchlist")
+                    validationEventChannel.send(ValidationEvent.RemoveError)
+                }
             }
-            isLoading.value = false
         }
     }
 
@@ -78,7 +64,7 @@ class WatchListViewModel @Inject constructor(private val watchListRepository: Wa
             val response = watchListRepository.listUserWatchListApartments(state.userEmail)
             when (response) {
                 is Resource.Success -> {
-                    /* TODO: get only 'available' apartments*/
+                    apartments.addAll(response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status })
                     state = state.copy(apartments = response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status } )
                     validationEventChannel.send(ValidationEvent.PageSuccess)
                 }
@@ -93,5 +79,7 @@ class WatchListViewModel @Inject constructor(private val watchListRepository: Wa
         object PageLoading : ValidationEvent()
         object PageError : ValidationEvent()
         object PageSuccess : ValidationEvent()
+        object RemoveError : ValidationEvent()
+        object RemoveSuccess : ValidationEvent()
     }
 }

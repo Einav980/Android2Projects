@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -37,8 +38,9 @@ fun ApartmentTypeCard(apartmentType: ApartmentType, onDeleteSwiped: (id: String)
         Card(
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth(),
+                .height(90.dp)
+                .fillMaxWidth()
+                .padding(2.dp),
             elevation = 10.dp
         ) {
             val delete = SwipeAction(
@@ -75,8 +77,8 @@ fun ApartmentTypeCard(apartmentType: ApartmentType, onDeleteSwiped: (id: String)
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
+                            style= TextStyle(fontSize = 28.sp),
                             text = apartmentType.type,
-                            fontSize = 32.sp,
                             modifier = Modifier
                                 .padding(start = 20.dp)
                                 .fillMaxWidth()

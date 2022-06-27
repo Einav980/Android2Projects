@@ -57,6 +57,7 @@ class ManageApartmentsViewModel @Inject constructor(
                 val response = apartmentRepository.listUserApartments(userEmailResult)
                 when (response) {
                     is Resource.Success -> {
+                        apartments.addAll(response.data!!)
                         state = state.copy(apartments = response.data!!)
                         validationEventChannel.send(ValidationEvent.PageLoaded)
                     }
@@ -103,6 +104,7 @@ class ManageApartmentsViewModel @Inject constructor(
                     state.apartments.add(apartmentIndex, apartment)
                     state = state.copy(apartments = state.apartments)
                     Log.d("Rently", "Apartment status changed successfully")
+                    validationEventChannel.send(ValidationEvent.ApartmentStatusChangeSuccess)
                 }
                 else -> {
                     validationEventChannel.send(ValidationEvent.ApartmentStatusChangeError)
@@ -119,6 +121,7 @@ class ManageApartmentsViewModel @Inject constructor(
         object ApartmentDeleteSuccess : ValidationEvent()
         object ApartmentDeleteError : ValidationEvent()
         object ApartmentStatusChangeError : ValidationEvent()
+        object ApartmentStatusChangeSuccess: ValidationEvent()
     }
 
 }
