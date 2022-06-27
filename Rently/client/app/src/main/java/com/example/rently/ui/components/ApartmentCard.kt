@@ -139,16 +139,6 @@ fun ApartmentCard(
                             .fillMaxWidth(),
                         overflow = TextOverflow.Ellipsis,
                     )
-//                    val apartmentCardColor =
-//                        if (pageType != ApartmentPageType.Explore) {
-//                            if (apartment.status != ApartmentStatus.Available.status) {
-//                                Color.Gray
-//                            } else {
-//                                MaterialTheme.colors.primary
-//                            }
-//                        } else {
-//                            MaterialTheme.colors.primary
-//                        }
                     Text(
                         text = priceToCurrency(apartment.price),
                         style = MaterialTheme.typography.h6,
@@ -160,9 +150,6 @@ fun ApartmentCard(
             if (pageType == ApartmentPageType.UserManage && apartment.status != null) {
                 switchApartmentStatus(apartment, onChangeApartmentStatus)
             }
-//            if (pageType == ApartmentPageType.AdminManage) {
-//                swipeIndications()
-//            }
 
             if (pageType === ApartmentPageType.Explore) {
                 Box(
@@ -201,28 +188,6 @@ fun ApartmentCard(
     }
 }
 
-
-//@Composable
-//fun swipeIndications() {
-//    RentlyApartmentCardTheme {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(8.dp),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Icon(
-//                modifier = Modifier
-//                    .padding(bottom = 20.dp)
-//                    .size(50.dp)
-//                    .shadow(elevation = 50.dp),
-//                imageVector = Icons.Outlined.Swipe,
-//                contentDescription = null,
-//                tint = Color.White
-//            )
-//        }
-//    }
-//}
 
 @Composable
 fun ApartmentImage(url: String, shape: Shape = MaterialTheme.shapes.small) {
