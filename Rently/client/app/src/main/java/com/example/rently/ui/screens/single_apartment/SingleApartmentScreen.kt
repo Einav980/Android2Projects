@@ -5,7 +5,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
@@ -23,23 +22,18 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.SharedViewModel
-import com.example.rently.model.Apartment
-import com.example.rently.model.google.GoogleLocation
 import com.example.rently.ui.components.SquareChip
 import com.example.rently.ui.components.StarsChip
 import com.example.rently.ui.theme.RentlyGrayColor
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
-import com.example.rently.util.Constants
+import com.example.rently.util.priceToCurrency
 import com.google.android.gms.maps.model.LatLng
-import java.text.NumberFormat
-import java.util.*
 
 @Composable
 fun SingleApartmentScreen(
@@ -49,9 +43,6 @@ fun SingleApartmentScreen(
 ) {
     val context = LocalContext.current
     val apartment = sharedViewModel.apartment
-    val format = NumberFormat.getCurrencyInstance()
-    format.maximumFractionDigits = 0
-    format.currency = Currency.getInstance("ILS")
 
     if (apartment != null) {
         val painter = rememberImagePainter(
@@ -146,7 +137,7 @@ fun SingleApartmentScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
-                                text = format.format(apartment.price),
+                                text = priceToCurrency(apartment.price),
                                 fontSize = MaterialTheme.typography.h5.fontSize
                             )
                             StarsChip(4.3, shape = RoundedSquareShape.large)

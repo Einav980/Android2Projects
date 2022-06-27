@@ -1,7 +1,7 @@
 package com.example.rently.ui.screens.map.events
 
-import com.google.android.gms.maps.model.LatLng
+import com.example.rently.model.Apartment
 
 sealed class MapEvent{
-    data class CameraPositionChanged(val latLng: LatLng): MapEvent()
+    data class SelectedApartmentChanged(val apartment: Apartment): MapEvent()
 }

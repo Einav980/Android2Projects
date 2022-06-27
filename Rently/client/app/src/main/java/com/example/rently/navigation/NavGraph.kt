@@ -155,9 +155,12 @@ fun SetupNavGraph(
         }
 
         composable(
-            route = Screen.Map.route
+            route = Screen.Map.route,
         ) {
-            MapScreen()
+            MapScreen(onApartmentClicked = {
+                sharedViewModel.setApartment(it)
+                navController.navigate(Screen.SingleApartment.route)
+            })
         }
     }
 }

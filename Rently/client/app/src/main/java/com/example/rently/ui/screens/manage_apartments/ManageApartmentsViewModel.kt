@@ -23,7 +23,6 @@ import javax.inject.Inject
 class ManageApartmentsViewModel @Inject constructor(
     private val datastore: DatastorePreferenceRepository,
     private val apartmentRepository: ApartmentRepository,
-    private val userRepository: UserRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(ManageApartmentsState())

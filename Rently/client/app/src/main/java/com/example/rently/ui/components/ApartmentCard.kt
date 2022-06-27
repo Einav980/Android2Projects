@@ -6,19 +6,15 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.ArrowLeft
-import androidx.compose.material.icons.outlined.ArrowRight
 import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -30,19 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.model.Apartment
-import com.example.rently.ui.screens.apartments.events.ApartmentsFormEvent
 import com.example.rently.ui.theme.*
 import com.example.rently.util.ApartmentPageType
 import com.example.rently.util.ApartmentStatus
-import com.example.rently.util.Constants
-import java.text.NumberFormat
-import java.util.*
-
+import com.example.rently.util.priceToCurrency
 @Composable
 fun ApartmentCard(
     pageType: ApartmentPageType = ApartmentPageType.Explore,
@@ -159,11 +149,8 @@ fun ApartmentCard(
 //                        } else {
 //                            MaterialTheme.colors.primary
 //                        }
-                    val format = NumberFormat.getCurrencyInstance()
-                    format.maximumFractionDigits = 0
-                    format.currency = Currency.getInstance("ILS")
                     Text(
-                        text = format.format(apartment.price),
+                        text = priceToCurrency(apartment.price),
                         style = MaterialTheme.typography.h6,
                         color = MaterialTheme.colors.primary,
                         fontWeight = FontWeight.Bold
