@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,11 +43,11 @@ fun WatchListScreen(
     val context = LocalContext.current
     val state = viewModel.state
 
-    var listError by remember { mutableStateOf(false) }
-    var listLoading by remember { mutableStateOf(false) }
-    var listSuccess by remember { mutableStateOf(false) }
-    var removeSuccess by remember { mutableStateOf(false) }
-    var removeError by remember { mutableStateOf(false) }
+    var listError by rememberSaveable { mutableStateOf(false) }
+    var listLoading by rememberSaveable { mutableStateOf(false) }
+    var listSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeError by rememberSaveable { mutableStateOf(false) }
 
 
     LaunchedEffect(key1 = context) {
