@@ -37,7 +37,7 @@ const addApartment = async (req, res) => {
     const {
       city,
       description,
-      numberOfRooms,
+      numberOfBeds,
       price,
       numberOfBaths,
       address,
@@ -56,7 +56,7 @@ const addApartment = async (req, res) => {
     const newApartment = await Apartment.create({
       city,
       description,
-      numberOfRooms,
+      numberOfBeds,
       numberOfBaths,
       price,
       address,
