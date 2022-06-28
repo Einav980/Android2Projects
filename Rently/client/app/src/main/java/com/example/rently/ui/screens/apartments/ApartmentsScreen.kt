@@ -10,9 +10,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.House
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,16 +44,16 @@ fun ApartmentsScreen(
 ) {
 
     val filterState = filterSharedViewModel.state
-    val state = viewModel.state
+    val state = viewModel.state.value
     val context = LocalContext.current
 
-    var listError by remember { mutableStateOf(false) }
-    var listLoading by remember { mutableStateOf(false) }
-    var listSuccess by remember { mutableStateOf(false) }
-    var removeWatchlistSuccess by remember { mutableStateOf(false) }
-    var removeWatchlistError by remember { mutableStateOf(false) }
-    var addWatchlistSuccess by remember { mutableStateOf(false) }
-    var addWatchlistError by remember { mutableStateOf(false) }
+    var listError by rememberSaveable { mutableStateOf(false) }
+    var listLoading by rememberSaveable { mutableStateOf(false) }
+    var listSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeWatchlistSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeWatchlistError by rememberSaveable { mutableStateOf(false) }
+    var addWatchlistSuccess by rememberSaveable { mutableStateOf(false) }
+    var addWatchlistError by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = context) {
         viewModel.validationEvents.collect { event ->
@@ -95,8 +96,6 @@ fun ApartmentsScreen(
         }
     }
 
-
-
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             floatingActionButton = {
@@ -107,7 +106,7 @@ fun ApartmentsScreen(
             topBar = {
                 PageTitleCard(
                     title = "Discover"/*Constants.APARTMENTS_PAGE_TITLE*/,
-                    icon = Icons.Filled.House
+                    icon = Icons.Filled.Home
                 )
             },
             content = {

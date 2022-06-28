@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,13 +38,13 @@ fun ManageApartmentsScreen(
     val context = LocalContext.current
     val state = viewModel.state
 
-    var listError by remember { mutableStateOf(false) }
-    var listLoading by remember { mutableStateOf(false) }
-    var listSuccess by remember { mutableStateOf(false) }
-    var removeSuccess by remember { mutableStateOf(false) }
-    var removeError by remember { mutableStateOf(false) }
-    var statusChangeSuccess by remember { mutableStateOf(false) }
-    var statusChangeError by remember { mutableStateOf(false) }
+    var listError by rememberSaveable { mutableStateOf(false) }
+    var listLoading by rememberSaveable { mutableStateOf(false) }
+    var listSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeError by rememberSaveable { mutableStateOf(false) }
+    var statusChangeSuccess by rememberSaveable { mutableStateOf(false) }
+    var statusChangeError by rememberSaveable { mutableStateOf(false) }
 
 
     LaunchedEffect(key1 = context) {

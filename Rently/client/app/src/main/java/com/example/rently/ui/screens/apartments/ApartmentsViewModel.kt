@@ -1,10 +1,7 @@
 package com.example.rently.ui.screens.apartments
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
@@ -27,21 +24,19 @@ import javax.inject.Inject
 @HiltViewModel
 class ApartmentsViewModel @Inject constructor(private val apartmentRepository: ApartmentRepository, private val watchListRepository: WatchlistRepository, private val datastore: DatastorePreferenceRepository):
     ViewModel() {
-/*
-    val apartments = mutableStateListOf<Apartment>()
-    val isLoading = mutableStateOf(false)
-*/
 
-    private val validationEventChannel = Channel<ApartmentsViewModel.ValidationEvent>()
+    private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
-    var state by mutableStateOf(ApartmentsScreenState())
+    private val _state = mutableStateOf(ApartmentsScreenState())
+    val state: State<ApartmentsScreenState> = _state
     val watchlistApartment = mutableStateListOf<Watchlist>()
 
 
     init {
         fetchApartments()
         fetchWatchlist()
+        Timber.tag("Rently").d("View model initiation")
     }
 
     fun onEvent(event: ApartmentsFormEvent){
@@ -99,17 +94,14 @@ class ApartmentsViewModel @Inject constructor(private val apartmentRepository: A
             val response = apartmentRepository.listApartments()
             when (response) {
                 is Resource.Success -> {
-                    state = state.copy(apartments = response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status })
-                    state.apartments.forEach { apartment ->
-                        Timber.tag("Rently").d("Apartments: " + apartment.location)
-                    }
+                    _state.value = state.value.copy(apartments = response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status })
                     validationEventChannel.send(ValidationEvent.PageLoaded)
                 } else -> {
                     Log.d("Rently","Error fetching apartments")
                     validationEventChannel.send(ValidationEvent.PageError)
                 }
             }
-            state = state.copy(loading = false)
+            _state.value = state.value.copy(loading = false)
         }
     }
 
@@ -120,7 +112,7 @@ class ApartmentsViewModel @Inject constructor(private val apartmentRepository: A
             when (response) {
                 is Resource.Success -> {
                     watchlistApartment.addAll(response.data!!)
-                    state = state.copy(userWatchlist = watchlistApartment)
+                    _state.value = state.value.copy(userWatchlist = watchlistApartment)
                 }
                 else -> {
                     Log.d("Rently","Error fetching watchlist")
@@ -137,7 +129,7 @@ class ApartmentsViewModel @Inject constructor(private val apartmentRepository: A
             when(response){
                 is Resource.Success -> {
                     watchlistApartment.add(watchlistItem)
-                    state = state.copy(userWatchlist = watchlistApartment)
+                    _state.value = state.value.copy(userWatchlist = watchlistApartment)
                     Log.d("Rently", "Added to watchlist")
                     validationEventChannel.send(ValidationEvent.AddApartmentToWatchlistSuccess)
                 }
@@ -157,7 +149,7 @@ class ApartmentsViewModel @Inject constructor(private val apartmentRepository: A
             when(response){
                 is Resource.Success -> {
                     watchlistApartment.remove(watchlistItem)
-                    state = state.copy(userWatchlist = watchlistApartment)
+                    _state.value = state.value.copy(userWatchlist = watchlistApartment)
                     Log.d("Rently", "Removed from watchlist")
                     validationEventChannel.send(ValidationEvent.RemoveApartmentToWatchlistSuccess)
                 }

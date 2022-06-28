@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rently.model.ApartmentType
 import com.example.rently.ui.components.*
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
@@ -119,7 +120,7 @@ fun AddApartmentScreen(
                                 .padding(start = 50.dp, end = 50.dp)
                         ) {
                             RentlyTextField(
-                                value = state.address,
+                                value = state.apartmentAddress,
                                 onValueChange = {
                                     viewModel.onEvent(AddApartmentFormEvent.AddressChanged(it))
                                 },
@@ -212,7 +213,7 @@ fun AddApartmentScreen(
                                 .fillMaxWidth()
                         ) {
                             RentlyTextField(
-                                value = state.description,
+                                value = state.apartmentDescription,
                                 onValueChange = {
                                     viewModel.onEvent(
                                         AddApartmentFormEvent.DescriptionChanged(it)
@@ -260,11 +261,11 @@ fun AddApartmentScreen(
                     Section(title = "Price", icon = Icons.Filled.Sell) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             RentlyTextField(
-                                value = state.price.toString(),
+                                value = state.apartmentPrice.toString(),
                                 onValueChange = {
                                     viewModel.onEvent(
                                         AddApartmentFormEvent.PriceChanged(
-                                            it.toInt()
+                                            if(it.isNotEmpty()) it.toInt() else 0
                                         )
                                     )
                                 },
@@ -278,11 +279,11 @@ fun AddApartmentScreen(
                     Section(title = "Size", icon = Icons.Filled.Straighten) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             RentlyTextField(
-                                value = state.size.toString(),
+                                value = state.apartmentSize.toString(),
                                 onValueChange = {
                                     viewModel.onEvent(
                                         AddApartmentFormEvent.SizeChanged(
-                                            it.toInt()
+                                            if(it.isNotEmpty()) it.toInt() else 0
                                         )
                                     )
                                 },
@@ -319,7 +320,7 @@ fun AddApartmentScreen(
                                                     )
                                                 )
                                             },
-                                            icon = getIconResourceByName(name = apartmentType.type)
+                                            icon = getApartmentTypeIcon(type = apartmentType.type)
                                         )
                                     }
                                 }

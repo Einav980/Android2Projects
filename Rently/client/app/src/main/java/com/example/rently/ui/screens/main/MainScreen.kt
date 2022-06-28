@@ -119,8 +119,13 @@ fun RowScope.AddItem(
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
         } == true,
+        // Prevent navigating more than once to the same route
         onClick = {
-            navController.navigate(screen.route)
+            if (currentDestination?.hierarchy?.any {
+                    it.route == screen.route
+                } == false) {
+                navController.navigate(screen.route)
+            }
         },
         label = { Text(text = label) }
     )
@@ -158,7 +163,7 @@ fun PageTitleCard(title: String, icon: ImageVector? = null) {
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if(icon != null){
+                if (icon != null) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,

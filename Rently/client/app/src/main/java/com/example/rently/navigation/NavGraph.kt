@@ -54,7 +54,7 @@ fun SetupNavGraph(
                 },
                 onAddApartmentClicked = {
                     navController.navigate(Screen.AddApartment.route)
-                }
+                },
             )
         }
         composable(
@@ -135,9 +135,11 @@ fun SetupNavGraph(
         composable(
             route = Screen.AddApartment.route
         ) {
-            AddApartmentScreen(onAddApartmentFinished = {navController.navigate(Screen.MainPage.route){
-                popUpTo(Screen.MainPage.route)
-            } })
+            AddApartmentScreen(onAddApartmentFinished = {
+                navController.navigate(Screen.MainPage.route) {
+                    popUpTo(Screen.MainPage.route)
+                }
+            })
         }
 
         composable(
@@ -162,7 +164,7 @@ fun SetupNavGraph(
             MapScreen(onApartmentClicked = {
                 sharedViewModel.setApartment(it)
                 navController.navigate(Screen.SingleApartment.route)
-            })
+            }, onBackClicked = { navController.popBackStack() })
         }
     }
 }

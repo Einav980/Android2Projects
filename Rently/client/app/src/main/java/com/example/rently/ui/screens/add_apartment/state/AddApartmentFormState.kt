@@ -7,13 +7,14 @@ import com.example.rently.model.google.GoogleLocation
 import com.google.android.gms.maps.model.LatLng
 
 data class AddApartmentFormState(
-    val address: String = "",
+    val apartmentAddress: String = "",
     val addressError: String? = null,
-    val description: String = "",
+    val apartmentDescription: String = "",
     val descriptionError: String? = null,
-    val price: Int = 0,
+    val apartmentType: String = "",
+    val apartmentPrice: Int = 0,
     val priceError: String? = null,
-    val size: Int = 0,
+    val apartmentSize: Int = 0,
     val sizeError: String? = null,
     val image: Bitmap? = null,
     val hasParking: Boolean = false,
@@ -21,7 +22,7 @@ data class AddApartmentFormState(
     var isFurnished: Boolean = false,
     val hasBalcony: Boolean = false,
     val showPredictions: Boolean = false,
-    val city: String = "",
+    val apartmentCity: String = "",
     val placesLoading: Boolean = false,
     val numberOfBedrooms: Int = 0,
     val numberOfBathrooms: Int = 0,

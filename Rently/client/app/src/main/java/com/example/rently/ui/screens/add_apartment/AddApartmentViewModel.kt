@@ -1,7 +1,5 @@
 package com.example.rently.ui.screens.add_apartment
 
-import android.graphics.Bitmap
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -57,25 +55,25 @@ class AddApartmentViewModel @Inject constructor(
 
             is AddApartmentFormEvent.AddressChanged -> {
                 viewModelScope.launch {
-                    state = state.copy(address = event.address, showPredictions = true)
-                    getPredictions(state.address)
+                    state = state.copy(apartmentAddress = event.address, showPredictions = true)
+                    getPredictions(state.apartmentAddress)
                 }
             }
 
             is AddApartmentFormEvent.AddressClicked -> {
-                state = state.copy(address = event.address, showPredictions = false)
+                state = state.copy(apartmentAddress = event.address, showPredictions = false)
             }
 
             is AddApartmentFormEvent.DescriptionChanged -> {
-                state = state.copy(description = event.description)
+                state = state.copy(apartmentDescription = event.description)
             }
 
             is AddApartmentFormEvent.PriceChanged -> {
-                state = state.copy(price = event.price)
+                state = state.copy(apartmentPrice = event.price)
             }
 
             is AddApartmentFormEvent.SizeChanged -> {
-                state = state.copy(size = event.size)
+                state = state.copy(apartmentSize = event.size)
             }
 
             is AddApartmentFormEvent.HasBalconyChanged -> {
@@ -103,7 +101,7 @@ class AddApartmentViewModel @Inject constructor(
             }
 
             is AddApartmentFormEvent.CityChanged -> {
-                state = state.copy(city = event.city)
+                state = state.copy(apartmentCity = event.city)
             }
 
             is AddApartmentFormEvent.BedroomsAmountChanged -> {
@@ -116,6 +114,7 @@ class AddApartmentViewModel @Inject constructor(
 
             is AddApartmentFormEvent.ApartmentTypeChanged -> {
                 state = state.copy(selectedApartmentTypeIndex = event.index)
+                state = state.copy(apartmentType = state.apartmentTypes[event.index].type)
             }
 
             is AddApartmentFormEvent.ApartmentUploadingStateChanged -> {
@@ -159,10 +158,10 @@ class AddApartmentViewModel @Inject constructor(
 
     private fun submitData() {
 
-        val addressResult = validateAddress.execute(state.address)
-        val descriptionResult = validateDescription.execute(state.description)
-        val priceResult = validatePrice.execute(state.price)
-        val sizeResult = validateSize.execute(state.size)
+        val addressResult = validateAddress.execute(state.apartmentAddress)
+        val descriptionResult = validateDescription.execute(state.apartmentDescription)
+        val priceResult = validatePrice.execute(state.apartmentPrice)
+        val sizeResult = validateSize.execute(state.apartmentSize)
 
         val hasError =
             listOf(addressResult, descriptionResult, priceResult, sizeResult).any { !it.successful }
@@ -208,7 +207,7 @@ class AddApartmentViewModel @Inject constructor(
             state = state.copy(apartmentImageUrl = imageUploadResponse)
         }
 
-        val googleLocation = getAddressLocation(state.address)
+        val googleLocation = getAddressLocation(state.apartmentAddress)
 
         if (googleLocation == null) {
             validationEventChannel.send(ValidationEvent.ApartmentUploadError)
@@ -223,16 +222,16 @@ class AddApartmentViewModel @Inject constructor(
 
         val apartment = Apartment(
             userId = userId,
-            address = state.address,
-            description = state.description,
-            city = state.city,
-            type = "Apartment",
-            size = state.size,
+            address = state.apartmentAddress,
+            description = state.apartmentDescription,
+            city = state.apartmentCity,
+            type = state.apartmentType,
+            size = state.apartmentSize,
             hasBalcony = state.hasBalcony,
             hasParking = state.hasParking,
             isAnimalFriendly = state.isAnimalFriendly,
             isFurnished = state.isFurnished,
-            price = state.price,
+            price = state.apartmentPrice,
             imageUrl = state.apartmentImageUrl,
             location = state.apartmentAddressLocation,
             numberOfBaths = state.numberOfBathrooms,

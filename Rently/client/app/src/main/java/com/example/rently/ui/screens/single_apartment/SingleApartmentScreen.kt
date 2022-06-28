@@ -29,6 +29,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.SharedViewModel
 import com.example.rently.model.User
+import com.example.rently.ui.components.BackButton
 import com.example.rently.ui.components.RentlyChip
 import com.example.rently.ui.components.SquareChip
 import com.example.rently.ui.theme.RentlyGrayColor
@@ -276,18 +277,7 @@ fun SingleApartmentScreen(
                     .padding(10.dp),
                 contentAlignment = Alignment.TopStart
             ) {
-                Button(
-                    modifier = Modifier.alpha(0.6f),
-                    onClick = onBackClicked,
-                    shape = RoundedSquareShape.large,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBackIos,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
+               BackButton(onClick = onBackClicked)
             }
         }
     } else {

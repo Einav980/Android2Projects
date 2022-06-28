@@ -5,10 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.ui.screens.manage_apartments.ManageApartmentsScreen
@@ -17,9 +15,7 @@ import com.example.rently.ui.screens.admin_screens.adminManageApartment.AdminMan
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
 import com.example.rently.ui.screens.filter.FilterScreen
-import com.example.rently.ui.screens.map.MapScreen
 import com.example.rently.ui.screens.watchList.WatchListScreen
-import com.google.android.gms.maps.model.LatLng
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
@@ -29,7 +25,7 @@ fun BottomNavGraph(
     onApartmentClicked: () -> Unit,
     onMapClicked: () -> Unit,
     onAddApartmentClicked: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
 ) {
 
     val filterSharedViewModel: FilterSharedViewModel = viewModel()
@@ -97,15 +93,6 @@ fun BottomNavGraph(
                 navController = navController,
                 filterSharedViewModel = filterSharedViewModel
             )
-        }
-
-        composable(
-            route = Screen.Map.route
-        ) {
-            MapScreen(onApartmentClicked = {
-                sharedViewModel.setApartment(it)
-                navController.navigate(Screen.SingleApartment.route)
-            })
         }
     }
 }

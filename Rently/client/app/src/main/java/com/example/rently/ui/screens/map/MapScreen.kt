@@ -20,9 +20,10 @@ import com.google.android.gms.maps.model.LatLng
 @Composable
 fun MapScreen(
     latLng: LatLng = Constants.DefaultLocation,
-    onApartmentClicked: (Apartment) -> Unit
+    onApartmentClicked: (Apartment) -> Unit,
+    onBackClicked: () -> Unit,
 ) {
     RentlyTheme {
-        Map(latLng = latLng, onApartmentClicked = onApartmentClicked)
+        Map(latLng = latLng, onApartmentClicked = onApartmentClicked, onBackClicked = onBackClicked)
     }
 }

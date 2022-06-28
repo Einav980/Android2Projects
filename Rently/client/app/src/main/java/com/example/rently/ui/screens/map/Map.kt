@@ -2,6 +2,7 @@ package com.example.rently.ui.screens.map
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.model.Apartment
 import com.example.rently.ui.components.ApartmentImage
+import com.example.rently.ui.components.BackButton
 import com.example.rently.ui.screens.map.events.MapEvent
 import com.example.rently.ui.theme.RoundedSquareShape
 import com.example.rently.util.Constants
@@ -44,15 +46,14 @@ fun Map(
     modifier: Modifier = Modifier.fillMaxSize(),
     latLng: LatLng? = null,
     onApartmentClicked: (Apartment) -> Unit,
+    onBackClicked: () -> Unit,
 ) {
     val context = LocalContext.current
     val state = viewModel.state
     val cameraPositionState = rememberCameraPositionState {
-        if(latLng != null)
-        {
+        if (latLng != null) {
             CameraPosition.fromLatLngZoom(latLng, 15f)
-        }
-        else{
+        } else {
             state.cameraPosition
         }
     }
@@ -111,6 +112,13 @@ fun Map(
             CircularProgressIndicator()
         }
     }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+    ) {
+        BackButton(onClick = onBackClicked)
+    }
 }
 
 @Composable
@@ -150,7 +158,10 @@ fun SelectedApartmentCard(
                         backgroundColor = MaterialTheme.colors.primary,
                         contentColor = Color.White
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)){
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(8.dp)
+                        ) {
                             Text(
                                 text = "${priceToCurrency(apartment.price)} / ",
                                 style = MaterialTheme.typography.body1,
@@ -222,8 +233,16 @@ fun SelectedApartmentCard(
                 }
             }
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
-                IconButton(onClick = onSelectedApartmentClosed, modifier = Modifier.clip(CircleShape).background(Color.Gray)) {
-                    Icon(imageVector = Icons.Filled.Close, contentDescription = null, tint = Color.White)
+                IconButton(
+                    onClick = onSelectedApartmentClosed, modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Color.Gray)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
                 }
             }
         }
