@@ -124,7 +124,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel(), onLogout:
                     .weight(4f)
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
-                    .background(Color.White),
+                    .background(MaterialTheme.colors.surface),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(

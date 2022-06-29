@@ -31,6 +31,8 @@ val RentlyLightColors = lightColors(
 
 val RentlyDarkColors = lightColors(
     primary = Color(0xFF0B1931),
+    surface = Color(0xFF121212),
+    background = Color(0xFF1F1B24),
     primaryVariant = RentlyPrimaryVariantColor,
     secondary = RentlySecondaryColor,
     secondaryVariant = RentlySecondaryVariantColor,

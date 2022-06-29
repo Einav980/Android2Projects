@@ -119,6 +119,7 @@ fun SingleApartmentScreen(
                                 text = apartment.type,
                                 style = MaterialTheme.typography.h4,
                                 fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colors.onBackground,
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Row() {
@@ -151,7 +152,10 @@ fun SingleApartmentScreen(
                                 .padding(20.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            RentlyChip(text = "${priceToCurrency(apartment.price)} / mon", textStyle = MaterialTheme.typography.h5)
+                            RentlyChip(
+                                text = "${priceToCurrency(apartment.price)} / mon",
+                                textStyle = MaterialTheme.typography.h5
+                            )
                         }
                         Row(
                             modifier = Modifier
@@ -206,7 +210,8 @@ fun SingleApartmentScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onBackground,
                     )
                     Column(
                         modifier = Modifier
@@ -219,7 +224,8 @@ fun SingleApartmentScreen(
                         Text(
                             modifier = Modifier.padding(8.dp),
                             text = apartment.description,
-                            lineHeight = 35.sp
+                            lineHeight = 35.sp,
+                            color = MaterialTheme.colors.onBackground,
                         )
                     }
                     Row(
@@ -259,7 +265,7 @@ fun SingleApartmentScreen(
                 FloatingActionButton(
                     onClick = { onMapClicked(apartment.location) },
                     shape = RoundedSquareShape.large,
-                    backgroundColor = MaterialTheme.colors.primary
+                    backgroundColor = MaterialTheme.colors.primary,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.LocationOn,
@@ -275,7 +281,7 @@ fun SingleApartmentScreen(
                     .padding(10.dp),
                 contentAlignment = Alignment.TopStart
             ) {
-               BackButton(onClick = onBackClicked)
+                BackButton(onClick = onBackClicked)
             }
         }
     } else {
@@ -316,7 +322,7 @@ fun ContactDialog(user: User? = null, onCloseDialog: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = onCloseDialog) {
+                Button(onClick = onCloseDialog, shape = RoundedSquareShape.large) {
                     Text(text = "Close")
                 }
             }

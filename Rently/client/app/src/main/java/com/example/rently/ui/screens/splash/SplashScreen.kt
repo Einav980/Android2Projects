@@ -61,7 +61,7 @@ fun Splash(alpha: Float) {
     RentlyTheme {
         Box(
             modifier = Modifier
-                .background(Color.White)
+                .background(MaterialTheme.colors.surface)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {

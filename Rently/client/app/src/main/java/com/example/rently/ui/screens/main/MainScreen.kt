@@ -80,7 +80,7 @@ fun BottomBar(navController: NavController, userType: UserType) {
     val currentDestination = navBackStackEntry?.destination
 
     BottomNavigation(
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.colors.surface,
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
@@ -126,7 +126,7 @@ fun RowScope.AddItem(
                 navController.navigate(screen.route)
             }
         },
-        label = { Text(text = label) }
+        label = { Text(text = label) },
     )
 }
 

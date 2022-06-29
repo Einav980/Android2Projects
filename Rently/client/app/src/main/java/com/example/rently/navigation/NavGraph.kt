@@ -18,7 +18,6 @@ import com.example.rently.ui.screens.main.MainScreen
 import com.example.rently.ui.screens.map.MapScreen
 import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.example.rently.ui.screens.splash.SplashScreen
-import com.example.rently.ui.screens.thankyou.ThankYou
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 
@@ -93,40 +92,9 @@ fun SetupNavGraph(
         }
 
         composable(
-            route = Screen.ThankYou.route,
-        ) {
-            ThankYou(
-                onLanded = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(0) {
-                            inclusive = true
-                        }
-                    }
-                },
-            )
-            BackHandler(true) {
-                // Do nothing
-            }
-        }
-
-        composable(
             route = Screen.ManageApartmentType.route
         ) {
             ManageApartmentTypeScreen(/*onAddClicked = {}*/)
-        }
-
-        composable(
-            route = Screen.Filter.route
-        ) {
-            FilterScreen(
-                onBackClicked = { navController.popBackStack() },
-                onFilterApplied = {
-                    navController.navigate(Screen.Apartments.route) {
-                        popUpTo(Screen.Apartments.route)
-                    }
-                },
-                viewModel = apartmentsSharedViewModel,
-            )
         }
 
         composable(
