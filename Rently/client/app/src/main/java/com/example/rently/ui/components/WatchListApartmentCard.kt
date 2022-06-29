@@ -2,45 +2,34 @@ package com.example.rently.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.ArrowLeft
-import androidx.compose.material.icons.outlined.ArrowRight
-import androidx.compose.material.icons.outlined.Swipe
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.rently.model.Apartment
-import com.example.rently.ui.theme.*
-import com.example.rently.util.ApartmentPageType
-import com.example.rently.util.ApartmentStatus
+import com.example.rently.ui.theme.RentlyApartmentCardTheme
+import com.example.rently.ui.theme.RentlySubtitleTextColor
 import com.example.rently.util.Constants
 import java.text.NumberFormat
 import java.util.*
 
 @Composable
 fun WatchListApartmentCard(
-    navController: NavController,
-    pageType: ApartmentPageType = ApartmentPageType.Explore,
     apartment: Apartment,
     onApartmentClick: (apartment: Apartment) -> Unit,
     onRemoveApartment: (apartment: Apartment) -> Unit = {},
@@ -246,9 +235,7 @@ fun WatchListDeleteApartmentBadge(apartment: Apartment, onDeleteApartment: (apar
 @Composable
 @Preview(showBackground = true)
 fun WatchListApartmentCardPreview() {
-    val context = LocalContext.current
     WatchListApartmentCard(
         apartment = Constants.apartment,
-        navController = NavController(context = context),
         onApartmentClick = {})
 }

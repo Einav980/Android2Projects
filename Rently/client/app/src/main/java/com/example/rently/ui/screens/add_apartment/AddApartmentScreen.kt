@@ -30,12 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.rently.model.ApartmentType
 import com.example.rently.ui.components.*
+import com.example.rently.ui.screens.add_apartment.events.AddApartmentFormEvent
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.ui.theme.RoundedSquareShape
-import com.example.rently.util.*
-import com.example.rently.ui.screens.add_apartment.events.AddApartmentFormEvent
+import com.example.rently.util.getApartmentTypeIcon
+import com.example.rently.util.getImageBitmap
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -43,6 +43,7 @@ import com.example.rently.ui.screens.add_apartment.events.AddApartmentFormEvent
 @Composable
 fun AddApartmentScreen(
     viewModel: AddApartmentViewModel = hiltViewModel(),
+    onBackClicked: () -> Unit = {},
     onAddApartmentFinished: () -> Unit = {}
 ) {
 
@@ -58,7 +59,14 @@ fun AddApartmentScreen(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            viewModel.onEvent(AddApartmentFormEvent.ImageBitmapChanged(getImageBitmap(context = context, imageUri = uri)))
+            viewModel.onEvent(
+                AddApartmentFormEvent.ImageBitmapChanged(
+                    getImageBitmap(
+                        context = context,
+                        imageUri = uri
+                    )
+                )
+            )
         }
     }
 
@@ -96,7 +104,7 @@ fun AddApartmentScreen(
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
-                        TextButton(onClick = { /*TODO*/ }) {
+                        TextButton(onClick = onBackClicked) {
                             Text(text = "Back")
                         }
                     }
@@ -265,7 +273,7 @@ fun AddApartmentScreen(
                                 onValueChange = {
                                     viewModel.onEvent(
                                         AddApartmentFormEvent.PriceChanged(
-                                            if(it.isNotEmpty()) it.toInt() else 0
+                                            if (it.isNotEmpty()) it.toInt() else 0
                                         )
                                     )
                                 },
@@ -283,7 +291,7 @@ fun AddApartmentScreen(
                                 onValueChange = {
                                     viewModel.onEvent(
                                         AddApartmentFormEvent.SizeChanged(
-                                            if(it.isNotEmpty()) it.toInt() else 0
+                                            if (it.isNotEmpty()) it.toInt() else 0
                                         )
                                     )
                                 },

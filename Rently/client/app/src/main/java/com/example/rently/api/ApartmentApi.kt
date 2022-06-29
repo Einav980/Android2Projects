@@ -11,10 +11,6 @@ interface ApartmentApi {
     @GET("apartments")
     suspend fun listApartments(): ArrayList<Apartment>
 
-    // Get specific apartment info
-    @GET("apartments/624ca60f5c4af535859c0729")
-    suspend fun getApartment(): Apartment
-
     // List all user apartments
     @GET("apartments/user/{userid}")
     suspend fun listUserApartments(@Path("userid") id: String): ArrayList<Apartment>

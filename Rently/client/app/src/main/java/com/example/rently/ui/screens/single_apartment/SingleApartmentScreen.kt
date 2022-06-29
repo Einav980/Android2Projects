@@ -1,17 +1,18 @@
 package com.example.rently.ui.screens.single_apartment
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
@@ -19,7 +20,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,7 +45,6 @@ fun SingleApartmentScreen(
     onBackClicked: () -> Unit,
     onMapClicked: (LatLng) -> Unit
 ) {
-    val context = LocalContext.current
     val apartment = sharedViewModel.apartment
 
     LaunchedEffect(key1 = sharedViewModel.apartment) {
@@ -225,7 +224,6 @@ fun SingleApartmentScreen(
                     }
                     Row(
                         modifier = Modifier
-                            .weight(1f)
                             .fillMaxWidth()
                             .padding(10.dp),
                         horizontalArrangement = Arrangement.Center,
@@ -243,7 +241,7 @@ fun SingleApartmentScreen(
                                 contentDescription = "Contact Information"
                             )
                             Text(
-                                "Contact Information",
+                                text = "Contact Information",
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier.padding(8.dp)
                             )

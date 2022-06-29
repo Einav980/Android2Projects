@@ -32,7 +32,7 @@ fun getImageBitmap(context: Context, imageUri: Uri): Bitmap {
 
     } else {
         val source = ImageDecoder
-            .createSource(context.contentResolver, imageUri!!)
+            .createSource(context.contentResolver, imageUri)
         ImageDecoder.decodeBitmap(source)
     }
 }

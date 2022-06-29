@@ -3,17 +3,16 @@ package com.example.rently.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.ui.screens.manage_apartments.ManageApartmentsScreen
 import com.example.rently.ui.screens.profile.ProfileScreen
 import com.example.rently.ui.screens.admin_screens.adminManageApartment.AdminManageApartmentsScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsScreen
+import com.example.rently.ui.screens.apartments.ApartmentsViewModel
 import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.watchList.WatchListScreen
 
@@ -21,14 +20,13 @@ import com.example.rently.ui.screens.watchList.WatchListScreen
 @Composable
 fun BottomNavGraph(
     sharedViewModel: SharedViewModel,
+    apartmentsSharedViewModel: ApartmentsViewModel,
     navController: NavHostController,
     onApartmentClicked: () -> Unit,
     onMapClicked: () -> Unit,
     onAddApartmentClicked: () -> Unit,
     onLogout: () -> Unit,
 ) {
-
-    val filterSharedViewModel: FilterSharedViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -40,7 +38,7 @@ fun BottomNavGraph(
             ApartmentsScreen(
                 navController = navController,
                 sharedViewModel = sharedViewModel,
-                filterSharedViewModel = filterSharedViewModel,
+                viewModel = apartmentsSharedViewModel,
                 onApartmentClicked = onApartmentClicked,
                 onMapClicked = onMapClicked
             )
@@ -57,7 +55,6 @@ fun BottomNavGraph(
             route = BottomBarScreen.Watchlist.route,
         ) {
             WatchListScreen(
-                navController = navController,
                 sharedViewModel = sharedViewModel,
                 onApartmentClicked = onApartmentClicked
             )
@@ -90,8 +87,13 @@ fun BottomNavGraph(
 
         composable(route = Screen.Filter.route) {
             FilterScreen(
-                navController = navController,
-                filterSharedViewModel = filterSharedViewModel
+                viewModel = apartmentsSharedViewModel,
+                onFilterApplied = {
+                    navController.navigate(Screen.Apartments.route) {
+                        popUpTo(Screen.Apartments.route)
+                    }
+                },
+                onBackClicked = { navController.popBackStack() }
             )
         }
     }

@@ -54,11 +54,11 @@ fun RentlyApartmentCardTheme(
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
-        RentlyLightColors
+        RentlyApartmentCardLightColors
     }
 
     MaterialTheme(
-        colors = RentlyApartmentCardLightColors,
+        colors = colors,
         typography = RentlyApartmentCardTypography,
         shapes = Shapes,
         content = content

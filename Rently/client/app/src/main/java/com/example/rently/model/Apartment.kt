@@ -1,8 +1,6 @@
 package com.example.rently.model
 
 import android.os.Parcelable
-import com.example.rently.model.google.GoogleLocation
-import com.example.rently.model.google.GoogleLocationResponse
 import com.example.rently.util.ApartmentStatus
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.parcelize.Parcelize

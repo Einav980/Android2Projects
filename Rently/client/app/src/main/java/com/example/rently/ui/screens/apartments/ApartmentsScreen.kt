@@ -21,13 +21,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
-import com.example.rently.ui.screens.PageTitleCard
+import com.example.rently.ui.screens.main.PageTitleCard
 import com.example.rently.ui.screens.apartments.events.ApartmentsFormEvent
 import com.example.rently.ui.theme.RentlyMapButtonBackgroundColor
 import com.example.rently.ui.theme.RentlyMapButtonForegroundColor
@@ -35,21 +33,19 @@ import com.example.rently.ui.theme.RentlyMapButtonForegroundColor
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ApartmentsScreen(
-    viewModel: ApartmentsViewModel = hiltViewModel(),
+    viewModel: ApartmentsViewModel,
     navController: NavHostController,
     onApartmentClicked: () -> Unit,
     sharedViewModel: SharedViewModel,
-    filterSharedViewModel: FilterSharedViewModel,
     onMapClicked: () -> Unit,
 ) {
 
-    val filterState = filterSharedViewModel.state
     val state = viewModel.state.value
     val context = LocalContext.current
 
     var listError by rememberSaveable { mutableStateOf(false) }
     var listLoading by rememberSaveable { mutableStateOf(false) }
-    var listSuccess by rememberSaveable { mutableStateOf(false) }
+    var listSuccess by rememberSaveable { mutableStateOf(true) }
     var removeWatchlistSuccess by rememberSaveable { mutableStateOf(false) }
     var removeWatchlistError by rememberSaveable { mutableStateOf(false) }
     var addWatchlistSuccess by rememberSaveable { mutableStateOf(false) }
@@ -122,24 +118,32 @@ fun ApartmentsScreen(
                             text = "${state.apartments.size} properties",
                             style = MaterialTheme.typography.body1
                         )
-                        OutlinedButton(
-                            onClick = {
-                                navController.navigate(Screen.Filter.route) {
-                                    popUpTo(Screen.Filter.route)
+                        Row(){
+                            if(state.isFiltered){
+                                OutlinedButton(onClick = { viewModel.onEvent(ApartmentsFormEvent.ClearFilter) }) {
+                                    Text(text=  "Clear", color = MaterialTheme.colors.primary)
                                 }
-                            },
-                            shape = CircleShape,
-                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Transparent),
-                            border = BorderStroke(0.dp, Color.Transparent)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.FilterAlt,
-                                contentDescription = null,
-                                tint = if (state.isFiltered) MaterialTheme.colors.primary else Color.Gray
-                            )
+                                Spacer(Modifier.width(4.dp))
+                            }
+                            OutlinedButton(
+                                onClick = {
+                                    navController.navigate(Screen.Filter.route) {
+                                        popUpTo(Screen.Filter.route)
+                                    }
+                                },
+                                shape = CircleShape,
+                                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Transparent),
+                                border = BorderStroke(0.dp, Color.Transparent)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.FilterAlt,
+                                    contentDescription = null,
+                                    tint = if (state.isFiltered) MaterialTheme.colors.primary else Color.Gray
+                                )
+                            }
                         }
                     }
-                    if(listSuccess){
+                    if(listSuccess && !listError){
                         if (state.apartments.isNotEmpty()){
                             LazyColumn(
                                 modifier = Modifier

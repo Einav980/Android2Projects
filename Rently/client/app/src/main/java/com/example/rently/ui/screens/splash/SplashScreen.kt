@@ -1,6 +1,5 @@
 package com.example.rently.ui.screens.splash
 
-import android.window.SplashScreen
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -35,11 +34,13 @@ fun SplashScreen(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(
             durationMillis = 1250
-        )
+        ),
     )
 
     Splash(alpha = alphaAnim.value)
     LaunchedEffect(key1 = context){
+        startAnimation = true
+        delay(1250)
         viewModel.validationEvents.collect { event ->
             when(event){
                 is SplashScreenViewModel.ValidationEvent.LoggedIn -> {

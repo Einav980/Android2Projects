@@ -1,6 +1,5 @@
 package com.example.rently.validation.use_case
 
-import android.util.Patterns
 import javax.inject.Inject
 
 class ValidateFirstName @Inject constructor(){

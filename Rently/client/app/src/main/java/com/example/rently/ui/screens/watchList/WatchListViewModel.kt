@@ -19,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +32,7 @@ class WatchListViewModel @Inject constructor(private val watchListRepository: Wa
 
     init {
         fetchWatchlistApartments()
+        Timber.tag("Rently").d("Watchlist init")
     }
 
 

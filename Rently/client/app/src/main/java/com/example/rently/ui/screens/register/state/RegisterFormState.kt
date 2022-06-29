@@ -1,9 +1,5 @@
 package com.example.rently.ui.screens.register.state
 
-import android.graphics.Bitmap
-import com.example.rently.model.ApartmentType
-import com.example.rently.model.google.GoogleLocation
-
 data class RegisterFormState(
     val email: String = "",
     val emailError: String? = null,

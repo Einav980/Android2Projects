@@ -76,7 +76,7 @@ class ApartmentRepository @Inject constructor(
         val response = try{
             api.addApartment(apartment = apartment)
         } catch (e: Exception){
-            Timber.d("Response", e.message.toString())
+            Timber.tag("Rently").d("Response", e.message.toString())
             return Resource.Error("Failed adding Apartment", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)

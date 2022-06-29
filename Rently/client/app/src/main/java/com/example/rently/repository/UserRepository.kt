@@ -17,7 +17,6 @@ class UserRepository @Inject constructor(
             val response = api.loginUser(user = user)
             Resource.Success(response)
         } catch (e: Exception){
-            Timber.d("Response", e.message.toString())
             Resource.Error("Failed logging in", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
     }
@@ -26,14 +25,9 @@ class UserRepository @Inject constructor(
         val response = try{
             api.registerUser(user = user)
         } catch (e: Exception){
-            Timber.d("Response", e.message.toString())
             return Resource.Error("Failed signing up", AuthResponse(returnCode = 500, message = "Server error has occurred", type = "Error"))
         }
         return Resource.Success(response)
-    }
-
-    suspend fun listUsers(): ArrayList<User>{
-        return api.listUsers()
     }
 
     suspend fun getUser(email: String): Resource<User>{

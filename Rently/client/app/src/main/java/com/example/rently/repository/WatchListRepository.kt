@@ -1,11 +1,9 @@
 package com.example.rently.repository
 
-import android.util.Log
 import com.example.rently.Resource
 import com.example.rently.api.WatchListApi
 import com.example.rently.model.*
 import dagger.hilt.android.scopes.ActivityScoped
-import timber.log.Timber
 import javax.inject.Inject
 
 @ActivityScoped

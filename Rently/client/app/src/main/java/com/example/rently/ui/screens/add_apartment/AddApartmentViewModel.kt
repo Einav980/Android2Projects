@@ -187,7 +187,7 @@ class AddApartmentViewModel @Inject constructor(
         val response = googleRepository.getPredictions(input = address)
         when (response) {
             is Resource.Success -> {
-                predictions = response?.data?.predictions!!.toMutableStateList()
+                predictions = response.data?.predictions!!.toMutableStateList()
             }
         }
         placesLoading.value = false

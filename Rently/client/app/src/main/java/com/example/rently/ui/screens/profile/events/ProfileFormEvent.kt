@@ -1,7 +1,5 @@
 package com.example.rently.ui.screens.profile.events
 
-import com.example.rently.ui.screens.register.events.RegisterFormEvent
-
 sealed class ProfileFormEvent{
     object Logout: ProfileFormEvent()
     object EditProfile: ProfileFormEvent()

@@ -2,21 +2,18 @@ package com.example.rently.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Swipe
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
@@ -32,7 +29,9 @@ import com.example.rently.model.Apartment
 import com.example.rently.ui.theme.*
 import com.example.rently.util.ApartmentPageType
 import com.example.rently.util.ApartmentStatus
+import com.example.rently.util.Constants
 import com.example.rently.util.priceToCurrency
+
 @Composable
 fun ApartmentCard(
     pageType: ApartmentPageType = ApartmentPageType.Explore,
@@ -147,7 +146,7 @@ fun ApartmentCard(
                     )
                 }
             }
-            if (pageType == ApartmentPageType.UserManage && apartment.status != null) {
+            if (pageType == ApartmentPageType.UserManage) {
                 switchApartmentStatus(apartment, onChangeApartmentStatus)
             }
 
@@ -308,18 +307,7 @@ fun switchApartmentStatus(
 @Composable
 @Preview(showBackground = true)
 fun ApartmentCardPreview() {
-    val context = LocalContext.current
-    var apartment = Apartment(
-        _id = "test",
-        city = "Tel-Aviv",
-        price = 7800,
-        address = "Dov Hauzner 2",
-        numberOfBaths = 1,
-        numberOfBeds = 2,
-        size = 54,
-        imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/72282092.jpg?k=5eeba7eb191652ce0c0988b4c7c042f1165b7064d865b096bb48b8c48bf191b9&o=&hp=1"
-    )
     ApartmentCard(
-        apartment = apartment,
+        apartment = Constants.apartment,
         onApartmentClick = {})
 }

@@ -1,4 +1,4 @@
-package com.example.rently.ui.screens
+package com.example.rently.ui.screens.main
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -7,8 +7,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.House
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,15 +20,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.rently.SharedViewModel
-import com.example.rently.navigation.*
-import com.example.rently.ui.screens.main.MainScreenViewModel
+import com.example.rently.navigation.BottomBarScreen
+import com.example.rently.navigation.BottomNavGraph
+import com.example.rently.ui.screens.apartments.ApartmentsViewModel
 import com.example.rently.ui.theme.RentlyCardShape
 import com.example.rently.ui.theme.RentlyTheme
-import com.example.rently.util.Constants
 import com.example.rently.util.UserType
 
 
@@ -41,6 +38,7 @@ fun MainScreen(
     onLogout: () -> Unit,
     viewModel: MainScreenViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel,
+    apartmentsSharedViewModel: ApartmentsViewModel,
     onMapClicked: () -> Unit,
     onApartmentClicked: () -> Unit,
     onAddApartmentClicked: () -> Unit,
@@ -61,6 +59,7 @@ fun MainScreen(
             Box(modifier = Modifier.padding(innerPadding)) {
                 BottomNavGraph(
                     sharedViewModel = sharedViewModel,
+                    apartmentsSharedViewModel = apartmentsSharedViewModel,
                     navController = navController,
                     onLogout = onLogout,
                     onApartmentClicked = onApartmentClicked,

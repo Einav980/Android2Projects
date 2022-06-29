@@ -1,9 +1,6 @@
 package com.example.rently.model
 
-import androidx.compose.runtime.MutableState
 import com.example.rently.util.UserType
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 
 data class User(
     val email: String = "",

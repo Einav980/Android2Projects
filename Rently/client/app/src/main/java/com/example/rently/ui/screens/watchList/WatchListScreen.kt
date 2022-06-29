@@ -1,14 +1,11 @@
 package com.example.rently.ui.screens.watchList
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,24 +16,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
-import com.example.rently.navigation.Screen
-import com.example.rently.ui.components.ApartmentCard
 import com.example.rently.ui.components.WatchListApartmentCard
-import com.example.rently.ui.screens.PageTitleCard
-import com.example.rently.ui.theme.RentlyDrawerItemBackground
-import com.example.rently.ui.theme.RoundedSquareShape
-import kotlinx.coroutines.flow.collect
+import com.example.rently.ui.screens.main.PageTitleCard
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun WatchListScreen(
     viewModel: WatchListViewModel = hiltViewModel(),
-    navController: NavHostController,
     sharedViewModel: SharedViewModel,
     onApartmentClicked: () -> Unit,
 ) {
@@ -46,7 +34,6 @@ fun WatchListScreen(
     var listError by rememberSaveable { mutableStateOf(false) }
     var listLoading by rememberSaveable { mutableStateOf(false) }
     var listSuccess by rememberSaveable { mutableStateOf(false) }
-    var removeSuccess by rememberSaveable { mutableStateOf(false) }
     var removeError by rememberSaveable { mutableStateOf(false) }
 
 
@@ -68,15 +55,11 @@ fun WatchListScreen(
                     listSuccess = true
                 }
 
-                WatchListViewModel.ValidationEvent.RemoveSuccess -> {
-                    listLoading = false
-                    removeSuccess = true
-                }
-
                 WatchListViewModel.ValidationEvent.RemoveError -> {
                     listLoading = false
                     removeError = true
                 }
+                else -> {}
             }
         }
     }
@@ -98,7 +81,6 @@ fun WatchListScreen(
                             items(items = state.apartments) { apartment ->
                                 WatchListApartmentCard(
                                     apartment = apartment,
-                                    navController = navController,
                                     onApartmentClick = {
                                         sharedViewModel.setApartment(it)
                                         onApartmentClicked()

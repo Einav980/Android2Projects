@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.rently.ui.theme.RoundedSquareShape
 
 @Composable
@@ -15,7 +16,7 @@ fun BackButton(
     modifier: Modifier = Modifier
         .clip(RoundedSquareShape.large)
         .background(Color.LightGray),
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
 ) {
     IconButton(
         modifier = modifier,
@@ -27,4 +28,10 @@ fun BackButton(
             tint = Color.White
         )
     }
+}
+
+@Preview
+@Composable
+fun BackButtonPreview() {
+    BackButton()
 }

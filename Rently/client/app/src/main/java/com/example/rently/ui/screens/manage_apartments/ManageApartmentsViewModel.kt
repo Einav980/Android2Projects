@@ -8,7 +8,6 @@ import com.example.rently.Resource
 import com.example.rently.model.Apartment
 import com.example.rently.repository.ApartmentRepository
 import com.example.rently.repository.DatastorePreferenceRepository
-import com.example.rently.repository.UserRepository
 import com.example.rently.ui.screens.manage_apartments.events.ManageApartmentsFormEvent
 import com.example.rently.ui.screens.manage_apartments.state.ManageApartmentsState
 import com.example.rently.util.ApartmentStatus
@@ -38,7 +37,7 @@ class ManageApartmentsViewModel @Inject constructor(
 
     fun onEvent(event: ManageApartmentsFormEvent) {
         when (event) {
-            is ManageApartmentsFormEvent.ApartmentDeleted -> {
+            is ManageApartmentsFormEvent.RemoveApartment -> {
                 deleteApartment(event.apartment)
             }
 
@@ -57,7 +56,7 @@ class ManageApartmentsViewModel @Inject constructor(
                 when (response) {
                     is Resource.Success -> {
                         apartments.addAll(response.data!!)
-                        state = state.copy(apartments = response.data!!)
+                        state = state.copy(apartments = response.data)
                         validationEventChannel.send(ValidationEvent.PageLoaded)
                     }
                     else -> {

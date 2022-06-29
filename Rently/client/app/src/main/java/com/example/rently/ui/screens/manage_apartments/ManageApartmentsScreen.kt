@@ -19,8 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rently.SharedViewModel
+import com.example.rently.model.Apartment
 import com.example.rently.ui.components.ApartmentCard
-import com.example.rently.ui.screens.PageTitleCard
+import com.example.rently.ui.screens.main.PageTitleCard
 import com.example.rently.ui.screens.manage_apartments.events.ManageApartmentsFormEvent
 import com.example.rently.ui.theme.RentlyDrawerItemBackground
 import com.example.rently.ui.theme.RentlyTheme
@@ -41,10 +42,12 @@ fun ManageApartmentsScreen(
     var listError by rememberSaveable { mutableStateOf(false) }
     var listLoading by rememberSaveable { mutableStateOf(false) }
     var listSuccess by rememberSaveable { mutableStateOf(false) }
+    var removeInProgress by rememberSaveable { mutableStateOf(false) }
     var removeSuccess by rememberSaveable { mutableStateOf(false) }
     var removeError by rememberSaveable { mutableStateOf(false) }
     var statusChangeSuccess by rememberSaveable { mutableStateOf(false) }
     var statusChangeError by rememberSaveable { mutableStateOf(false) }
+    var apartmentToDelete by rememberSaveable { mutableStateOf<Apartment?>(null) }
 
 
     LaunchedEffect(key1 = context) {
@@ -118,11 +121,8 @@ fun ManageApartmentsScreen(
                                             onApartmentClicked()
                                         },
                                         onDeleteApartment = {
-                                            viewModel.onEvent(
-                                                ManageApartmentsFormEvent.ApartmentDeleted(
-                                                    it
-                                                )
-                                            )
+                                            apartmentToDelete = it
+                                            removeInProgress = true
                                         },
                                         onChangeApartmentStatus = {
                                             viewModel.onEvent(
@@ -138,7 +138,7 @@ fun ManageApartmentsScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "Your watchlist is empty",
+                                    text = "Your list is empty",
                                     style = MaterialTheme.typography.body1,
                                     color = Color.Gray
                                 )
@@ -249,6 +249,59 @@ fun ManageApartmentsScreen(
                                 color = Color.Gray
                             )
                         }
+                    }
+                    if (removeInProgress) {
+                        AlertDialog(
+                            onDismissRequest = { /* DO NOTHING */ },
+                            buttons = {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    TextButton(onClick = {
+                                        removeInProgress = false
+                                        if (apartmentToDelete != null) {
+                                            viewModel.onEvent(
+                                                ManageApartmentsFormEvent.RemoveApartment(
+                                                    apartmentToDelete!!
+                                                )
+                                            )
+                                        }
+                                    }) {
+                                        Text("Yes")
+                                    }
+                                    TextButton(onClick = {
+                                        statusChangeError = false
+                                        apartmentToDelete = null
+                                        removeInProgress = false
+                                    }) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            },
+                            title = {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Warning",
+                                        style = MaterialTheme.typography.h5,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            },
+                            text = {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Are you sure you want to delete the apartment?",
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        )
                     }
                 }
             )

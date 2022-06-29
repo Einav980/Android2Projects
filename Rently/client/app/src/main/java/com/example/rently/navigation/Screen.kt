@@ -1,11 +1,5 @@
 package com.example.rently.navigation
 
-import android.util.Log
-import com.example.rently.model.Apartment
-import com.google.android.gms.maps.model.LatLng
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-
 sealed class Screen(val route: String){
     object Login: Screen(route = "login_screen")
     object Signup: Screen(route = "signup_screen")

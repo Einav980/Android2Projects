@@ -1,23 +1,16 @@
 package com.example.rently.ui.screens.admin_screens.adminManageApartment
 
 import android.util.Log
-import android.widget.Switch
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rently.Resource
 import com.example.rently.model.Apartment
-import com.example.rently.model.User
-import com.example.rently.navigation.Screen
 import com.example.rently.repository.ApartmentRepository
-import com.example.rently.repository.UserRepository
 import com.example.rently.util.ApartmentStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +24,7 @@ class AdminManageApartmentsViewModel @Inject constructor(
         listPendingApartments()
     }
 
-    fun listPendingApartments() {
+    private fun listPendingApartments() {
         viewModelScope.launch {
             isLoading.value = true
             val response = apartmentRepository.listApartments()

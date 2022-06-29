@@ -1,9 +1,7 @@
 package com.example.rently.ui.screens.add_apartment.state
 
 import android.graphics.Bitmap
-import com.example.rently.model.Apartment
 import com.example.rently.model.ApartmentType
-import com.example.rently.model.google.GoogleLocation
 import com.google.android.gms.maps.model.LatLng
 
 data class AddApartmentFormState(

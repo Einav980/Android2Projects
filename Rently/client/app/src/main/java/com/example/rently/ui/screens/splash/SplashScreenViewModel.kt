@@ -1,14 +1,8 @@
 package com.example.rently.ui.screens.splash
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rently.Resource
 import com.example.rently.repository.DatastorePreferenceRepository
-import com.example.rently.repository.UserRepository
-import com.example.rently.ui.screens.login.LoginViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

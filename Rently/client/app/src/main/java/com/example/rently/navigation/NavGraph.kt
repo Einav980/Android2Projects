@@ -7,13 +7,14 @@ import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.rently.FilterSharedViewModel
 import com.example.rently.SharedViewModel
 import com.example.rently.ui.screens.*
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
+import com.example.rently.ui.screens.apartments.ApartmentsViewModel
 import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.login.LoginScreen
+import com.example.rently.ui.screens.main.MainScreen
 import com.example.rently.ui.screens.map.MapScreen
 import com.example.rently.ui.screens.single_apartment.SingleApartmentScreen
 import com.example.rently.ui.screens.splash.SplashScreen
@@ -27,7 +28,7 @@ import com.google.accompanist.navigation.animation.composable
 fun SetupNavGraph(
     navController: NavHostController
 ) {
-    val filterSharedViewModel: FilterSharedViewModel = viewModel()
+    val apartmentsSharedViewModel: ApartmentsViewModel = viewModel()
     val sharedViewModel = SharedViewModel()
 
     AnimatedNavHost(
@@ -55,6 +56,7 @@ fun SetupNavGraph(
                 onAddApartmentClicked = {
                     navController.navigate(Screen.AddApartment.route)
                 },
+                apartmentsSharedViewModel = apartmentsSharedViewModel
             )
         }
         composable(
@@ -89,6 +91,7 @@ fun SetupNavGraph(
                 }
             )
         }
+
         composable(
             route = Screen.ThankYou.route,
         ) {
@@ -116,8 +119,13 @@ fun SetupNavGraph(
             route = Screen.Filter.route
         ) {
             FilterScreen(
-                navController = navController,
-                filterSharedViewModel = filterSharedViewModel
+                onBackClicked = { navController.popBackStack() },
+                onFilterApplied = {
+                    navController.navigate(Screen.Apartments.route) {
+                        popUpTo(Screen.Apartments.route)
+                    }
+                },
+                viewModel = apartmentsSharedViewModel,
             )
         }
 
@@ -139,7 +147,8 @@ fun SetupNavGraph(
                 navController.navigate(Screen.MainPage.route) {
                     popUpTo(Screen.MainPage.route)
                 }
-            })
+            },
+                onBackClicked = { navController.popBackStack() })
         }
 
         composable(

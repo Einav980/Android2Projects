@@ -23,8 +23,8 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor(
     private val datastore: DatastorePreferenceRepository,
     private val repository: UserRepository,
-    private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePassword: ValidatePassword,
+    private val validateEmail: ValidateEmail,
+    private val validatePassword: ValidateRegisterPassword,
     private val validateFirstName: ValidateFirstName,
     private val validateLastName: ValidateLastName,
     private val validatePhone: ValidatePhone,
@@ -32,7 +32,7 @@ class RegisterViewModel @Inject constructor(
 
     companion object{
         private const val EMAIL_IN_USE = 405
-        private const val REGISTER_SUCCESS = 200
+        private const val REGISTER_SUCCESS = 201
     }
 
     var state by mutableStateOf(RegisterFormState())
@@ -59,7 +59,7 @@ class RegisterViewModel @Inject constructor(
             }
 
             is RegisterFormEvent.PhoneChanged -> {
-                if(event.phone.length < 10){
+                if(event.phone.length < 11){
                     state = state.copy(phone = event.phone)
                 }
             }
@@ -92,6 +92,10 @@ class RegisterViewModel @Inject constructor(
                         validationEventChannel.send(ValidationEvent.RegisterSuccess)
                     } else if (returnCode == EMAIL_IN_USE) {
                         state = state.copy(registerErrorMessage = "Email is already in use")
+                        validationEventChannel.send(ValidationEvent.RegisterError)
+                    }
+                    else{
+                        state = state.copy(registerErrorMessage = result.message)
                         validationEventChannel.send(ValidationEvent.RegisterError)
                     }
                 }

@@ -6,6 +6,7 @@ import com.example.rently.api.GooglePlacesApi
 import com.example.rently.model.google.GoogleLocationResponse
 import com.example.rently.model.google.GooglePredictionsResponse
 import dagger.hilt.android.scopes.ActivityScoped
+import timber.log.Timber
 import javax.inject.Inject
 
 @ActivityScoped
@@ -16,7 +17,7 @@ class GooglePlacesRepository @Inject constructor(
         val response = try {
             api.getPredictions(input = input)
         } catch (e: Exception) {
-            Log.d("Rently", "Exception: ${e}")
+            Timber.tag("Rently").d("Exception: $e")
             return Resource.Error("Failed prediction")
         }
 
@@ -27,7 +28,7 @@ class GooglePlacesRepository @Inject constructor(
         val response = try {
             api.getAddressLocation(address = address)
         } catch (e: Exception) {
-            Log.d("Rently", "Exception: ${e}")
+            Timber.tag("Rently").d("Exception: $e")
             return Resource.Error("Failed getting address location")
         }
 
