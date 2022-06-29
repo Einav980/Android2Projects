@@ -3,7 +3,7 @@ const Apartment = require('../models/apartment.model');
 
 const listApartments = async (req, res) => {
   try {
-    const apartments = await Apartment.find({});
+    const apartments = await Apartment.find({status : "Available"});
     res.send(apartments);
   } catch (error) {
     res.status(400).json({ error: error });
