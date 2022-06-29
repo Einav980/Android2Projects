@@ -2,6 +2,7 @@ package com.example.rently.ui.screens.splash
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -13,11 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
+import com.example.rently.R
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.util.Constants.APP_TITLE
@@ -53,11 +56,16 @@ fun SplashScreen(
             }
         }
     }
-
 }
 
 @Composable
 fun Splash(alpha: Float) {
+    val painter = rememberImagePainter(
+        data = R.mipmap.ic_launcher_foreground,
+        builder = {
+            crossfade(300)
+        }
+    )
     RentlyTheme {
         Box(
             modifier = Modifier
@@ -67,22 +75,17 @@ fun Splash(alpha: Float) {
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    modifier = Modifier.alpha(alpha = alpha),
+                    modifier = Modifier.alpha(alpha),
                     text = APP_TITLE,
                     style = MaterialTheme.typography.h1,
                     color = MaterialTheme.colors.primary
                 )
-                Icon(
-                    modifier = Modifier
-                        .size(120.dp)
-                        .alpha(alpha = alpha),
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "Rently Icon",
-                    tint = MaterialTheme.colors.primary
-                )
+                Box(modifier = Modifier.size(100.dp).alpha(alpha)){
+                    Image(painter = painter, contentDescription = null, contentScale = ContentScale.Crop)
+                }
             }
         }
     }

@@ -3,7 +3,6 @@ package com.example.rently.navigation
 sealed class Screen(val route: String){
     object Login: Screen(route = "login_screen")
     object Signup: Screen(route = "signup_screen")
-    object ThankYou: Screen(route = "thankyou_screen")
     object MainPage: Screen(route = "main_screen")
     object Apartments: Screen(route = "apartments_screen")
     object SingleApartment: Screen(route = "single_apartment_screen")

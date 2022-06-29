@@ -1,18 +1,16 @@
 package com.example.rently.navigation
 
 import android.os.Build
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.rently.SharedViewModel
-import com.example.rently.ui.screens.*
+import com.example.rently.ui.screens.RegisterScreen
 import com.example.rently.ui.screens.add_apartment.AddApartmentScreen
 import com.example.rently.ui.screens.admin_screens.manage_types.ManageApartmentTypeScreen
 import com.example.rently.ui.screens.apartments.ApartmentsViewModel
-import com.example.rently.ui.screens.filter.FilterScreen
 import com.example.rently.ui.screens.login.LoginScreen
 import com.example.rently.ui.screens.main.MainScreen
 import com.example.rently.ui.screens.map.MapScreen
@@ -102,9 +100,7 @@ fun SetupNavGraph(
         ) {
             SplashScreen(onSplashEnds = {
                 navController.navigate(it) {
-                    popUpTo(it) {
-                        inclusive = true
-                    }
+                    popUpTo(Screen.Map.route)
                 }
             })
         }
@@ -113,7 +109,9 @@ fun SetupNavGraph(
         ) {
             AddApartmentScreen(onAddApartmentFinished = {
                 navController.navigate(Screen.MainPage.route) {
-                    popUpTo(Screen.MainPage.route)
+                    popUpTo(Screen.MainPage.route){
+                        inclusive = true
+                    }
                 }
             },
                 onBackClicked = { navController.popBackStack() })
