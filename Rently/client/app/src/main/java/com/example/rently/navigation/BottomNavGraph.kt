@@ -75,7 +75,8 @@ fun BottomNavGraph(
         ) {
             AdminManageApartmentsScreen(
                 navController = navController,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                onApartmentClicked = onApartmentClicked
             )
         }
 

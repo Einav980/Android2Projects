@@ -20,8 +20,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.rently.SharedViewModel
+import com.example.rently.model.Apartment
 import com.example.rently.navigation.Screen
 import com.example.rently.ui.components.ApartmentCard
+import com.example.rently.ui.screens.main.PageTitleCard
 import com.example.rently.ui.theme.RentlyCardShape
 import com.example.rently.ui.theme.RentlyTheme
 import com.example.rently.util.ApartmentPageType
@@ -33,17 +35,18 @@ import me.saket.swipe.SwipeableActionsBox
 fun AdminManageApartmentsScreen(
     viewModel: AdminManageApartmentsViewModel = hiltViewModel(),
     navController: NavHostController,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    onApartmentClicked: () -> Unit,
 ) {
 
     RentlyTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             Scaffold(
                 topBar = {
-                    TopBarTitle()
+                    PageTitleCard(title = "Manage requests")
                 },
                 content = {
-                    if( viewModel.apartments.isNotEmpty()){
+                    if (viewModel.apartments.isNotEmpty()) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize(),
@@ -54,7 +57,7 @@ fun AdminManageApartmentsScreen(
                                 val approve = SwipeAction(
                                     onSwipe = {
                                         viewModel.onApproveSwipe(apartment)
-                                        Log.d("swipe" , "Approve")
+                                        Log.d("swipe", "Approve")
                                     },
                                     icon = {
                                         Icon(
@@ -70,7 +73,7 @@ fun AdminManageApartmentsScreen(
                                 val reject = SwipeAction(
                                     onSwipe = {
                                         viewModel.onRejectSwipe(apartment)
-                                        Log.d("swipe" , "Reject")
+                                        Log.d("swipe", "Reject")
                                     },
                                     icon = {
                                         Icon(
@@ -88,24 +91,23 @@ fun AdminManageApartmentsScreen(
                                     startActions = listOf(approve),
                                     endActions = listOf(reject),
                                     modifier = Modifier.clip(RentlyCardShape.large)
-                                ){
+                                ) {
                                     ApartmentCard(
                                         apartment = apartment,
                                         pageType = ApartmentPageType.AdminManage,
                                         onApartmentClick = {
                                             sharedViewModel.setApartment(it)
-                                            navController.navigate(Screen.SingleApartment.route)
+                                            onApartmentClicked()
                                         },
                                     )
                                 }
                             }
                         }
-                    }
-                    else{
+                    } else {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
-                        ){
+                        ) {
                             Text(
                                 text = "No pending apartments to review",
                                 style = MaterialTheme.typography.body1,
@@ -117,27 +119,5 @@ fun AdminManageApartmentsScreen(
                 }
             )
         }
-    }
-}
-
-
-@Composable
-fun TopBarTitle() {
-    TopAppBar(
-        elevation = 50.dp,
-        modifier = Modifier
-            .wrapContentSize(),
-        backgroundColor = Color.White
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth(),
-            text = "Manage Requests",
-            style = MaterialTheme.typography.h3,
-            textAlign = TextAlign.Center,
-            color = Color.Black,
-            fontSize = 30.sp
-        )
     }
 }

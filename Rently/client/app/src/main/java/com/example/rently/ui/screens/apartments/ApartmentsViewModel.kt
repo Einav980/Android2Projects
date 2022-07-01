@@ -143,7 +143,7 @@ class ApartmentsViewModel @Inject constructor(
                         _state.value = _state.value.copy(apartments = filteredApartments)
                     }
                     else{
-                        _state.value = _state.value.copy(apartments = response.data!!)
+                        _state.value = _state.value.copy(apartments = response.data!!.filter { apartment -> apartment.status == ApartmentStatus.Available.status })
                     }
 
                     validationEventChannel.send(ValidationEvent.PageLoaded)
