@@ -140,6 +140,9 @@ fun WatchListScreen(
                             }
                         )
                     }
+                    if (!removeError){
+                        listLoading = false
+                    }
                 }
                 Box(
                     modifier = Modifier.fillMaxSize(),

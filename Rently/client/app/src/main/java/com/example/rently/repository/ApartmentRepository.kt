@@ -1,5 +1,6 @@
 package com.example.rently.repository
 
+import android.annotation.SuppressLint
 import com.example.rently.Resource
 import com.example.rently.api.ApartmentApi
 import com.example.rently.model.Apartment
@@ -72,6 +73,7 @@ class ApartmentRepository @Inject constructor(
         return Resource.Success(response)
     }
 
+    @SuppressLint("TimberArgCount")
     suspend fun addApartment(apartment: Apartment): Resource<AuthResponse>{
         val response = try{
             api.addApartment(apartment = apartment)
